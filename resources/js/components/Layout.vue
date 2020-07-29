@@ -4,14 +4,15 @@
       Time Machine
     </h1>
     <p class="pb-2 lead">
-      Radio1 Time: {{ radioTZ }} / {{ radioTime }}<br>
-      Your Time {{ youTZ }} / {{ youTime }}<br>
+      Radio1 Time: <strong>{{ radioNow }}</strong><br>
+      Your Time: <strong>{{ youNow }}</strong><br>
+      Timemachine Time: <strong>{{ radioThen }}</strong>
     </p>
 
-    <h2>
+    <h3>
       Your are {{ youOffset }} hours
       <span v-if="youOffset > 0">
-        in front of {{ radioTZ }}
+        in front of Radio 1
       </span>
 
       <span v-if="youOffset < 0">
@@ -21,9 +22,12 @@
       <span v-if="youOffset == 0">
         In Prague :)
       </span>
-    </h2>
+    </h3>
 
-    <div class="text-center pt-4">
+    <div
+      class="text-center pt-4"
+      v-if="loaded"
+    >
       <!-- <button
         class="btn btn-success"
       >
@@ -43,8 +47,11 @@
         Play
       </button> -->
 
+      <h3>
+        Playing show from {{ config.recoded_at }} - {{ radioThen }}
+      </h3>
+
       <audio
-        v-if="loaded"
         preload="metadata"
         controls
         autoplay
@@ -53,6 +60,7 @@
         :src="config.url+'#t='+config.offset"
         style="width: 100%;"
       ><p>Your browser does not support the <code>audio</code> element.</p></audio>
+
       OR
       Live Radio1.cz
       <audio
@@ -62,13 +70,8 @@
         style="width: 100%;"
       ><p>Your browser does not support the <code>audio</code> element.</p></audio>
 
-      <div class="h1">
-        {{ youNow }}  / {{ radioNow }}
-      </div>
+      <div class="h1" />
     </div>
-    <h2>
-      Playing
-    </h2>
   </div>
 </template>
 <script>
@@ -82,16 +85,23 @@ export default {
       youTZ: 'Australia/Perth',
       youNow: moment().format('HH:mm:ss'),
       radioNow: moment().format('HH:mm:ss'),
+      radioThen: moment().format('HH:mm:ss'),
       interval: null,
       config: {},
-      loaded: false
+      loaded: false,
+      offset: 0
     }
   },
   mounted () {
     this.youTZ = Intl.DateTimeFormat().resolvedOptions().timeZone
     this.interval = setInterval(function () {
-      this.youNow = moment().tz(this.youTZ).format('HH:mm:ss')
-      this.radioNow = moment().tz(this.radioTZ).format('HH:mm:ss')
+      this.offset++
+      this.youNow = moment().tz(this.youTZ).format('dddd HH:mm:ss')
+      this.radioNow = moment().tz(this.radioTZ).format('dddd HH:mm:ss')
+      this.radioThen = moment(this.config.recoded_timestamp)
+        .add(this.offset, 'seconds')
+        .tz(this.radioTZ)
+        .format('dddd HH:mm:ss')
     }.bind(this), 1000)
     // 17:34:27
     this.load()
@@ -123,6 +133,11 @@ export default {
           this.loaded = true
           console.log(this.$refs.player)
           this.$refs.player.play()
+
+          this.$refs.player.addEventListener('ended', function () {
+            console.log('player ended')
+            window.location.reload()
+          }, false)
           // set offiset
           // $this.refs.player.currentTime = data.offset
         }).catch(function (error) {

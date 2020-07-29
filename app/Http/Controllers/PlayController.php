@@ -41,6 +41,7 @@ http://localhost/media/stream/stream-3.ts
         }
         $closest = 6000000;
         $out = [];
+        // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
         // dump($wanted);
         foreach($files as $file) {
             if(preg_match("#^radio1/radio1-(.*).mp3$#",$file,$match)) {
@@ -58,6 +59,8 @@ http://localhost/media/stream/stream-3.ts
                     $out['play_at'] = '00:'.round($diff/60).':'.($diff-round($diff/60)*60);
                     $out['start_at'] = $fileStartedAt->format('H:i:s');
                     $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
+                    $out['recoded_at'] = $fileStartedAt->diffForHumans();
+                    $out['recoded_timestamp'] = $fileStartedAt;
                 }
                 
             }
