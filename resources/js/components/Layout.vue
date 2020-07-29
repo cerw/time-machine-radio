@@ -6,7 +6,7 @@
     <p class="pb-2 lead">
       Radio1 Time: <strong>{{ radioNow }}</strong><br>
       Your Time: <strong>{{ youNow }}</strong><br>
-      Timemachine Time: <strong>{{ radioThen }}</strong>
+      Timemachine Time: <strong>{{ radioCalendar }}</strong>
     </p>
 
     <h3>
@@ -49,6 +49,14 @@
 
       <h3>
         Playing show from {{ config.recoded_at }} - {{ radioThen }}
+        <!-- <span class="text-muted">
+          {{ secondsLeft / 60 }}
+        </span> -->
+        <br>
+        <a
+          target="_blank"
+          :href="'https://www.radio1.cz/program/?typ=dny&p='+radioDate"
+        >Program for day {{ radioDate }} </a>
       </h3>
 
       <audio
@@ -85,11 +93,14 @@ export default {
       youTZ: 'Australia/Perth',
       youNow: moment().format('HH:mm:ss'),
       radioNow: moment().format('HH:mm:ss'),
+      radioDate: moment().format('Y-MM-DD'),
       radioThen: moment().format('HH:mm:ss'),
+      radioCalendar: moment().format('HH:mm:ss'),
       interval: null,
       config: {},
       loaded: false,
-      offset: 0
+      offset: 0,
+      secondsLeft: 0
     }
   },
   mounted () {
@@ -99,9 +110,24 @@ export default {
       this.youNow = moment().tz(this.youTZ).format('dddd HH:mm:ss')
       this.radioNow = moment().tz(this.radioTZ).format('dddd HH:mm:ss')
       this.radioThen = moment(this.config.recoded_timestamp)
-        .add(this.offset, 'seconds')
+        .add(this.$refs.player.currentTime, 'seconds')
         .tz(this.radioTZ)
         .format('dddd HH:mm:ss')
+
+      this.radioDate = moment(this.config.recoded_timestamp)
+        .add(this.$refs.player.currentTime, 'seconds')
+        .tz(this.radioTZ)
+        .format('Y-MM-DD')
+
+      this.radioCalendar = moment(this.config.recoded_timestamp)
+        .add(this.$refs.player.currentTime, 'seconds')
+        .tz(this.radioTZ)
+        .calendar()
+
+      this.secondsLeft = this.$refs.player.duration - this.$refs.player.currentTime
+      if (this.secondsLeft === 0) {
+        this.load()
+      }
     }.bind(this), 1000)
     // 17:34:27
     this.load()
@@ -134,10 +160,6 @@ export default {
           console.log(this.$refs.player)
           this.$refs.player.play()
 
-          this.$refs.player.addEventListener('ended', function () {
-            console.log('player ended')
-            window.location.reload()
-          }, false)
           // set offiset
           // $this.refs.player.currentTime = data.offset
         }).catch(function (error) {
