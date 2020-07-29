@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/play/{time?}','PlayController@play');
+
 Route::get('/', function () {
     return view('welcome');
 });

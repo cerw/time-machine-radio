@@ -24,7 +24,7 @@
     </h2>
 
     <div class="text-center pt-4">
-      <button
+      <!-- <button
         class="btn btn-success"
       >
         <svg
@@ -41,18 +41,27 @@
           />
         </svg>
         Play
-      </button>
-      <audio controls>
-        <source
-          src="horse.ogg"
-          type="audio/ogg"
-        >
-        <source
-          src="horse.mp3"
-          type="audio/mpeg"
-        >
-        Your browser does not support the audio element.
-      </audio>
+      </button> -->
+
+      <audio
+        v-if="loaded"
+        preload="metadata"
+        controls
+        autoplay
+        id="player"
+        ref="player"
+        :src="config.url+'#t='+config.offset"
+        style="width: 100%;"
+      ><p>Your browser does not support the <code>audio</code> element.</p></audio>
+      OR
+      Live Radio1.cz
+      <audio
+        preload="metadata"
+        controls
+        src="http://icecast6.play.cz/radio1-128.mp3"
+        style="width: 100%;"
+      ><p>Your browser does not support the <code>audio</code> element.</p></audio>
+
       <div class="h1">
         {{ youNow }}  / {{ radioNow }}
       </div>
@@ -64,6 +73,7 @@
 </template>
 <script>
 import moment from 'moment-timezone'
+
 export default {
   name: 'Layout',
   data () {
@@ -72,8 +82,9 @@ export default {
       youTZ: 'Australia/Perth',
       youNow: moment().format('HH:mm:ss'),
       radioNow: moment().format('HH:mm:ss'),
-      interval: null
-
+      interval: null,
+      config: {},
+      loaded: false
     }
   },
   mounted () {
@@ -82,6 +93,8 @@ export default {
       this.youNow = moment().tz(this.youTZ).format('HH:mm:ss')
       this.radioNow = moment().tz(this.radioTZ).format('HH:mm:ss')
     }.bind(this), 1000)
+    // 17:34:27
+    this.load()
   },
   computed: {
     radioTime () {
@@ -103,6 +116,19 @@ export default {
   },
   methods: {
     //  moment.
+    load () {
+      axios.get('/play/' + this.youNow)
+        .then(({ data }) => {
+          this.config = data
+          this.loaded = true
+          console.log(this.$refs.player)
+          this.$refs.player.play()
+          // set offiset
+          // $this.refs.player.currentTime = data.offset
+        }).catch(function (error) {
+          console.log('error getting crew', error)
+        })
+    }
   }
 }
 </script>
