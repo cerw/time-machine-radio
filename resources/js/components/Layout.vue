@@ -74,7 +74,7 @@
       <audio
         preload="metadata"
         controls
-        src="http://icecast6.play.cz/radio1-128.mp3"
+        src="https://icecast6.play.cz/radio1-128.mp3"
         style="width: 100%;"
       ><p>Your browser does not support the <code>audio</code> element.</p></audio>
 
