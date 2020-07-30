@@ -1,5 +1,13 @@
 <template>
   <div class="card">
+    <div class="card-header">
+      <button
+        class="btn btn-success"
+        @click="app()"
+      >
+        Install App
+      </button>
+    </div>
     <div class="card-body">
       <p class="pb-2 ">
         Radio1 Time: <strong>{{ radioNow }}</strong><br>
@@ -159,6 +167,9 @@ export default {
     }
   },
   methods: {
+    app () {
+      window.addToHomeScreen()
+    },
     playing () {
       if (this.$refs.player !== undefined) {
         return !this.$refs.player.paused

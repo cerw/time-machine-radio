@@ -5,6 +5,42 @@ import axios from 'axios'
 
 // disable for dev like this.
 
+var deferredPrompt
+
+window.addEventListener('beforeinstallprompt', function (e) {
+  // Evitar que o Chrome 67 e anteriores mostrem automaticamente o prompt
+  e.preventDefault()
+  // Esconda o evento para que ele possa ser acionado mais tarde.
+  deferredPrompt = e
+  addToHomeScreen()
+})
+
+window.addEventListener('appinstalled', (event) => {
+  console.log('👍', 'appinstalled', event)
+})
+
+function addToHomeScreen () {
+  if (deferredPrompt) {
+    console.log('entrou em deferredPrompt')
+    // Show the prompt
+    deferredPrompt.prompt()
+    // Wait for the user to respond to the prompt
+    deferredPrompt.userChoice
+      .then(function (choiceResult) {
+        console.log('choiceResult', choiceResult)
+
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User acept the A2HS vibmo')
+        } else {
+          console.log('User dismissed the A2HS vimbo')
+        }
+
+        deferredPrompt = null
+      })
+  }
+}
+window.addToHomeScreen = addToHomeScreen
+
 if ('serviceWorker' in navigator) {
   console.log('Serice worker will be registered')
   // window.addEventListener("load", () => {
