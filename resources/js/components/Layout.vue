@@ -11,7 +11,7 @@
     <div class="card-body">
       <p class="pb-2 ">
         Radio1 Time: <strong>{{ radioNow }}</strong><br>
-        Your Time: <strong>{{ youNow }}</strong><br>
+        Your Time: <strong>{{ youDate }}</strong><br>
         Timemachine Time: <strong>{{ radioCalendar }}</strong>
       </p>
 
@@ -104,6 +104,7 @@ export default {
       radioTZ: 'Europe/Prague',
       youTZ: 'Australia/Perth',
       youNow: moment().format('HH:mm:ss'),
+      youDate: moment().format('Y-MM-DD'),
       radioNow: moment().format('HH:mm:ss'),
       radioDate: moment().format('Y-MM-DD'),
       radioThen: moment().format('HH:mm:ss'),
@@ -120,7 +121,8 @@ export default {
     this.youTZ = Intl.DateTimeFormat().resolvedOptions().timeZone
     this.interval = setInterval(function () {
       this.offset++
-      this.youNow = moment().tz(this.youTZ).format('dddd HH:mm:ss')
+      this.youNow = moment().tz(this.youTZ).format('HH:mm:ss')
+      this.youDate = moment().tz(this.youTZ).format('dddd HH:mm:ss')
       this.radioNow = moment().tz(this.radioTZ).format('dddd HH:mm:ss')
 
       if (this.$refs.player !== undefined) {
@@ -141,6 +143,9 @@ export default {
 
         this.secondsLeft = this.$refs.player.duration - this.$refs.player.currentTime
         if (this.secondsLeft === 0) {
+          this.$refs.player.pause()
+          this.loaded = false
+          // sound.currentTime = 0;
           this.load()
         }
       }

@@ -43,9 +43,11 @@ http://localhost/media/stream/stream-3.ts
         $out = [];
         // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
         // dump($wanted);
+        
         foreach($files as $file) {
-            if(preg_match("#^radio1/radio1-(.*).mp3$#",$file,$match)) {
+            if(preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#",$file,$match)) {
                 $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', $match[1]);
+                $perthTime =  $fileStartedAt->toDateTimeString();
                 $fileStartedAt->setTimezone('Europe/Prague');
                 // $diff = $date->diffInDays($wanted);
                 $diff = $wanted->diffInSeconds($fileStartedAt);
@@ -58,9 +60,10 @@ http://localhost/media/stream/stream-3.ts
                     $out['offset'] = $diff;
                     $out['play_at'] = '00:'.round($diff/60).':'.($diff-round($diff/60)*60);
                     $out['start_at'] = $fileStartedAt->format('H:i:s');
-                    $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
+                    $out['perth_started_at'] = $perthTime;
                     $out['recoded_at'] = $fileStartedAt->diffForHumans();
-                    $out['recoded_timestamp'] = $fileStartedAt;
+                    $out['recoded_timestamp'] = $fileStartedAt->toDateTimeString();
+                    $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
                 }
                 
             }
