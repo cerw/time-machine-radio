@@ -7,7 +7,15 @@
 
 One to two paragraph statement about your product and what it does.
 
-![](public/images/timemachine-screen.jpg)
+<p align="center">
+<img src="https://github.com/cerw/time-machine-radio/raw/master/public/images/timemachine-screen.jpg" width="400">
+</p>
+
+
+## Live
+
+[radio1.rocks](http://radio1.rocks)
+
 
 ## Installation
 
