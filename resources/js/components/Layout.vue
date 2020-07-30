@@ -1,31 +1,32 @@
 <template>
-  <div class="text-center">
-    <p class="pb-2 lead">
-      Radio1 Time: <strong>{{ radioNow }}</strong><br>
-      Your Time: <strong>{{ youNow }}</strong><br>
-      Timemachine Time: <strong>{{ radioCalendar }}</strong>
-    </p>
+  <div class="card">
+    <div class="card-body">
+      <p class="pb-2 ">
+        Radio1 Time: <strong>{{ radioNow }}</strong><br>
+        Your Time: <strong>{{ youNow }}</strong><br>
+        Timemachine Time: <strong>{{ radioCalendar }}</strong>
+      </p>
 
-    <h3>
-      Your are {{ youOffset }} hours
-      <span v-if="youOffset > 0">
-        in front of Radio 1
-      </span>
+      <div>
+        Your are {{ youOffset }} hours
+        <span v-if="youOffset > 0">
+          in front of Radio 1
+        </span>
 
-      <span v-if="youOffset < 0">
-        behind
-      </span>
+        <span v-if="youOffset < 0">
+          behind
+        </span>
 
-      <span v-if="youOffset == 0">
-        In Prague :)
-      </span>
-    </h3>
+        <span v-if="youOffset == 0">
+          In Prague :)
+        </span>
+      </div>
 
-    <div
-      class="text-center pt-4"
-      v-if="loaded"
-    >
-      <!-- <button
+      <div
+        class="text-center pt-4"
+        v-if="loaded"
+      >
+        <!-- <button
         class="btn btn-success"
       >
         <svg
@@ -44,38 +45,44 @@
         Play
       </button> -->
 
-      <h3>
-        Playing show from {{ config.recoded_at }} - {{ radioThen }}
-        <!-- <span class="text-muted">
-          {{ secondsLeft / 60 }}
-        </span> -->
-        <br>
+        <div class="alert alert-success">
+          Serving
+          <strong>
+            (
+            <span v-if="playing()">Playing</span>
+            <span
+              v-else
+            >Paused</span>
+            )
+          </strong>
+
+          show from <strong>{{ config.recoded_at }} </strong>- {{ radioThen }}
+        </div>
         <a
           target="_blank"
           :href="'https://www.radio1.cz/program/?typ=dny&p='+radioDate"
         >Program for day {{ radioDate }} </a>
-      </h3>
+        <audio
+          preload="metadata"
+          controls
+          autoplay
+          id="player"
+          ref="player"
+          :src="config.url+'#t='+config.offset"
+          style="width: 100%;"
+        ><p>Your browser does not support the <code>audio</code> element.</p></audio>
 
-      <audio
-        preload="metadata"
-        controls
-        autoplay
-        id="player"
-        ref="player"
-        :src="config.url+'#t='+config.offset"
-        style="width: 100%;"
-      ><p>Your browser does not support the <code>audio</code> element.</p></audio>
+        OR
+        Live Radio1.cz
+        <audio
+          preload="metadata"
+          controls
+          src="https://icecast6.play.cz/radio1-128.mp3"
+          style="width: 100%;"
+        ><p>Your browser does not support the <code>audio</code> element.</p></audio>
 
-      OR
-      Live Radio1.cz
-      <audio
-        preload="metadata"
-        controls
-        src="https://icecast6.play.cz/radio1-128.mp3"
-        style="width: 100%;"
-      ><p>Your browser does not support the <code>audio</code> element.</p></audio>
-
-      <div class="h1" />
+        <div class="h1" />
+      </div>
     </div>
   </div>
 </template>
@@ -97,7 +104,8 @@ export default {
       config: {},
       loaded: false,
       offset: 0,
-      secondsLeft: 0
+      secondsLeft: 0,
+      on: false
     }
   },
   mounted () {
@@ -106,24 +114,27 @@ export default {
       this.offset++
       this.youNow = moment().tz(this.youTZ).format('dddd HH:mm:ss')
       this.radioNow = moment().tz(this.radioTZ).format('dddd HH:mm:ss')
-      this.radioThen = moment(this.config.recoded_timestamp)
-        .add(this.$refs.player.currentTime, 'seconds')
-        .tz(this.radioTZ)
-        .format('dddd HH:mm:ss')
 
-      this.radioDate = moment(this.config.recoded_timestamp)
-        .add(this.$refs.player.currentTime, 'seconds')
-        .tz(this.radioTZ)
-        .format('Y-MM-DD')
+      if (this.$refs.player !== undefined) {
+        this.radioThen = moment(this.config.recoded_timestamp)
+          .add(this.$refs.player.currentTime, 'seconds')
+          .tz(this.radioTZ)
+          .format('dddd HH:mm:ss')
 
-      this.radioCalendar = moment(this.config.recoded_timestamp)
-        .add(this.$refs.player.currentTime, 'seconds')
-        .tz(this.radioTZ)
-        .calendar()
+        this.radioDate = moment(this.config.recoded_timestamp)
+          .add(this.$refs.player.currentTime, 'seconds')
+          .tz(this.radioTZ)
+          .format('Y-MM-DD')
 
-      this.secondsLeft = this.$refs.player.duration - this.$refs.player.currentTime
-      if (this.secondsLeft === 0) {
-        this.load()
+        this.radioCalendar = moment(this.config.recoded_timestamp)
+          .add(this.$refs.player.currentTime, 'seconds')
+          .tz(this.radioTZ)
+          .calendar()
+
+        this.secondsLeft = this.$refs.player.duration - this.$refs.player.currentTime
+        if (this.secondsLeft === 0) {
+          this.load()
+        }
       }
     }.bind(this), 1000)
     // 17:34:27
@@ -148,6 +159,12 @@ export default {
     }
   },
   methods: {
+    playing () {
+      if (this.$refs.player !== undefined) {
+        return !this.$refs.player.paused
+      }
+      return false
+    },
     //  moment.
     load () {
       axios.get('/play/' + this.youNow)
