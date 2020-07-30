@@ -57,10 +57,13 @@
         <div class="container">
           <div class="row">
             <div class="col-12 text-center">
+            <a href="/">
               <img src="/images/icons/icon-192x192.png" title="Time Machine" width=50 class="logo rounded-circle" img img-fluid"/>
+              </a>
               <h1 class="">
                 Time Machine
               </h1>
+              
             </div>
           </div>
         
