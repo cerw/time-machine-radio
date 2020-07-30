@@ -6,12 +6,29 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="description" content="">
         <meta name="author" content="cerw">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+      <meta name="format-detection" content="telephone=no"/>
         
 
         <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>{{ config('app.name', '') }} {{ $title ?? '' }}</title>
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+@if(App::environment('production'))
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-174008818-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-174008818-1');
+  console.log('%c This is Radio1 TImemachine', 'font-size: 14px; color: #fff; background-color: #ed1c2e;')
+</script>
+@endif
+
 
     <!-- Styles -->
   <link href="{{ mix('css/app.css') }}" rel="stylesheet">
