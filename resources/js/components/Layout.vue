@@ -106,9 +106,9 @@ export default {
       youNow: moment().format('HH:mm:ss'),
       youDate: moment().format('Y-MM-DD'),
       radioNow: moment().format('HH:mm:ss'),
-      radioDate: moment().format('Y-MM-DD'),
-      radioThen: moment().format('HH:mm:ss'),
-      radioCalendar: moment().format('HH:mm:ss'),
+      radioDate: null,
+      radioThen: null,
+      radioCalendar: null,
       interval: null,
       config: {},
       loaded: false,
@@ -128,17 +128,17 @@ export default {
       if (this.$refs.player !== undefined) {
         this.radioThen = moment(this.config.recoded_timestamp)
           .add(this.$refs.player.currentTime, 'seconds')
-          .tz(this.radioTZ)
+          // .tz(this.radioTZ)
           .format('dddd HH:mm:ss')
 
         this.radioDate = moment(this.config.recoded_timestamp)
           .add(this.$refs.player.currentTime, 'seconds')
-          .tz(this.radioTZ)
+          // .tz(this.radioTZ)
           .format('Y-MM-DD')
 
         this.radioCalendar = moment(this.config.recoded_timestamp)
           .add(this.$refs.player.currentTime, 'seconds')
-          .tz(this.radioTZ)
+          // .tz(this.radioTZ)
           .calendar()
 
         this.secondsLeft = this.$refs.player.duration - this.$refs.player.currentTime
