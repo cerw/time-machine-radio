@@ -43,11 +43,17 @@ http://localhost/media/stream/stream-3.ts
         $out = [];
         // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
         // dump($wanted);
+        $expiresAt = Carbon::now()->subDays(3);
         
         foreach($files as $file) {
             if(preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#",$file,$match)) {
                 $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', $match[1]);
                 $perthTime =  $fileStartedAt->toDateTimeString();
+                if($perthTime < $expiresAt) {
+                    \Log::info("Removing old files {$file}");
+                    Storage::delete($file);
+                    continue;
+                }
                 $fileStartedAt->setTimezone('Europe/Prague');
                 // $diff = $date->diffInDays($wanted);
                 $diff = $wanted->diffInSeconds($fileStartedAt);
@@ -58,7 +64,7 @@ http://localhost/media/stream/stream-3.ts
                     $closest = $diff;
                     $out['url'] = Storage::url($file);
                     $out['offset'] = $diff;
-                    $out['play_at'] = '00:'.round($diff/60).':'.($diff-round($diff/60)*60);
+                    // $out['play_at'] = '00:'.round($diff/60).':'.($diff-round($diff/60)*60);
                     $out['start_at'] = $fileStartedAt->format('H:i:s');
                     $out['perth_started_at'] = $perthTime;
                     $out['recoded_at'] = $fileStartedAt->diffForHumans();
