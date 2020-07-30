@@ -10,6 +10,18 @@
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
       <meta name="format-detection" content="telephone=no"/>
         
+{{-- Icon --}}
+<link rel="apple-touch-icon" sizes="72x72" href="/images/icons/icon-72x72.png">
+<link rel="apple-touch-icon" sizes="96x96" href="/images/icons/icon-96x96.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/images/icons/icon-512x512.png">
+<link rel="icon" type="image/png" sizes="512x512"  href="/images/icons/icon-512x512.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/images/icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/images/icons/icon-96x96.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="msapplication-TileColor" content="#000000">
+<meta name="msapplication-TileImage" content="/images/icons/icon-512x512.png">
+<meta name="theme-color" content="#f20000">
+
 
         <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -39,9 +51,20 @@
 
   <body class="d-flex flex-column h-100">
     <!-- Begin page content -->
+    
     <main role="main" class="flex-shrink-0">
 
         <div class="container">
+          <div class="row">
+            <div class="col-12 text-center">
+              <img src="/images/icons/icon-192x192.png" title="Time Machine" width=50 class="logo rounded-circle" img img-fluid"/>
+              <h1 class="">
+                Time Machine
+              </h1>
+            </div>
+          </div>
+        
+
             <div id="app">
             </div>
         </div>
@@ -49,7 +72,10 @@
 
     <footer class="footer mt-auto py-3">
     <div class="container">
-        <span class="text-muted">Time Machine for <a href="https://www.radio1.cz/">Radio 1</a></span>
+        <span class="text-muted">
+        Time Machine for <a href="https://www.radio1.cz/" target="_blank">Radio 1</a>
+        Source on <a href="https://github.com/cerw/time-machine-radio" target="_blank">github.</a>
+        </span>
     </div>
     </footer>
 

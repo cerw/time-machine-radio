@@ -99,6 +99,7 @@ return [
         'application' => config('app.name'),
         'repository' => 'https://github.com/cerw/time-machine-radio.git',
         'php_fpm_service' => 'php7.2-fpm',
+        'default_stage' => 'production',
         'php_fpm_command' => 'echo "" | sudo -S /usr/sbin/service {{php_fpm_service}} reload',
     ],
 

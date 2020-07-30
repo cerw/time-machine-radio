@@ -1,8 +1,5 @@
 <template>
   <div class="text-center">
-    <h1 class="mt-5 pb-2">
-      Time Machine
-    </h1>
     <p class="pb-2 lead">
       Radio1 Time: <strong>{{ radioNow }}</strong><br>
       Your Time: <strong>{{ youNow }}</strong><br>
@@ -169,3 +166,5 @@ export default {
   }
 }
 </script>
+<style>
+</style>
