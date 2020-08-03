@@ -35,8 +35,9 @@
 
       <!-- Time Machine -->
       <button
-        class="btn btn-success btn-block"
+        class="btn btn-block"
         @click="playTimemachine()"
+        :class="{'btn-success':timemachinePlaying(),'btn-warning':!timemachinePlaying()}"
       >
         <span v-if="timemachinePlaying()">
           <svg
@@ -77,7 +78,8 @@
 
       <!-- Live -->
       <button
-        class="btn btn-warning btn-block"
+        class="btn btn-block"
+        :class="{'btn-success':livePlaying(),'btn-warning':!livePlaying()}"
         @click="playLive()"
       >
         <span v-if="livePlaying()">
@@ -217,6 +219,17 @@ export default {
     }.bind(this), 1000)
     // 17:34:27
     this.load()
+
+    window.addEventListener('keypress', function (e) {
+      console.log(e.code)
+      if (e.code === 'Space') {
+        if (this.$refs.player.paused) {
+          this.$refs.player.play()
+        } else {
+          this.$refs.player.pause()
+        }
+      }
+    })
   },
   computed: {
     radioTime () {
@@ -260,34 +273,53 @@ export default {
     },
     // type = live | timemachine
     playTimemachine () {
+      const self = this
       // set url - config.url+'#t='+config.offset
       if (this.timemachinePlaying()) {
         this.$refs.player.pause()
       } else {
         this.load()
+          .then(() => {
+            console.log('ajax done')
+            this.$refs.player.addEventListener('canplaythrough', function () {
+              console.log('Time Macgine stream loaded')
+              self.$refs.player.play()
+            }, false)
+          })
       }
     },
     playLive () {
       // set live url
+      const self = this
       if (this.livePlaying()) {
         this.$refs.player.pause()
       } else {
         this.url = this.liveUrl
-        this.$refs.player.play()
+        this.$refs.player.load()
+        this.$refs.player.addEventListener('canplaythrough', function () {
+          console.log('Live stream loaded')
+          self.$refs.player.play()
+        }, false)
       }
     },
     //  moment.
     load () {
       this.loaded = false
-      axios.get('/play/' + this.youNow)
-        .then(({ data }) => {
-          this.config = data
-          this.url = this.config.url + '#t=' + this.config.offset
-          this.loaded = true
-          this.$refs.player.play()
-        }).catch(function (error) {
-          console.log('error getting crew', error)
-        })
+      const self = this
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        axios.get('/play/' + this.youNow)
+          .then(({ data }) => {
+            self.config = data
+            self.url = this.config.url + '#t=' + this.config.offset
+            // self.$refs.player.load()
+            self.loaded = true
+            resolve(data)
+          }).catch(function (error) {
+            console.log('error getting crew', error)
+            reject(error)
+          })
+      })
     }
   }
 }
