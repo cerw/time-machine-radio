@@ -121,7 +121,7 @@
 
       <div
         class="text-center pt-4"
-        v-if="loaded"
+        v-show="loaded"
       >
         <div
           class="alert alert-success"
@@ -152,15 +152,17 @@
           style="width: 100%;"
         ><p>Your browser does not support the <code>audio</code> element.</p></audio>
       </div>
-      <div v-else>
-        Loading...
+      <div class="row">
+        <div class="col-12">
+          <div id="waveform" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
 import moment from 'moment-timezone'
-
+import WaveSurfer from 'wavesurfer.js'
 export default {
   name: 'Layout',
   data () {
@@ -176,6 +178,7 @@ export default {
       radioThen: moment().format('HH:mm:ss'),
       radioCalendar: moment().format('HH:mm:ss'),
       interval: null,
+      wavesurfer: null,
       config: {
         url: null,
         offset: 0
@@ -187,6 +190,40 @@ export default {
   },
   mounted () {
     this.youTZ = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+    this.wavesurfer = WaveSurfer.create({
+      container: '#waveform',
+      backend: 'MediaElement', // 'MediaElement',
+      // backgroundColor: 'red',
+      plugins: [
+        // WaveSurfer.cursor.create({
+        //   showTime: true,
+        //   opacity: 1,
+        //   customShowTimeStyle: {
+        //     'background-color': '#000',
+        //     color: '#fff',
+        //     padding: '2px',
+        //     'font-size': '10px'
+        //   }
+        // })
+        // WaveSurfer.mediasession.create({
+        //   metadata: {
+        //     title: 'Wavesurfer.js Example',
+        //     artist: 'The Wavesurfer.js Project',
+        //     album: 'Media Session Example',
+        //     artwork: [
+        //       { src: '/images/icons/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+        //       { src: '/images/icons/icon-128x128.png', sizes: '128x128', type: 'image/png' },
+        //       { src: '/images/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+        //       { src: '/images/icons/icon-256x256.png', sizes: '256x256', type: 'image/png' },
+        //       { src: '/images/icons/icon-384x384.png', sizes: '384x384', type: 'image/png' },
+        //       { src: '/images/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' }
+        //     ]
+        //   }
+        // })
+      ]
+    })
+
     this.interval = setInterval(function () {
       this.offset++
       this.youNow = moment().tz(this.youTZ).format('HH:mm:ss')
@@ -213,23 +250,35 @@ export default {
         if (this.secondsLeft === 0) {
           this.$refs.player.pause()
           // sound.currentTime = 0;
-          this.load()
+          // this.load()
         }
       }
     }.bind(this), 1000)
     // 17:34:27
     this.load()
-
+    const self = this
     window.addEventListener('keypress', function (e) {
-      console.log(e.code)
       if (e.code === 'Space') {
-        if (this.$refs.player.paused) {
-          this.$refs.player.play()
+        if (self.$refs.player.paused) {
+          self.$refs.player.play()
         } else {
-          this.$refs.player.pause()
+          self.$refs.player.pause()
         }
       }
     })
+
+    this.wavesurfer.on('ready', function () {
+      console.log('wavesurfer ready')
+      self.wavesurfer.play()
+    })
+
+    this.$refs.player.addEventListener('canplaythrough', function () {
+      console.log('Audio is ready ')
+      self.$refs.player.play()
+      // self.wavesurfer.load(self.config.url + '#t=' + self.config.offset)
+
+      // load peaks into wavesurfer.js
+    }, false)
   },
   computed: {
     radioTime () {
@@ -273,7 +322,6 @@ export default {
     },
     // type = live | timemachine
     playTimemachine () {
-      const self = this
       // set url - config.url+'#t='+config.offset
       if (this.timemachinePlaying()) {
         this.$refs.player.pause()
@@ -281,10 +329,6 @@ export default {
         this.load()
           .then(() => {
             console.log('ajax done')
-            this.$refs.player.addEventListener('canplaythrough', function () {
-              console.log('Time Macgine stream loaded')
-              self.$refs.player.play()
-            }, false)
           })
       }
     },
@@ -312,8 +356,10 @@ export default {
           .then(({ data }) => {
             self.config = data
             self.url = this.config.url + '#t=' + this.config.offset
-            // self.$refs.player.load()
+            self.$refs.player.load()
+            self.wavesurfer.load(this.$refs.player, data.wave)
             self.loaded = true
+
             resolve(data)
           }).catch(function (error) {
             console.log('error getting crew', error)

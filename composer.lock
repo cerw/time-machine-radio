@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "adb7b5cd993d053c8fd6c64d4200edab",
+    "content-hash": "81996502e1b63e161bf18d4d2e0b936b",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1371,6 +1371,51 @@
             ],
             "description": "Laravel Deployer is a lightweight wrapper of Deployer giving Artisan the power of zero-downtime deployment.",
             "time": "2020-04-07T13:22:32+00:00"
+        },
+        {
+            "name": "maximal/audio-waveform",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maximal/audio-waveform-php.git",
+                "reference": "6f513425b83f2d2a0d39b34118f0a1d99ab8d275"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maximal/audio-waveform-php/zipball/6f513425b83f2d2a0d39b34118f0a1d99ab8d275",
+                "reference": "6f513425b83f2d2a0d39b34118f0a1d99ab8d275",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "maximal\\audio\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "MaximAL",
+                    "homepage": "http://maximals.ru",
+                    "role": "Author"
+                }
+            ],
+            "description": "Audio waveform generator on PHP with SoX",
+            "homepage": "https://github.com/maximal/audio-waveform-php#readme",
+            "keywords": [
+                "audio",
+                "generator",
+                "sox",
+                "waveform"
+            ],
+            "time": "2019-02-14T15:13:37+00:00"
         },
         {
             "name": "monolog/monolog",

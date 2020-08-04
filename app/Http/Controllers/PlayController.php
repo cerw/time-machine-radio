@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use maximal\audio\Waveform;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -43,17 +44,13 @@ http://localhost/media/stream/stream-3.ts
         $out = [];
         // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
         // dump($wanted);
-        $expiresAt = Carbon::now()->subDays(2);
+        
         
         foreach($files as $file) {
             if(preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#",$file,$match)) {
                 $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', $match[1]);
                 $perthTime =  $fileStartedAt->toDateTimeString();
-                if($perthTime < $expiresAt) {
-                    \Log::info("Removing old files {$file}");
-                    Storage::delete($file);
-                    continue;
-                }
+                
                 $fileStartedAt->setTimezone('Europe/Prague');
                 // $diff = $date->diffInDays($wanted);
                 $diff = $wanted->diffInSeconds($fileStartedAt);
@@ -63,6 +60,12 @@ http://localhost/media/stream/stream-3.ts
                 //    dump($fileStartedAt, $diff, $fileStartedAt->format('H:i:s'));
                     $closest = $diff;
                     $out['url'] = Storage::url($file);
+                    
+                    // waveform
+                    if(Storage::has('radio1/'.$match[1].".json")) {
+                        $out['wave'] = json_decode(Storage::get('radio1/'.$match[1].".json"))->lines1;
+                    }
+                    
                     $out['offset'] = $diff;
                     // $out['play_at'] = '00:'.round($diff/60).':'.($diff-round($diff/60)*60);
                     $out['start_at'] = $fileStartedAt->format('H:i:s');
@@ -71,7 +74,6 @@ http://localhost/media/stream/stream-3.ts
                     $out['recoded_timestamp'] = $fileStartedAt->toDateTimeString();
                     $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
                 }
-                
             }
             
             $urls[] = Storage::url($file);
@@ -82,9 +84,10 @@ http://localhost/media/stream/stream-3.ts
         $out['wanted'] =  $time;
         //$out['files'] = $files;
         // $out['urls'] = $urls;
-        
 
+        
 
         return response()->json($out);
     }
+
 }

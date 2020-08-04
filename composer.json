@@ -14,7 +14,8 @@
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
-        "lorisleiva/laravel-deployer": "^0.3.2"
+        "lorisleiva/laravel-deployer": "^0.3.2",
+        "maximal/audio-waveform": "~1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
