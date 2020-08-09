@@ -15,8 +15,8 @@
         Timemachine Time: <strong>{{ radioCalendar }}</strong>
       </p>
 
-      Live {{ livePlaying() }}
-      Time {{ timemachinePlaying() }}
+      <!-- Live {{ livePlaying() }}
+      Time {{ timemachinePlaying() }} -->
 
       <div>
         Your are {{ youOffset }} hours
@@ -156,8 +156,8 @@
             <br>
 
             <p
-              v-for="person in config.playing.info.people"
-              :key="person"
+              v-for="(person, index) in config.playing.info.people"
+              :key="index"
             >
               <a
                 :href="person.link"
@@ -183,7 +183,6 @@
         <audio
           preload="metadata"
           controls
-          autoplay
           title="Play"
           id="player"
           ref="player"
@@ -225,6 +224,7 @@ export default {
     }
   },
   mounted () {
+    const self = this
     this.youTZ = Intl.DateTimeFormat().resolvedOptions().timeZone
     this.interval = setInterval(function () {
       this.offset++
@@ -259,6 +259,11 @@ export default {
     }.bind(this), 1000)
     // 17:34:27
     this.load()
+      .then(() => {
+        console.log('playTimemachine')
+        self.playTimemachine()
+      })
+      .catch(error => console.log(error))
 
     window.addEventListener('keypress', function (e) {
       console.log(e.code)
@@ -293,6 +298,45 @@ export default {
     app () {
       window.addToHomeScreen()
     },
+    updateMetadata () {
+      /*
+      src: '/images/icons/icon-96x96.png',
+      title: 'Snow Fight',
+      artist: 'Jan Morgenstern',
+      album: 'Sintel',
+
+      */
+      console.log('update')
+      const artwork = [
+        { src: '/images/icons/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+        { src: '/images/icons/icon-128x128.png', sizes: '128x128', type: 'image/png' },
+        { src: '/images/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+        { src: '/images/icons/icon-256x256.png', sizes: '256x256', type: 'image/png' },
+        { src: '/images/icons/icon-384x384.png', sizes: '384x384', type: 'image/png' },
+        { src: '/images/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' }
+      ]
+
+      let artist = 'N/A'
+      if (this.config.playing.info.people !== undefined) {
+        artist = this.config.playing.info.people[0].name
+      }
+      // Serving show from <strong>{{ config.recoded_at }} </strong>- {{ radioThen }}
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: this.config.recoded_at + ' ' + this.radioThen,
+        artist: artist,
+        album: 'Radio 1 Time Machine',
+        artwork: artwork
+      })
+    },
+    // https://googlechrome.github.io/samples/media-session/audio.html
+    playAudio () {
+      this.$refs.player.play()
+        .then(() => {
+          console.log('updateMetadata')
+          this.updateMetadata()
+        })
+        .catch(error => console.log(error))
+    },
     livePlaying () {
       if (this.$refs.player === undefined) {
         return false
@@ -323,7 +367,7 @@ export default {
             console.log('ajax done')
             this.$refs.player.addEventListener('canplaythrough', function () {
               console.log('Time Macgine stream loaded')
-              self.$refs.player.play()
+              self.playAudio()
             }, false)
           })
       }
@@ -338,7 +382,7 @@ export default {
         this.$refs.player.load()
         this.$refs.player.addEventListener('canplaythrough', function () {
           console.log('Live stream loaded')
-          self.$refs.player.play()
+          self.playAudio()
         }, false)
       }
     },
