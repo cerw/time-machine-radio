@@ -265,6 +265,38 @@ export default {
       })
       .catch(error => console.log(error))
 
+    navigator.mediaSession.setActionHandler('play', async function () {
+      console.log('> User clicked "Play" icon.')
+      await self.$refs.player.play()
+      navigator.mediaSession.playbackState = 'playing'
+      // Do something more than just playing audio...
+    })
+
+    navigator.mediaSession.setActionHandler('pause', function () {
+      console.log('> User clicked "Pause" icon.')
+      self.$refs.player.pause()
+      navigator.mediaSession.playbackState = 'paused'
+      // Do something more than just pausing audio...
+    })
+
+    /* Seek Backward & Seek Forward */
+
+    const defaultSkipTime = 10 /* Time to skip in seconds by default */
+
+    navigator.mediaSession.setActionHandler('seekbackward', function (event) {
+      console.log('> User clicked "Seek Backward" icon.')
+      const skipTime = event.seekOffset || defaultSkipTime
+      self.$refs.player.currentTime = Math.max(self.$refs.player.currentTime - skipTime, 0)
+      self.updatePositionState()
+    })
+
+    navigator.mediaSession.setActionHandler('seekforward', function (event) {
+      console.log('> User clicked "Seek Forward" icon.')
+      const skipTime = event.seekOffset || defaultSkipTime
+      self.$refs.player.currentTime = Math.min(self.$refs.player.currentTime + skipTime, self.$refs.player.duration)
+      self.updatePositionState()
+    })
+
     window.addEventListener('keypress', function (e) {
       console.log(e.code)
       if (e.code === 'Space') {
@@ -297,6 +329,16 @@ export default {
   methods: {
     app () {
       window.addToHomeScreen()
+    },
+    updatePositionState () {
+      if ('setPositionState' in navigator.mediaSession) {
+        console.log('Updating position state...')
+        navigator.mediaSession.setPositionState({
+          duration: this.$refs.player.duration,
+          playbackRate: this.$refs.player.playbackRate,
+          position: this.$refs.player.currentTime
+        })
+      }
     },
     updateMetadata () {
       /*
