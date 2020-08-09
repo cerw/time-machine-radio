@@ -249,6 +249,7 @@ export default {
           .calendar()
 
         this.secondsLeft = this.$refs.player.duration - this.$refs.player.currentTime
+        this.updatePositionState()
         if (this.secondsLeft === 0) {
           this.$refs.player.pause()
           // sound.currentTime = 0;
@@ -334,6 +335,7 @@ export default {
       if ('setPositionState' in navigator.mediaSession) {
         console.log('Updating position state...')
         navigator.mediaSession.setPositionState({
+          title: this.config.recoded_at + ' ' + this.radioThen,
           duration: this.$refs.player.duration,
           playbackRate: this.$refs.player.playbackRate,
           position: this.$refs.player.currentTime
