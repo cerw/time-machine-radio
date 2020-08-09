@@ -362,11 +362,15 @@ export default {
       if (this.config.playing.info.people !== undefined) {
         artist = this.config.playing.info.people[0].name
       }
+      const album = 'Radio 1 🕰Machine'
+      if (this.config.playing.info.desc !== undefined) {
+        // album = this.config.playing.info.desc
+      }
       // Serving show from <strong>{{ config.recoded_at }} </strong>- {{ radioThen }}
       navigator.mediaSession.metadata = new window.MediaMetadata({
         title: this.config.recoded_at + ' ' + this.radioThen,
         artist: artist,
-        album: 'Radio 1 Time Machine',
+        album: album,
         artwork: artwork
       })
     },
