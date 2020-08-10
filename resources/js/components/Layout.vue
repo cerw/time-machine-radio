@@ -9,7 +9,7 @@
       </button>
     </div> -->
     <div class="card-body">
-      <p class="pb-2 ">
+      <p class="pb-2 text-center">
         Radio1 Time: <strong>{{ radioNow }}</strong><br>
         Your Time: <strong>{{ youDate }}</strong><br>
         Timemachine Time: <strong>{{ radioCalendar }}</strong>
@@ -18,7 +18,7 @@
       <!-- Live {{ livePlaying() }}
       Time {{ timemachinePlaying() }} -->
 
-      <div>
+      <p class="text-muted float-right">
         Your are {{ youOffset }} hours
         <span v-if="youOffset > 0">
           in front of Radio 1
@@ -31,7 +31,7 @@
         <span v-if="youOffset == 0">
           In Prague :)
         </span>
-      </div>
+      </p>
 
       <!-- Time Machine -->
       <button
@@ -121,7 +121,7 @@
 
       <div
         class="text-center pt-4"
-        v-if="loaded"
+        v-show="loaded"
       >
         <div
           class="alert alert-success"
@@ -173,7 +173,46 @@
           class="alert alert-success"
           v-if="livePlaying()"
         >
-          Playing Live
+          Serving live show from - {{ radioNow }}
+          <br>
+
+          <div v-if="config.playing !== undefined">
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 16 16"
+              class="bi bi-clock-history"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"
+              />
+            </svg>
+            {{ config.playing.starts }} -  {{ config.playing.ends }}
+            <br>
+
+            <p
+              v-for="(person, index) in config.playing.info.people"
+              :key="index"
+            >
+              <a
+                :href="person.link"
+                target="_blank"
+              >{{ person.name }}</a>
+            </p>
+
+            {{ config.playing.info.desc }}
+          </div>
         </div>
 
         <a
@@ -183,6 +222,7 @@
         <audio
           preload="metadata"
           controls
+          @canplay="canplay()"
           title="Play"
           id="player"
           ref="player"
@@ -190,8 +230,18 @@
           style="width: 100%;"
         ><p>Your browser does not support the <code>audio</code> element.</p></audio>
       </div>
-      <div v-else>
-        Loading...
+
+      <div
+        v-show="!loaded"
+        class="card-footer text-center"
+      >
+        <div
+          class="spinner-grow text-warning"
+          style="width: 7rem; height: 7rem;"
+          role="status"
+        >
+          <span class="sr-only">Loading...</span>
+        </div>
       </div>
     </div>
   </div>
@@ -220,7 +270,8 @@ export default {
       },
       loaded: false,
       offset: 0,
-      secondsLeft: 0
+      secondsLeft: 0,
+      online: navigator.connection
     }
   },
   mounted () {
@@ -258,6 +309,19 @@ export default {
         }
       }
     }.bind(this), 1000)
+    // network
+    navigator.connection.addEventListener('change', this.logNetworkInfo)
+
+    // blighness
+
+    window.addEventListener('devicelight', function (event) {
+      console.log('devicelight')
+      console.log(event.value)
+    })
+
+    window.addEventListener('online', this.handleNetworkChange)
+
+    this.logNetworkInfo()
     // 17:34:27
     this.load()
       .then(() => {
@@ -325,22 +389,41 @@ export default {
     },
     youOffset () {
       return (this.radioZone.utcOffset(moment.now()) - this.youZone.utcOffset(moment.now())) / 60
+    },
+    network () {
+      return navigator.connection
     }
   },
   methods: {
     app () {
       window.addToHomeScreen()
     },
+    canplay (event) {
+      console.log('can play', event)
+      this.loaded = true
+      this.playAudio()
+    },
     updatePositionState () {
       if ('setPositionState' in navigator.mediaSession) {
-        console.log('Updating position state...')
-        navigator.mediaSession.setPositionState({
-          title: this.config.recoded_at + ' ' + this.radioThen,
-          duration: this.$refs.player.duration,
-          playbackRate: this.$refs.player.playbackRate,
-          position: this.$refs.player.currentTime
-        })
+        if (this.livePlaying) {
+          // navigator.mediaSession.setPositionState({
+          //   title: this.config.recoded_at + ' ' + this.radioThen,
+          //   playbackRate: this.$refs.player.playbackRate,
+          //   duration: this.$refs.player.duration
+          //   // position: this.$refs.player.currentTime
+          // })
+        } else {
+          navigator.mediaSession.setPositionState({
+            title: this.config.recoded_at + ' ' + this.radioThen,
+            playbackRate: this.$refs.player.playbackRate,
+            duration: this.$refs.player.duration,
+            position: this.$refs.player.currentTime
+          })
+        }
       }
+    },
+    handleNetworkChange () {
+      this.online = navigator.onLine
     },
     updateMetadata () {
       /*
@@ -350,7 +433,7 @@ export default {
       album: 'Sintel',
 
       */
-      console.log('update')
+      console.log('updateMetadata')
       const artwork = [
         { src: '/images/icons/icon-96x96.png', sizes: '96x96', type: 'image/png' },
         { src: '/images/icons/icon-128x128.png', sizes: '128x128', type: 'image/png' },
@@ -359,6 +442,12 @@ export default {
         { src: '/images/icons/icon-384x384.png', sizes: '384x384', type: 'image/png' },
         { src: '/images/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' }
       ]
+
+      let title = this.config.recoded_at + ' ' + this.radioThen
+      if (this.livePlaying) {
+        // life
+        title = 'Live ' + this.radioNow
+      }
 
       let artist = 'N/A'
       if (this.config.playing.info.people !== undefined) {
@@ -370,12 +459,34 @@ export default {
       }
       // Serving show from <strong>{{ config.recoded_at }} </strong>- {{ radioThen }}
       navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: this.config.recoded_at + ' ' + this.radioThen,
+        title: title,
         artist: artist,
         album: album,
         artwork: artwork
       })
     },
+    logNetworkInfo () {
+      // Network type that browser uses
+      console.log('         type: ' + navigator.connection.type)
+
+      // Effective bandwidth estimate
+      console.log('     downlink: ' + navigator.connection.downlink + 'Mb/s')
+
+      // Effective round-trip time estimate
+      console.log('          rtt: ' + navigator.connection.rtt + 'ms')
+
+      // Upper bound on the downlink speed of the first network hop
+      console.log('  downlinkMax: ' + navigator.connection.downlinkMax + 'Mb/s')
+
+      // Effective connection type determined using a combination of recently
+      // observed rtt and downlink values: ' +
+      console.log('effectiveType: ' + navigator.connection.effectiveType)
+
+      // True if the user has requested a reduced data usage mode from the user
+      // agent.
+      console.log('     saveData: ' + navigator.connection.saveData)
+    },
+
     // https://googlechrome.github.io/samples/media-session/audio.html
     playAudio () {
       this.$refs.player.play()
@@ -405,7 +516,6 @@ export default {
     },
     // type = live | timemachine
     playTimemachine () {
-      const self = this
       // set url - config.url+'#t='+config.offset
       if (this.timemachinePlaying()) {
         this.$refs.player.pause()
@@ -413,25 +523,19 @@ export default {
         this.load()
           .then(() => {
             console.log('ajax done')
-            this.$refs.player.addEventListener('canplaythrough', function () {
-              console.log('Time Macgine stream loaded')
-              self.playAudio()
-            }, false)
           })
       }
     },
     playLive () {
       // set live url
-      const self = this
+      // const self = this
       if (this.livePlaying()) {
         this.$refs.player.pause()
       } else {
+        console.log('playLive')
         this.url = this.liveUrl
-        this.$refs.player.load()
-        this.$refs.player.addEventListener('canplaythrough', function () {
-          console.log('Live stream loaded')
-          self.playAudio()
-        }, false)
+        this.live()
+        this.playAudio()
       }
     },
     //  moment.
@@ -440,15 +544,32 @@ export default {
       const self = this
       return new Promise((resolve, reject) => {
         this.loading = true
-        axios.get('/play/' + this.youNow)
+        axios.get('/api/play/' + this.youNow)
           .then(({ data }) => {
             self.config = data
             self.url = this.config.url + '#t=' + this.config.offset
             // self.$refs.player.load()
-            self.loaded = true
+
             resolve(data)
           }).catch(function (error) {
             console.log('error getting crew', error)
+            reject(error)
+          })
+      })
+    },
+    live () {
+      this.loaded = false
+      const self = this
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        axios.get('/api/live')
+          .then(({ data }) => {
+            self.config = data
+            // self.$refs.player.load()
+
+            resolve(data)
+          }).catch(function (error) {
+            console.log('error getting live', error)
             reject(error)
           })
       })

@@ -74,7 +74,6 @@ http://localhost/media/stream/stream-3.ts
                     $out['recoded_at'] = $fileStartedAt->diffForHumans();
                     $out['recoded_timestamp'] = $fileStartedAt->toDateTimeString();
                     $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
-                    $filePlayingNow = $fileStartedAt->clone();
                 }
                 
             }
@@ -82,7 +81,43 @@ http://localhost/media/stream/stream-3.ts
             $urls[] = Storage::url($file);
         }
         
-        $date = $filePlayingNow->format('Y-m-d');
+        $playing = $this->info($wanted);
+      
+        $out['playing'] = $playing;
+        //$out['shows'] = $shows;
+        $out['wanted'] =  $time;
+        //$out['files'] = $files;
+        // $out['urls'] = $urls;
+        
+
+        return response()->json($out);
+    }
+
+    public function live (Request $request) {
+        
+
+        $wanted = Carbon::now()->tz('Europe/Prague');
+        $playing = $this->info($wanted);
+      
+        $out['playing'] = $playing;
+        //$out['shows'] = $shows;
+        //$out['wanted'] =  $time;
+        return response()->json($out);
+
+    }
+    /**
+     * Get whos playing when
+     *
+     * @param [type] $date
+     * @param [type] $wanted
+     * @return void
+     */
+    protected function info( $wanted )  {
+        
+
+        $date = $wanted->format('Y-m-d');
+        
+        
         $content = Cache::get('day-'.$date);
         
         if (!$content) {
@@ -155,7 +190,7 @@ http://localhost/media/stream/stream-3.ts
         foreach($times as $index => $time) {
             // dd($time);
             $split = explode(":",$time);
-            $showStartsAt = $filePlayingNow->clone();
+            $showStartsAt = $wanted->clone();
             
             $showStartsAt->setTime($split[0], $split[1]);
 
@@ -175,15 +210,8 @@ http://localhost/media/stream/stream-3.ts
             }
         }
 
-        
-  
-        
-        //$out['shows'] = $shows;
-        $out['wanted'] =  $time;
-        //$out['files'] = $files;
-        // $out['urls'] = $urls;
-        
-
-        return response()->json($out);
+        return $out['playing'];
     }
+
+
 }

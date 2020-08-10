@@ -100,7 +100,7 @@ registerRoute(
 )
 
 registerRoute(
-  /play.*/,
+  /api.*/,
   new NetworkOnly()
 )
 //  This assumes / has been precached.
