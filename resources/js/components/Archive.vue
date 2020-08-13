@@ -86,8 +86,7 @@
                   v-if="show.now"
                   class="badge badge-info"
                 >
-                  <span v-if="isToday">Live now</span>
-                  <span v-else>TimeMachine now</span>
+                  <span v-if="!isToday">TimeMachine now</span>
 
                 </span>
 
@@ -138,16 +137,13 @@ export default {
   },
   methods: {
     isFuture (time) {
-      const playing = moment(this.today + ' ' + time, 'YYYY-MM-DD HH:mm:ss').tz(this.$parent.radioTZ)
+      const playing = moment(this.today + ' ' + time, 'YYYY-MM-DD HH:mm:ss').tz(this.$parent.radioTZ, true)
       const now = moment().tz(this.$parent.radioTZ)
-      console.log('show time ', playing)
-      console.log('now time', now)
       return now.diff(playing) < 0
     },
-
     toYourTime (time) {
-      const prague = moment(this.today + ' ' + time, 'YYYY-MM-DD HH:mm:ss').tz(this.$parent.radioTZ)
-      return prague.clone().tz(this.$parent.youTZ)
+      const prague = moment(this.today + ' ' + time, 'YYYY-MM-DD HH:mm:ss').tz(this.$parent.radioTZ, true)
+      return prague.clone().tz(this.$parent.youTZ).calendar()
     },
     loadDay (day) {
       this.$parent.loaded = false

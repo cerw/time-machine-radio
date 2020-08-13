@@ -352,7 +352,7 @@ export default {
 
     /* Seek Backward & Seek Forward */
 
-    const defaultSkipTime = 10 /* Time to skip in seconds by default */
+    const defaultSkipTime = 60 /* Time to skip in seconds by default */
 
     navigator.mediaSession.setActionHandler('seekbackward', function (event) {
       console.log('> User clicked "Seek Backward" icon.')
@@ -418,6 +418,7 @@ export default {
           //   duration: this.$refs.player.duration
           //   // position: this.$refs.player.currentTime
           // })
+          this.updateMetadata()
         } else {
           navigator.mediaSession.setPositionState({
             title: this.config.recoded_at + ' ' + this.radioThen,
@@ -450,7 +451,7 @@ export default {
       ]
 
       let title = this.config.recoded_at + ' ' + this.radioThen
-      if (this.livePlaying) {
+      if (this.livePlaying()) {
         // life
         title = 'Live ' + this.radioNow
       }
