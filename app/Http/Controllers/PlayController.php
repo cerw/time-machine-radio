@@ -205,9 +205,9 @@ http://localhost/media/stream/stream-3.ts
                         $shows[$time]['desc'] = $cell->plaintext;
                     }
 
-                    if ($key == 3) {
-                        $shows[$time]['now'] = (empty($cell->innertext)) ? false : true;
-                    }
+                    // if ($key == 3) {
+                    //     $shows[$time]['now'] = (empty($cell->innertext)) ? false : true;
+                    // }
                     
                 }
             }
@@ -237,6 +237,7 @@ http://localhost/media/stream/stream-3.ts
                 $out['playing']['info'] = $shows[$time];
                 $out['playing']['starts'] = $showStartsAt->format('H:i');;
                 $out['playing']['ends'] = $showEndsAt->format('H:i');
+                $shows[$time]['now'] = true;
                 
             }
         }
