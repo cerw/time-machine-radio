@@ -453,6 +453,12 @@ export default {
           // .tz(this.radioTZ)
           .calendar()
 
+        const url = moment(this.config.recoded_timestamp)
+          .add(this.$refs.player.currentTime, 'seconds')
+          // .tz(this.radioTZ)
+          .format('/Y-MM-DD/HH:mm:ss')
+        history.replaceState(null, null, url)
+
         this.secondsLeft = this.$refs.player.duration - this.$refs.player.currentTime
         this.updatePositionState()
         // if (this.secondsLeft === 0) {

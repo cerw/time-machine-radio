@@ -178,6 +178,7 @@ export default {
             self.$parent.url = self.$parent.config.url + '#t=' + self.$parent.config.offset
             // self.$refs.player.load()
             self.$parent.loaded = true
+
             resolve(data)
           }).catch(function (error) {
             console.log('error getting crew', error)
