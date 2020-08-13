@@ -13,9 +13,8 @@
             :key="day.format"
           >
             <a
-              href="#"
-              class=""
-              @click="loadDay(day.format)"
+              :href="'/archive/'+day.format"
+              @click.prevent="loadDay(day.format)"
             >
               {{ day.calendar }}
             </a>
@@ -56,6 +55,9 @@
               </svg>
             </button>
             <strong> {{ time }} </strong>
+            <strong class="float-right">
+              {{ toYourTime(time) }}
+            </strong>
 
             <span
               v-for="(person, pindex) in show.people"
@@ -66,7 +68,8 @@
                 target="_blank"
               >{{ person.name }}</a>
             </span>
-            <span class="text-muted">
+
+            <span class="text-muted float-right">
               {{ show.desc }}
             </span>
           </li>
@@ -89,7 +92,7 @@ export default {
   },
   mounted () {
     const current = moment()
-    let n = 5
+    let n = 6
     while (n > 0) {
       console.log(n)
       const day = {}
@@ -99,11 +102,18 @@ export default {
       current.subtract(1, 'day')
       n--
     }
+    this.loadDay(this.today)
   },
   computed: {
-
+    radioNow () {
+      return moment().tz(this.$parent.radioTZ).format('HH:mm:ss')
+    }
   },
+
   methods: {
+    toYourTime (time) {
+      return moment(this.today + ' ' + time, 'YYYY-MM-DD HH:mm:ss').tz(this.$parent.radioTZ).calendar()
+    },
     loadDay (day) {
       this.$parent.loaded = false
       const self = this
@@ -143,6 +153,7 @@ export default {
       })
     }
   }
+
 }
 </script>
 <style>

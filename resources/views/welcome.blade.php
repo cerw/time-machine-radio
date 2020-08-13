@@ -78,6 +78,7 @@
         <span class="text-muted">
         Time Machine for <a href="https://www.radio1.cz/" target="_blank">Radio 1</a>
         Source on <a href="https://github.com/cerw/time-machine-radio" target="_blank">github.</a>
+        Feedback please <a href="https://twitter.com/cerw" target="_blank">@cerw</a>
         </span>
     </div>
     </footer>
