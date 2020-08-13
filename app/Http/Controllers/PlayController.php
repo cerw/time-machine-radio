@@ -79,6 +79,7 @@ http://localhost/media/stream/stream-3.ts
                     $out['recoded_at'] = $fileStartedAt->diffForHumans();
                     $out['recoded_timestamp'] = $fileStartedAt->toDateTimeString();
                     $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
+                    $out['next'] =  $fileStartedAt->format('H:i:s/Y-m-d');
                 }
                 
             }
@@ -92,7 +93,7 @@ http://localhost/media/stream/stream-3.ts
         //$out['shows'] = $shows;
         $out['wanted'] =  $time;
         $next = $wanted->clone()->addHour();
-        $out['next'] =  $next->format('H:i:s');
+        
         //$out['files'] = $files;
         // $out['urls'] = $urls;
         

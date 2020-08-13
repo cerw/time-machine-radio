@@ -33,6 +33,53 @@
         </span>
       </p>
 
+      <div
+        class="btn-group btn-block"
+        role="group"
+        aria-label="Player"
+      >
+        <button
+          type="button"
+          class="btn btn-dark"
+          @click="seekBack(60)"
+        >
+          60s
+          <svg
+            width="2em"
+            height="2em"
+            viewBox="0 0 16 16"
+            class="bi bi-skip-backward"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M.5 3.5A.5.5 0 0 1 1 4v3.248l6.267-3.636c.52-.302 1.233.043 1.233.696v2.94l6.267-3.636c.52-.302 1.233.043 1.233.696v7.384c0 .653-.713.998-1.233.696L8.5 8.752v2.94c0 .653-.713.998-1.233.696L1 8.752V12a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm7 1.133L1.696 8 7.5 11.367V4.633zm7.5 0L9.196 8 15 11.367V4.633z"
+            />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-dark"
+          @click="seekForward(60)"
+        >
+          <svg
+            width="2em"
+            height="2em"
+            viewBox="0 0 16 16"
+            class="bi bi-skip-forward"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M15.5 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V8.752l-6.267 3.636c-.52.302-1.233-.043-1.233-.696v-2.94l-6.267 3.636C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696L7.5 7.248v-2.94c0-.653.713-.998 1.233-.696L15 7.248V4a.5.5 0 0 1 .5-.5zM1 4.633v6.734L6.804 8 1 4.633zm7.5 0v6.734L14.304 8 8.5 4.633z"
+            />
+          </svg>
+          60s
+        </button>
+      </div>
       <!-- Time Machine -->
       <button
         class="btn btn-block"
@@ -332,24 +379,23 @@ export default {
     navigator.mediaSession.setActionHandler('seekbackward', function (event) {
       console.log('> User clicked "Seek Backward" icon.')
       const skipTime = event.seekOffset || defaultSkipTime
-      self.$refs.player.currentTime = Math.max(self.$refs.player.currentTime - skipTime, 0)
+      self.seekBack(skipTime)
       self.updatePositionState()
     })
 
     navigator.mediaSession.setActionHandler('seekforward', function (event) {
       console.log('> User clicked "Seek Forward" icon.')
       const skipTime = event.seekOffset || defaultSkipTime
-      self.$refs.player.currentTime = Math.min(self.$refs.player.currentTime + skipTime, self.$refs.player.duration)
+      self.seekForward(skipTime)
       self.updatePositionState()
     })
 
     window.addEventListener('keypress', function (e) {
-      console.log(e.code)
       if (e.code === 'Space') {
-        if (this.$refs.player.paused) {
-          this.$refs.player.play()
+        if (self.$refs.player.paused) {
+          self.playAudio()
         } else {
-          this.$refs.player.pause()
+          self.$refs.player.pause()
         }
       }
     })
@@ -378,6 +424,12 @@ export default {
   methods: {
     app () {
       window.addToHomeScreen()
+    },
+    seekForward (skipTime) {
+      this.$refs.player.currentTime = Math.min(this.$refs.player.currentTime + skipTime, this.$refs.player.duration)
+    },
+    seekBack (skipTime) {
+      this.$refs.player.currentTime = Math.max(this.$refs.player.currentTime - skipTime, 0)
     },
     timeInternal () {
       this.offset++
@@ -412,7 +464,6 @@ export default {
       }
     },
     canplay (event) {
-      console.log('can play')
       this.loaded = true
       this.playAudio()
     },
@@ -420,8 +471,8 @@ export default {
       console.log('ended', event)
       this.$refs.player.pause()
       // sound.currentTime = 0;
-      console.log('Loading API from internal')
-      this.load(this.config.ends_at)
+      console.log('Song ended getting next ' + this.config.next)
+      this.load(this.config.next)
     },
     updatePositionState () {
       if ('setPositionState' in navigator.mediaSession) {
