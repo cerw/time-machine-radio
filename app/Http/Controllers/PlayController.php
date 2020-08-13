@@ -28,11 +28,18 @@ http://localhost/media/stream/stream-3.ts
      * @param Request $request
      * @return void
      */
-    public function play ($time, Request $request) {
+    public function play ($time, $date = false, Request $request) {
         
         $files = Storage::files('radio1');
         $urls = [];
-        $today = now();
+        if(!$date) {
+            $today = now();
+        } else {
+            $today = Carbon::createFromFormat('Y-m-d',$date);
+        }
+
+
+        
         
         //dd($today->format('H:m'));
         // find nearest $time record
@@ -46,7 +53,7 @@ http://localhost/media/stream/stream-3.ts
         $out = [];
         // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
         // dump($wanted);
-        $expiresAt = Carbon::now()->subDays(1);
+        $expiresAt = Carbon::now()->subDays(4);
         
         foreach($files as $file) {
             if(preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#",$file,$match)) {
@@ -105,6 +112,32 @@ http://localhost/media/stream/stream-3.ts
         return response()->json($out);
 
     }
+
+    public function archive ($date, $time = false, Request $request) {
+        
+
+        $today = now();
+        // if only date then match timemachien time
+        if(!$time) {
+            
+            $wanted = Carbon::createFromFormat('Y-m-d H:i:s',$date. ' '. $today->format('H:i:s'), 'Europe/Prague');
+        } else {
+            $wanted = Carbon::createFromFormat('Y-m-d H:i:s',$date. ' '. $time, 'Europe/Prague');
+        }
+        // if date/time then match that  in radioe1 time
+        
+        if($time) {
+            $this->info($wanted, true);
+        }
+        $info = $this->info($wanted, true);
+        
+        return response()->json($info);
+
+    }
+
+
+
+    
     /**
      * Get whos playing when
      *
@@ -112,7 +145,7 @@ http://localhost/media/stream/stream-3.ts
      * @param [type] $wanted
      * @return void
      */
-    protected function info( $wanted )  {
+    protected function info( $wanted , $extended = false)  {
         
 
         $date = $wanted->format('Y-m-d');
@@ -126,9 +159,6 @@ http://localhost/media/stream/stream-3.ts
             $content = $response->body();
             Cache::set('day-'.$date, $content);
         }
-        
-        
-        
         
         $html = new HtmlDocument($content);
         $table = $html->find('table.dailyProgramme', 0);
@@ -203,11 +233,19 @@ http://localhost/media/stream/stream-3.ts
             
             if ($wanted->between($showStartsAt, $showEndsAt)) {
                 $out['playing'] = [];
+                $out['playing']['date'] = $showStartsAt->toDateTimeString();
                 $out['playing']['info'] = $shows[$time];
                 $out['playing']['starts'] = $showStartsAt->format('H:i');;
                 $out['playing']['ends'] = $showEndsAt->format('H:i');
                 
             }
+        }
+
+        if($extended) {
+            $ext = [];
+            $ext['shows'] = $shows;
+            $ext['playing'] = $out['playing'];
+            return $ext;
         }
 
         return $out['playing'];

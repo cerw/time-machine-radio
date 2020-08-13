@@ -243,14 +243,20 @@
           <span class="sr-only">Loading...</span>
         </div>
       </div>
+
+      <archive />
     </div>
   </div>
 </template>
 <script>
 import moment from 'moment-timezone'
+import Archive from './Archive'
 
 export default {
   name: 'Layout',
+  components: {
+    Archive
+  },
   data () {
     return {
       radioTZ: 'Europe/Prague',

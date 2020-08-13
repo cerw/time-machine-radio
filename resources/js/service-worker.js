@@ -118,10 +118,10 @@ if ('serviceWorker' in navigator) {
         .swal
         .fire({
           title: 'Newer version of the app is available!.',
-          text: 'Make sure you have uploaded all offline audits.',
+          // text: 'Make sure you have uploaded all offline audits.',
           // footer: 'Version (<b>' + release.version + '</b>) is available',
           icon: 'info',
-          imageUrl: '/images/sls_logo.png',
+          // imageUrl: '/images/sls_logo.png',
           showCancelButton: true,
           confirmButtonText: 'Reload new version',
           cancelButtonText: 'Not right now',
