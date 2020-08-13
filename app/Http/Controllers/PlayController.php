@@ -38,8 +38,6 @@ http://localhost/media/stream/stream-3.ts
             $today = Carbon::createFromFormat('Y-m-d',$date);
         }
 
-
-        
         
         //dd($today->format('H:m'));
         // find nearest $time record
@@ -93,6 +91,8 @@ http://localhost/media/stream/stream-3.ts
         $out['playing'] = $playing;
         //$out['shows'] = $shows;
         $out['wanted'] =  $time;
+        $next = $wanted->clone()->addHour();
+        $out['next'] =  $next->format('H:i:s');
         //$out['files'] = $files;
         // $out['urls'] = $urls;
         

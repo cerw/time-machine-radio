@@ -125,7 +125,6 @@ export default {
       current.subtract(1, 'day')
       n--
     }
-    this.loadDay(this.today)
   },
   computed: {
     radioNow () {

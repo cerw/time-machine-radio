@@ -223,6 +223,7 @@
           preload="metadata"
           controls
           @canplay="canplay()"
+          @ended="ended()"
           title="Play"
           id="player"
           ref="player"
@@ -244,7 +245,7 @@
         </div>
       </div>
 
-      <archive />
+      <archive ref="archives" />
     </div>
   </div>
 </template>
@@ -284,37 +285,8 @@ export default {
     const self = this
     this.youTZ = Intl.DateTimeFormat().resolvedOptions().timeZone
     this.interval = setInterval(function () {
-      this.offset++
-      this.youNow = moment().tz(this.youTZ).format('HH:mm:ss')
-      this.youDate = moment().tz(this.youTZ).format('dddd HH:mm:ss')
-      this.radioNow = moment().tz(this.radioTZ).format('dddd HH:mm:ss')
-
-      if (this.$refs.player !== undefined) {
-        this.radioThen = moment(this.config.recoded_timestamp)
-          .add(this.$refs.player.currentTime, 'seconds')
-          // .tz(this.radioTZ)
-          .format('dddd HH:mm:ss')
-
-        this.radioDate = moment(this.config.recoded_timestamp)
-          .add(this.$refs.player.currentTime, 'seconds')
-          // .tz(this.radioTZ)
-          .format('Y-MM-DD')
-
-        this.radioCalendar = moment(this.config.recoded_timestamp)
-          .add(this.$refs.player.currentTime, 'seconds')
-          // .tz(this.radioTZ)
-          .calendar()
-
-        this.secondsLeft = this.$refs.player.duration - this.$refs.player.currentTime
-        this.updatePositionState()
-        if (this.secondsLeft === 0) {
-          this.$refs.player.pause()
-          // sound.currentTime = 0;
-          console.log('Loading API from internal')
-          this.load()
-        }
-      }
-    }.bind(this), 1000)
+      self.timeInternal()
+    }, 1000)
     // network
     navigator.connection.addEventListener('change', this.logNetworkInfo)
 
@@ -327,12 +299,15 @@ export default {
 
     window.addEventListener('online', this.handleNetworkChange)
 
-    this.logNetworkInfo()
+    // this.logNetworkInfo()
     // 17:34:27
     this.load()
       .then(() => {
         console.log('playTimemachine')
+        self.timeInternal()
         self.playTimemachine()
+        console.log('load program for that day', self.radioDate)
+        self.$refs.archives.loadDay(self.radioDate)
       })
       .catch(error => console.log(error))
 
@@ -404,10 +379,49 @@ export default {
     app () {
       window.addToHomeScreen()
     },
+    timeInternal () {
+      this.offset++
+      this.youNow = moment().tz(this.youTZ).format('HH:mm:ss')
+      this.youDate = moment().tz(this.youTZ).format('dddd HH:mm:ss')
+      this.radioNow = moment().tz(this.radioTZ).format('dddd HH:mm:ss')
+
+      if (this.$refs.player !== undefined) {
+        this.radioThen = moment(this.config.recoded_timestamp)
+          .add(this.$refs.player.currentTime, 'seconds')
+          // .tz(this.radioTZ)
+          .format('dddd HH:mm:ss')
+
+        this.radioDate = moment(this.config.recoded_timestamp)
+          .add(this.$refs.player.currentTime, 'seconds')
+          // .tz(this.radioTZ)
+          .format('Y-MM-DD')
+
+        this.radioCalendar = moment(this.config.recoded_timestamp)
+          .add(this.$refs.player.currentTime, 'seconds')
+          // .tz(this.radioTZ)
+          .calendar()
+
+        this.secondsLeft = this.$refs.player.duration - this.$refs.player.currentTime
+        this.updatePositionState()
+        // if (this.secondsLeft === 0) {
+        //   this.$refs.player.pause()
+        //   // sound.currentTime = 0;
+        //   console.log('Loading API from internal')
+        //   this.load()
+        // }
+      }
+    },
     canplay (event) {
-      console.log('can play', event)
+      console.log('can play')
       this.loaded = true
       this.playAudio()
+    },
+    ended (event) {
+      console.log('ended', event)
+      this.$refs.player.pause()
+      // sound.currentTime = 0;
+      console.log('Loading API from internal')
+      this.load(this.config.ends_at)
     },
     updatePositionState () {
       if ('setPositionState' in navigator.mediaSession) {
@@ -440,7 +454,7 @@ export default {
       album: 'Sintel',
 
       */
-      console.log('updateMetadata')
+      // console.log('updateMetadata')
       const artwork = [
         { src: '/images/icons/icon-96x96.png', sizes: '96x96', type: 'image/png' },
         { src: '/images/icons/icon-128x128.png', sizes: '128x128', type: 'image/png' },
@@ -498,7 +512,7 @@ export default {
     playAudio () {
       this.$refs.player.play()
         .then(() => {
-          console.log('updateMetadata')
+          // console.log('updateMetadata')
           this.updateMetadata()
         })
         .catch(error => console.log(error))
@@ -546,12 +560,18 @@ export default {
       }
     },
     //  moment.
-    load () {
+    load (time) {
       this.loaded = false
       const self = this
+      let when
+      if (time !== undefined) {
+        when = time
+      } else {
+        when = this.youNow
+      }
       return new Promise((resolve, reject) => {
         this.loading = true
-        axios.get('/api/play/' + this.youNow)
+        axios.get('/api/play/' + when)
           .then(({ data }) => {
             self.config = data
             self.url = this.config.url + '#t=' + this.config.offset
