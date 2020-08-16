@@ -15,6 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/', function () {
+Route::get('{vue_capture?}', function () {
     return view('welcome');
-});
+})->where('vue_capture', '^(?!(api|slsadmin|nova)).*');
+
+
+// Route::get('{vue_capture?}', 'VueController@index')
+// ->where('vue_capture', '^(?!(api|slsadmin|nova)).*')
+// ->name('login');

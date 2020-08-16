@@ -348,11 +348,18 @@ export default {
 
     // this.logNetworkInfo()
     // 17:34:27
-    this.load()
+    let currentTime = this.youNow
+    const currentUrl = window.location.href.split('/')
+    if (currentUrl.length === 5) {
+      currentTime = currentUrl[4] + '/' + currentUrl[3]
+      console.log('got url', currentTime)
+    }
+
+    this.load(currentTime)
       .then(() => {
-        console.log('playTimemachine')
+        console.log('playTimemachine', currentTime)
         self.timeInternal()
-        self.playTimemachine()
+        self.playAudio()
         console.log('load program for that day', self.radioDate)
         self.$refs.archives.loadDay(self.radioDate)
       })
@@ -626,13 +633,18 @@ export default {
       } else {
         when = this.youNow
       }
+
       return new Promise((resolve, reject) => {
         this.loading = true
         axios.get('/api/play/' + when)
           .then(({ data }) => {
             self.config = data
             self.url = this.config.url + '#t=' + this.config.offset
-            // self.$refs.player.load()
+
+            const url = moment(this.config.recoded_timestamp)
+              .add(this.config.offset, 'seconds')
+              .format('/Y-MM-DD/HH:mm:ss')
+            history.replaceState(null, null, url)
 
             resolve(data)
           }).catch(function (error) {
