@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="card w-100 mt-2">
-      <div class="card-header text-center text-secondary">
-        <strong>Archive (Last few day)</strong>
+    <div class="pushtop">
+      <div class="h5 text-center text-secondary">
+        Archive
       </div>
-      <div class="card-body">
-        <ul class="list-group list-group-striped list-group-flush">
+      <div class="col-12 p-0">
+        <ul class="list-group list-group-striped list-group-flush small">
           <li
             class="list-group-item p-2 rounded"
             v-for="day in days"
@@ -14,7 +14,7 @@
           >
             <a
               :href="'/archive/'+day.format"
-              class="h3 nav-link"
+              class="h6 nav-link"
               @click.prevent="loadDay(day.format)"
             >
               {{ day.calendar }}
@@ -31,7 +31,7 @@
                 :key="time"
               >
                 <button
-                  class="btn"
+                  class="btn btn-sm"
                   :disabled="isFuture(time)"
                   @click="playArchive(time)"
                   :class="{'btn-success':slotPlaying == time,'btn-warning':slotPlaying !== time}"
@@ -115,9 +115,8 @@ export default {
   },
   mounted () {
     const current = moment()
-    let n = 6
+    let n = 4
     while (n > 0) {
-      console.log(n)
       const day = {}
       day.calendar = current.calendar()
       day.format = current.format('YYYY-MM-DD')
@@ -175,9 +174,9 @@ export default {
         axios.get('/api/play/' + time + ':00/' + self.today)
           .then(({ data }) => {
             self.$parent.config = data
-            self.$parent.url = self.$parent.config.url + '#t=' + self.$parent.config.offset
+            self.$parent.$refs.player.url = self.$parent.config.url + '#t=' + self.$parent.config.offset
             // self.$refs.player.load()
-            self.$parent.loaded = true
+            self.$parent.$refs.player.loaded = true
 
             resolve(data)
           }).catch(function (error) {
@@ -191,4 +190,7 @@ export default {
 }
 </script>
 <style>
+.pushtop {
+  padding-bottom: 200px;
+}
 </style>

@@ -52,36 +52,8 @@
   <body class="d-flex flex-column h-100">
     <!-- Begin page content -->
     
-    <main role="main" class="flex-shrink-0">
-
-        <div class="container">
-          <div class="row">
-            <div class="col-12 text-center">
-            <a href="/">
-              <img src="/images/icons/icon-192x192.png" title="Time Machine" width=50 class="logo rounded-circle" img img-fluid"/>
-              </a>
-              <h1 class="">
-                Time Machine
-              </h1>
-              
-            </div>
-          </div>
-        
-
-            <div id="app">
-            </div>
-        </div>
-    </main>
-
-    <footer class="footer mt-auto py-3">
-    <div class="container">
-        <span class="text-muted">
-        Time Machine for <a href="https://www.radio1.cz/" target="_blank">Radio 1</a>
-        Source on <a href="https://github.com/cerw/time-machine-radio" target="_blank">github.</a>
-        Feedback please <a href="https://twitter.com/cerw" target="_blank">@cerw</a>
-        </span>
-    </div>
-    </footer>
+   <div id="app">
+   </div>
 
 
     <script src="{{ mix('js/manifest.js') }}"></script>
