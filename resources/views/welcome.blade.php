@@ -71,7 +71,9 @@
             <div id="app">
             </div>
         </div>
+        
     </main>
+
 
     <footer class="footer mt-auto py-3">
     <div class="container">

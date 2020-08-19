@@ -23,28 +23,29 @@ http://localhost/media/stream/stream-2.ts
 #EXTINF:10,
 http://localhost/media/stream/stream-3.ts
 #EXT-X-ENDLIST
-     * 
+     *
      * @param [type] $time
      * @param Request $request
      * @return void
      */
-    public function play ($time, $date = false, Request $request) {
+    public function play($time, $date = false, Request $request)
+    {
         
         $files = Storage::files('radio1');
         $urls = [];
-        if(!$date) {
+        if (!$date) {
             $today = now();
         } else {
-            $today = Carbon::createFromFormat('Y-m-d',$date);
+            $today = Carbon::createFromFormat('Y-m-d', $date);
         }
 
         
         //dd($today->format('H:m'));
         // find nearest $time record
-        // 
+        //
         $wanted = Carbon::createFromFormat('Y-m-d H:i:s', $today->format('Y-m-d').' '.$time, 'Europe/Prague');
         
-        if($wanted->isFuture()) {
+        if ($wanted->isFuture()) {
             $wanted->subDay();
         }
         $closest = 6000000;
@@ -53,11 +54,11 @@ http://localhost/media/stream/stream-3.ts
         // dump($wanted);
         $expiresAt = Carbon::now()->subDays(4);
         
-        foreach($files as $file) {
-            if(preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#",$file,$match)) {
+        foreach ($files as $file) {
+            if (preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#", $file, $match)) {
                 $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', $match[1]);
                 $perthTime =  $fileStartedAt->toDateTimeString();
-                if($perthTime < $expiresAt) {
+                if ($perthTime < $expiresAt) {
                     \Log::info("Removing old files {$file}");
                     Storage::delete($file);
                     continue;
@@ -66,7 +67,7 @@ http://localhost/media/stream/stream-3.ts
                 // $diff = $date->diffInDays($wanted);
                 $diff = $wanted->diffInSeconds($fileStartedAt);
                 // dump($diff,$file);
-                if($fileStartedAt->lessThanOrEqualTo($wanted) && $diff < $closest){
+                if ($fileStartedAt->lessThanOrEqualTo($wanted) && $diff < $closest) {
                     // edited at is newer than created at
                 //    dump($fileStartedAt, $diff, $fileStartedAt->format('H:i:s'));
                     $closest = $diff;
@@ -75,13 +76,13 @@ http://localhost/media/stream/stream-3.ts
                     // $out['play_at'] = '00:'.round($diff/60).':'.($diff-round($diff/60)*60);
                     $out['start_at'] = $fileStartedAt->format('H:i:s');
                     $out['perth_started_at'] = $perthTime;
-                    $out['prague_started_at'] = $fileStartedAt->toDateTimeString();;
+                    $out['prague_started_at'] = $fileStartedAt->toDateTimeString();
+                    ;
                     $out['recoded_at'] = $fileStartedAt->diffForHumans();
                     $out['recoded_timestamp'] = $fileStartedAt->toDateTimeString();
                     $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
                     $out['next'] =  $fileStartedAt->format('H:i:s/Y-m-d');
                 }
-                
             }
             
             $urls[] = Storage::url($file);
@@ -101,7 +102,8 @@ http://localhost/media/stream/stream-3.ts
         return response()->json($out);
     }
 
-    public function live (Request $request) {
+    public function live(Request $request)
+    {
         
 
         $wanted = Carbon::now()->tz('Europe/Prague');
@@ -111,29 +113,27 @@ http://localhost/media/stream/stream-3.ts
         //$out['shows'] = $shows;
         //$out['wanted'] =  $time;
         return response()->json($out);
-
     }
 
-    public function archive ($date, $time = false, Request $request) {
+    public function archive($date, $time = false, Request $request)
+    {
         
 
         $today = now();
         // if only date then match timemachien time
-        if(!$time) {
-            
-            $wanted = Carbon::createFromFormat('Y-m-d H:i:s',$date. ' '. $today->format('H:i:s'), 'Europe/Prague');
+        if (!$time) {
+            $wanted = Carbon::createFromFormat('Y-m-d H:i:s', $date. ' '. $today->format('H:i:s'), 'Europe/Prague');
         } else {
-            $wanted = Carbon::createFromFormat('Y-m-d H:i:s',$date. ' '. $time, 'Europe/Prague');
+            $wanted = Carbon::createFromFormat('Y-m-d H:i:s', $date. ' '. $time, 'Europe/Prague');
         }
         // if date/time then match that  in radioe1 time
         
-        if($time) {
+        if ($time) {
             $this->info($wanted, true);
         }
         $info = $this->info($wanted, true);
         
         return response()->json($info);
-
     }
 
 
@@ -146,7 +146,8 @@ http://localhost/media/stream/stream-3.ts
      * @param [type] $wanted
      * @return void
      */
-    protected function info( $wanted , $extended = false)  {
+    protected function info($wanted, $extended = false)
+    {
         
 
         $date = $wanted->format('Y-m-d');
@@ -167,20 +168,18 @@ http://localhost/media/stream/stream-3.ts
         $shows = [];
         // $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', '2020-08-04_');
         // $fileStartedAt->setTimezone('Europe/Prague');
-        $times = [];  
+        $times = [];
         
-        foreach($table->find('tr') as $row) {
+        foreach ($table->find('tr') as $row) {
             // initialize array to store the cell data from each row
-            $cols = [];  
+            $cols = [];
             
             foreach ($row->find('td') as $key => $cell) {
                 $cols[$key] = $cell;
             }
             
             if (count($cols) === 4) {
-                
                 foreach ($cols as $key => $cell) {
-                    
                     // 0 time
                     // 1 title
                     // 2 desc
@@ -189,7 +188,6 @@ http://localhost/media/stream/stream-3.ts
                     if ($key == 0) {
                         $time = $cell->plaintext;
                         $times[] = $time;
-                         
                     }
                     
                     if ($key == 1) {
@@ -209,24 +207,22 @@ http://localhost/media/stream/stream-3.ts
                     // if ($key == 3) {
                     //     $shows[$time]['now'] = (empty($cell->innertext)) ? false : true;
                     // }
-                    
                 }
             }
-            
         }
 
         // lopps times
         // dump($times);
         
-        foreach($times as $index => $time) {
+        foreach ($times as $index => $time) {
             // dd($time);
-            $split = explode(":",$time);
+            $split = explode(":", $time);
             $showStartsAt = $wanted->clone();
             
             $showStartsAt->setTime($split[0], $split[1]);
 
-            if(isset($times[$index+1])) {
-                $endSplit = explode(":",$times[$index+1]);
+            if (isset($times[$index+1])) {
+                $endSplit = explode(":", $times[$index+1]);
                 $showEndsAt = $showStartsAt->clone()->setTime($endSplit[0], $endSplit[1]);
             }
             
@@ -236,14 +232,14 @@ http://localhost/media/stream/stream-3.ts
                 $out['playing'] = [];
                 $out['playing']['date'] = $showStartsAt->toDateTimeString();
                 $out['playing']['info'] = $shows[$time];
-                $out['playing']['starts'] = $showStartsAt->format('H:i');;
+                $out['playing']['starts'] = $showStartsAt->format('H:i');
+                ;
                 $out['playing']['ends'] = $showEndsAt->format('H:i');
                 $shows[$time]['now'] = true;
-                
             }
         }
 
-        if($extended) {
+        if ($extended) {
             $ext = [];
             $ext['shows'] = $shows;
             $ext['playing'] = $out['playing'];
@@ -252,6 +248,4 @@ http://localhost/media/stream/stream-3.ts
 
         return $out['playing'];
     }
-
-
 }

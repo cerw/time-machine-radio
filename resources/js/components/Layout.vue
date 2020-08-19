@@ -277,6 +277,8 @@
           :src="url"
           style="width: 100%;"
         ><p>Your browser does not support the <code>audio</code> element.</p></audio>
+
+        <player :file="url" />
       </div>
 
       <div
@@ -299,11 +301,13 @@
 <script>
 import moment from 'moment-timezone'
 import Archive from './Archive'
+import Player from './Player'
 
 export default {
   name: 'Layout',
   components: {
-    Archive
+    Archive,
+    Player
   },
   data () {
     return {
