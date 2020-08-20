@@ -58,7 +58,7 @@
                 In Prague :)
               </span>
             </p>
-            <hr>
+
             <player
               ref="player"
               :config="config"

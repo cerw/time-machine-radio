@@ -21,20 +21,56 @@ One to two paragraph statement about your product and what it does.
 
 OS X & Linux:
 
-```sh
+```bash
 copmposer install && npm i && npm run dev
 ```
 
 Windows:
 
-```
+```bash
 rm -rf /
 ```
 
 ## Usage example
 
-You must record the shows using 
+You must record the shows using , in your `storage/app/public/radio1`
+```bash
+#!/bin/bash
+while true
+do
+ffmpeg -i http://icecast2.play.cz/radio1-192.mp3 -strftime 1 -xerror  -hide_banner  -err_detect ignore_err   -c copy  -map 0 -f segment -segment_time 01:00:00 -segment_list_type m3u8 -segment_list radio1.m3u radio1-%Y-%m-%d_%H-%M.mp3
+done
 ```
+
+### Convert to AudioTag 
+ https://user.audiotag.info/doc/AudioTag-API.pdf
+
+
+#### AUDD 
+  `token - a6635a32d2752fee94f90d3fe847c4b4`
+  
+```bash
+curl https://api.audd.io/ \
+    -F url='https://www.dropbox.com/s/a9hvp4rtm03uqmy/coverted1.wav?dl=1' \
+    -F return='apple_music,spotify,musicbrainz,lyrics' \
+    -F api_token='test'
+# for audiotag - 15 s mono wav
+ffmpeg -i input_file.ext -ss 00:00:20 -to 00:00:35  -ar 8000 -ac 1 -vn coverted.wav
+# auditag api
+
+curl https://audiotag.info/api \
+    -F file='@coverted.wav' \
+    -F action='identify' \
+    -F apikey='14bb353fedc73afe0f52d942174d7336'
+
+# getting results - da39806f528325630d4b046570d2907a
+curl https://audiotag.info/api \
+    -F token='ef822dbb74c67f5ac5ff0d7b6bf49ea2' \
+    -F action='get_result' \
+    -F apikey='14bb353fedc73afe0f52d942174d7336'
+
+for i 
+
 ```
 
 ## Development setup

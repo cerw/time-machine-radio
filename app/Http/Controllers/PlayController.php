@@ -168,6 +168,7 @@ http://localhost/media/stream/stream-3.ts
         // $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', '2020-08-04_');
         // $fileStartedAt->setTimezone('Europe/Prague');
         $times = [];  
+        $out = [];
         
         foreach($table->find('tr') as $row) {
             // initialize array to store the cell data from each row

@@ -7,7 +7,7 @@
       <div class="col-12 p-0">
         <ul class="list-group list-group-striped list-group-flush small">
           <li
-            class="list-group-item p-2 rounded"
+            class="list-group-item p-2 rounded list-day"
             v-for="day in days"
             :class="{'list-group-item-secondary': day.format === today}"
             :key="day.format"
@@ -26,13 +26,12 @@
             >
               <li
                 class="list-group-item p-1 rounded"
-                :class="{'list-group-item-success': slotPlaying === time , 'list-group-item-danger': show.now, 'list-group-item-dark': isFuture(time) }"
+                :class="{'list-group-item-success': slotPlaying === time , 'list-group-item-danger': show.now, 'hidden': isFuture(time) }"
                 v-for="(show, time) in shows"
                 :key="time"
               >
                 <button
                   class="btn btn-sm"
-                  :disabled="isFuture(time)"
                   @click="playArchive(time)"
                   :class="{'btn-success':slotPlaying == time,'btn-warning':slotPlaying !== time}"
                 >
@@ -144,7 +143,7 @@ export default {
       return prague.clone().tz(this.$parent.youTZ).calendar()
     },
     loadDay (day) {
-      this.$parent.loaded = false
+      this.$parent.$refs.player.loaded = false
       const self = this
       this.today = day
       return new Promise((resolve, reject) => {
@@ -155,7 +154,7 @@ export default {
             console.log(data)
             // self.url = this.config.url + '#t=' + this.config.offset
             // self.$refs.player.load()
-            self.$parent.loaded = true
+            self.$parent.$refs.player.loaded = true
             self.playArchive(moment().format('HH:mm'))
             resolve(data)
             // play timemachine time
@@ -167,7 +166,7 @@ export default {
     },
     playArchive (time) {
       this.slotPlaying = time
-      this.$parent.loaded = false
+      this.$parent.$refs.player.loaded = false
       const self = this
       return new Promise((resolve, reject) => {
         this.loading = true
@@ -191,6 +190,15 @@ export default {
 </script>
 <style>
 .pushtop {
-  padding-bottom: 200px;
+  margin-bottom: 300px;
+}
+
+.list-day li:nth-child(odd) {
+  background: #f0f1f4;
+}
+
+.list-day .list-group-item-danger:nth-child(odd),
+.list-day .list-group-item-success:nth-child(odd) {
+  background: #d4edda;
 }
 </style>
