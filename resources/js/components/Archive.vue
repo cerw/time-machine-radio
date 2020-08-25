@@ -5,14 +5,14 @@
         Archive
       </div>
       <div class="col-12 p-0">
-        <button
+        <!-- <button
           class="btn btn-sm btn-success"
           v-for="day in days"
           :class="{'list-group-item-secondary': day.format === today}"
           :key="day.format"
         >
           {{ day.niceday }}
-        </button>
+        </button> -->
 
         <ul class="list-group list-group-striped list-group-flush small">
           <li
