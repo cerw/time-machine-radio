@@ -16,12 +16,12 @@ class AddShows extends Migration
         Schema::create('shows', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->text('desc');
-            $table->string('title');
+            $table->text('desc')->nullable();
+            $table->string('title')->nullable();
             $table->json('people')->nullable();
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
-            $table->integer('duration');
+            $table->integer('duration')->nullable();
             $table->timestamps();
         });
     }
