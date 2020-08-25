@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Track;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use simplehtmldom\HtmlDocument;
@@ -87,10 +88,12 @@ http://localhost/media/stream/stream-3.ts
             $urls[] = Storage::url($file);
         }
         
-        $playing = $this->info($wanted);
-      
-        $out['playing'] = $playing;
-        //$out['shows'] = $shows;
+        
+        $info = $this->info($wanted, true);
+
+        $out['playing'] = $info['playing'];
+        
+        $out['shows'] = $info['shows'];
         $out['wanted'] =  $time;
         $next = $wanted->clone()->addHour();
         
@@ -113,6 +116,15 @@ http://localhost/media/stream/stream-3.ts
         return response()->json($out);
 
     }
+
+    public function tracks (Request $request) {
+        
+
+        $tracks = Track::all();
+        return response()->json($tracks);
+
+    }
+
 
     public function archive ($date, $time = false, Request $request) {
         
@@ -177,6 +189,7 @@ http://localhost/media/stream/stream-3.ts
             foreach ($row->find('td') as $key => $cell) {
                 $cols[$key] = $cell;
             }
+            $show = [];
             
             if (count($cols) === 4) {
                 
@@ -190,7 +203,6 @@ http://localhost/media/stream/stream-3.ts
                     if ($key == 0) {
                         $time = $cell->plaintext;
                         $times[] = $time;
-                         
                     }
                     
                     if ($key == 1) {
@@ -201,20 +213,22 @@ http://localhost/media/stream/stream-3.ts
                             $person['link'] = $link->href;
                             $people[] = $person;
                         }
-                        $shows[$time]['people'] = $people;
+                        $show['people'] = $people;
                     }
                     if ($key == 2) {
-                        $shows[$time]['desc'] = $cell->plaintext;
+                        $show['desc'] = $cell->plaintext;
                     }
 
-                    // if ($key == 3) {
-                    //     $shows[$time]['now'] = (empty($cell->innertext)) ? false : true;
-                    // }
+                    if ($key == 3) {
+                        $shows[] = $show;
+                    }
                     
                 }
             }
             
         }
+
+        // dd($times);
 
         // lopps times
         // dump($times);
@@ -233,10 +247,17 @@ http://localhost/media/stream/stream-3.ts
             
             //dump($showStartsAt,$showEndsAt,$wanted);
             
+            $shows[$index]['ends'] = $showEndsAt->toDateTimeString();
+            $shows[$index]['starts'] = $showStartsAt->toDateTimeString();
+            $shows[$index]['duration'] = $showStartsAt->diffInSeconds($showEndsAt);
+            $length = \Carbon\CarbonInterval::seconds($shows[$index]['duration'])->cascade()->forHumans();
+            $shows[$index]['duration_human'] = (string) $length;
+            // 1 day - 86400 s
+            $shows[$index]['percentage_in_day'] = $shows[$index]['duration']/864;
             if ($wanted->between($showStartsAt, $showEndsAt)) {
                 $out['playing'] = [];
                 $out['playing']['date'] = $showStartsAt->toDateTimeString();
-                $out['playing']['info'] = $shows[$time];
+                $out['playing']['info'] = $shows[$index];
                 $out['playing']['starts'] = $showStartsAt->format('H:i');;
                 $out['playing']['ends'] = $showEndsAt->format('H:i');
                 $shows[$time]['now'] = true;

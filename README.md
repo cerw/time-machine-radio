@@ -42,16 +42,6 @@ ffmpeg -i http://icecast2.play.cz/radio1-192.mp3 -strftime 1 -xerror  -hide_bann
 done
 ```
 
-### Convert to AudioTag 
- https://user.audiotag.info/doc/AudioTag-API.pdf
-
-
-
-
-
-
-```
-
 ## Development setup
 
 Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
