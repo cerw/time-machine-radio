@@ -3,7 +3,6 @@
     <!-- Info -->
     <div
       class="text-center p-0"
-      v-show="loaded"
     >
       <div
         class="alert alert-success small mb-0"
@@ -270,19 +269,6 @@
       :src="url"
       style="width: 100%;"
     ><p>Your browser does not support the <code>audio</code> element.</p></audio>
-
-    <div
-      v-show="!loaded"
-      class="card-footer text-center"
-    >
-      <div
-        class="spinner-grow text-warning"
-        style="width: 7rem; height: 7rem;"
-        role="status"
-      >
-        <span class="sr-only">Loading...</span>
-      </div>
-    </div>
   </div>
 </template>
 <script>
@@ -299,10 +285,9 @@ export default {
   data () {
     return {
       liveUrl: 'https://icecast6.play.cz/radio1-128.mp3',
-      url: null,
+      url: null
       // radioDate: moment().format('HH:mm:ss'),
       // radioCalendar: moment().format('HH:mm:ss'),
-      loaded: false
     }
   },
   mounted () {
@@ -387,8 +372,8 @@ export default {
       this.$refs.player.currentTime = Math.max(this.$refs.player.currentTime - skipTime, 0)
     },
     canplay (event) {
-      console.log('can play')
-      this.loaded = true
+      console.log('Player - can play')
+      this.$parent.$refs.loader.loaded = true
       this.playAudio()
     },
     ended (event) {
@@ -469,6 +454,7 @@ export default {
         .then(() => {
           console.log('player - playAudio callback')
           this.updateMetadata()
+          this.$forceUpdate()
         })
         .catch(error => console.log(error))
     },
@@ -496,11 +482,13 @@ export default {
       if (this.timemachinePlaying()) {
         this.$refs.player.pause()
       } else {
+        this.$parent.$refs.loader.loaded = false
         this.$parent.load()
           .then(() => {
             console.log('load done in player')
           })
       }
+      this.$forceUpdate()
     },
     playLive () {
       // set live url
@@ -509,10 +497,12 @@ export default {
         this.$refs.player.pause()
       } else {
         console.log('playLive')
+        this.$parent.$refs.loader.loaded = false
         this.url = this.liveUrl
-        this.live()
+        this.$parent.live()
         this.playAudio()
       }
+      this.$forceUpdate()
     }
 
   }

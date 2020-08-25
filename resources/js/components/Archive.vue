@@ -5,6 +5,15 @@
         Archive
       </div>
       <div class="col-12 p-0">
+        <button
+          class="btn btn-sm btn-success"
+          v-for="day in days"
+          :class="{'list-group-item-secondary': day.format === today}"
+          :key="day.format"
+        >
+          {{ day.niceday }}
+        </button>
+
         <ul class="list-group list-group-striped list-group-flush small">
           <li
             class="list-group-item p-2 rounded list-day"
@@ -119,6 +128,7 @@ export default {
       const day = {}
       day.calendar = current.calendar()
       day.format = current.format('YYYY-MM-DD')
+      day.niceday = current.calendar().split(' at')[0]
       this.days.push(day)
       current.subtract(1, 'day')
       n--
@@ -143,7 +153,7 @@ export default {
       return prague.clone().tz(this.$parent.youTZ).calendar()
     },
     loadDay (day) {
-      this.$parent.$refs.player.loaded = false
+      this.$parent.$refs.loader.loaded = false
       const self = this
       this.today = day
       return new Promise((resolve, reject) => {
@@ -166,7 +176,7 @@ export default {
     },
     playArchive (time) {
       this.slotPlaying = time
-      this.$parent.$refs.player.loaded = false
+      this.$parent.$refs.loader.loaded = false
       const self = this
       return new Promise((resolve, reject) => {
         this.loading = true
@@ -175,7 +185,7 @@ export default {
             self.$parent.config = data
             self.$parent.$refs.player.url = self.$parent.config.url + '#t=' + self.$parent.config.offset
             // self.$refs.player.load()
-            self.$parent.$refs.player.loaded = true
+            // self.$parent.$refs.player.loaded = true
 
             resolve(data)
           }).catch(function (error) {

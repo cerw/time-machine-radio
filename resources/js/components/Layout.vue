@@ -24,8 +24,10 @@
           </div>
         </div>
 
+        <Loader ref="loader" />
+
         <!-- Main App-->
-        <div class="card">
+        <div class="card ">
           <!-- <div class="card-header">
       <button
         class="btn btn-success"
@@ -95,12 +97,14 @@
 import moment from 'moment-timezone'
 import Archive from './Archive'
 import Player from './Player'
+import Loader from './Loader'
 
 export default {
   name: 'Layout',
   components: {
     Archive,
-    Player
+    Player,
+    Loader
   },
   data () {
     return {
@@ -142,7 +146,8 @@ export default {
         console.log('playTimemachine load done', currentTime)
         self.$refs.player.url = self.config.url + '#t=' + self.config.offset
         self.$refs.player.playAudio()
-        console.log('load program for that day', self.radioDate)
+        self.timeInternal()
+        console.log('Archive -  program for that day', self.radioDate)
         self.$refs.archives.loadDay(self.radioDate)
       })
       .catch(error => console.log(error))
@@ -163,7 +168,12 @@ export default {
     },
     youOffset () {
       return (this.radioZone.utcOffset(moment.now()) - this.youZone.utcOffset(moment.now())) / 60
+    },
+    loaded () {
+      if (this.$refs.loader === undefined) return true
+      return this.$refs.loader.loaded
     }
+
   },
   methods: {
     app () {
@@ -210,7 +220,7 @@ export default {
       }
     },
     load (time) {
-      this.$refs.player.loaded = false
+      this.$refs.loader.loaded = false
       const self = this
       let when
       if (time !== undefined) {
@@ -239,7 +249,7 @@ export default {
       })
     },
     live () {
-      this.$refs.player.loaded = false
+      this.$refs.loader.loaded = false
       const self = this
       return new Promise((resolve, reject) => {
         this.loading = true
@@ -247,7 +257,6 @@ export default {
           .then(({ data }) => {
             self.config = data
             // self.$refs.player.load()
-
             resolve(data)
           }).catch(function (error) {
             console.log('error getting live', error)
@@ -258,5 +267,13 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped lang="css">
+
+.top-fixed {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  right: 0;
+}
 </style>
