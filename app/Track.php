@@ -24,6 +24,8 @@ class Track extends Model
 
     public function getRadioTimeAttribute()
     {
-        return $this->stream_at->setTimezone('Europe/Prague');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at, 'CEST')
+                ->setTimezone('Europe/Prague');
+        
     }
 }

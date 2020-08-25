@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="pushtop">
+    <div class="pushtop p-0">
       <div class="h5 text-center text-secondary">
         Archive
       </div>
@@ -35,72 +35,77 @@
             >
               <li
                 class="list-group-item p-1 rounded"
-                :class="{'list-group-item-success': slotPlaying === time , 'list-group-item-danger': show.now, 'hidden': isFuture(time) }"
+                :class="{'list-group-item-info': show.ks,'list-group-item-success': slotPlaying === time , 'list-group-item-danger': show.now, 'hidden': isFuture(time) }"
                 v-for="(show, time) in shows"
                 :key="time"
               >
-                <button
-                  class="btn btn-sm"
-                  @click="playArchive(time)"
-                  :class="{'btn-success':slotPlaying == time,'btn-warning':slotPlaying !== time}"
+                <div
+                  :style="showSize(show)"
                 >
-                  <svg
-                    v-if="slotPlaying !== time"
-                    width="2em"
-                    height="2em"
-                    viewBox="0 0 16 16"
-                    class="bi bi-stop"
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <button
+                    class="btn btn-sm"
+                    @click="playArchive(time)"
+                    :class="{'btn-success':slotPlaying == time,'btn-warning':slotPlaying !== time}"
                   >
-                    <path
+                    <svg
+                      v-if="slotPlaying !== time"
+                      width="2em"
+                      height="2em"
+                      viewBox="0 0 16 16"
+                      class="bi bi-stop"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"
+                      />
+
+                    </svg>
+
+                    <svg
+                      v-if="slotPlaying === time"
+                      width="2em"
+                      height="2em"
+                      viewBox="0 0 16 16"
+                      class="bi bi-play"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                    ><path
                       fill-rule="evenodd"
-                      d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"
+                      d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z"
                     />
 
-                  </svg>
+                    </svg>
+                  </button>
+                  <strong> {{ show.when }} </strong>
+                  <i> {{ show.duration_human }} </i>
+                  <strong class="float-right">
+                    {{ toYourTime(time) }}
+                  </strong>
 
-                  <svg
-                    v-if="slotPlaying === time"
-                    width="2em"
-                    height="2em"
-                    viewBox="0 0 16 16"
-                    class="bi bi-play"
-                    fill="currentColor"
-                    xmlns="http://www.w3.org/2000/svg"
-                  ><path
-                    fill-rule="evenodd"
-                    d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z"
-                  />
+                  <span
+                    v-for="(person, pindex) in show.people"
+                    :key="pindex"
+                  >
+                    <a
+                      :href="person.link"
+                      target="_blank"
+                    >{{ person.name }}</a>
+                  </span>
 
-                  </svg>
-                </button>
-                <strong> {{ time }} </strong>
-                <strong class="float-right">
-                  {{ toYourTime(time) }}
-                </strong>
+                  <span
+                    v-if="show.now"
+                    class="badge badge-info"
+                  >
+                    <span v-if="!isToday">TimeMachine now</span>
 
-                <span
-                  v-for="(person, pindex) in show.people"
-                  :key="pindex"
-                >
-                  <a
-                    :href="person.link"
-                    target="_blank"
-                  >{{ person.name }}</a>
-                </span>
+                  </span>
 
-                <span
-                  v-if="show.now"
-                  class="badge badge-info"
-                >
-                  <span v-if="!isToday">TimeMachine now</span>
-
-                </span>
-
-                <span class="text-muted float-right">
-                  {{ show.desc }}
-                </span>
+                  <span class="text-muted float-right">
+                    {{ show.desc }}
+                  </span>
+                </div>
               </li>
             </ul>
           </li>
@@ -143,6 +148,11 @@ export default {
     }
   },
   methods: {
+    showSize (show) {
+      // default none
+      if (show.ks) return ''
+      return 'height: ' + show.duration / 100 + 'px'
+    },
     isFuture (time) {
       const playing = moment(this.today + ' ' + time, 'YYYY-MM-DD HH:mm:ss').tz(this.$parent.radioTZ, true)
       const now = moment().tz(this.$parent.radioTZ)
@@ -156,6 +166,7 @@ export default {
       this.$parent.$refs.loader.loaded = false
       const self = this
       this.today = day
+      this.shows = []
       return new Promise((resolve, reject) => {
         this.loading = true
         axios.get('/api/archive/' + day)
@@ -203,12 +214,12 @@ export default {
   margin-bottom: 300px;
 }
 
-.list-day li:nth-child(odd) {
+/* .list-day li:nth-child(odd) {
   background: #f0f1f4;
-}
+} */
 
-.list-day .list-group-item-danger:nth-child(odd),
+/* .list-day .list-group-item-danger:nth-child(odd),
 .list-day .list-group-item-success:nth-child(odd) {
   background: #d4edda;
-}
+} */
 </style>

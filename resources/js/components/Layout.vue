@@ -27,7 +27,7 @@
         <Loader ref="loader" />
 
         <!-- Main App-->
-        <div class="card ">
+        <div class="card">
           <!-- <div class="card-header">
       <button
         class="btn btn-success"
@@ -36,7 +36,7 @@
         Install App
       </button>
     </div> -->
-          <div class="card-body">
+          <div class="card-body p-0">
             <p class="pb-2 text-center">
               Radio1 Time: <strong>{{ radioNow }}</strong><br>
               Your Time: <strong>{{ youDate }}</strong><br>
@@ -46,8 +46,8 @@
             <!-- Live {{ livePlaying() }}
       Time {{ timemachinePlaying() }} -->
 
-            <p class="text-muted float-right">
-              Your are {{ youOffset }} hours
+            <p class="text-muted text-center">
+              You are {{ youOffset }} hours
               <span v-if="youOffset > 0">
                 in front of Radio 1
               </span>

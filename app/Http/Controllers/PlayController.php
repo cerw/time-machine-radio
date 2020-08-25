@@ -211,6 +211,10 @@ http://localhost/media/stream/stream-3.ts
                             $person= [];
                             $person['name'] = $link->plaintext;
                             $person['link'] = $link->href;
+                            
+                            if($person['name'] == "KULTURNÍ SERVIS") {
+                                $show['ks'] = true;
+                            }
                             $people[] = $person;
                         }
                         $show['people'] = $people;
@@ -231,7 +235,7 @@ http://localhost/media/stream/stream-3.ts
         // dd($times);
 
         // lopps times
-        // dump($times);
+        
         
         foreach($times as $index => $time) {
             // dd($time);
@@ -249,9 +253,11 @@ http://localhost/media/stream/stream-3.ts
             
             $shows[$index]['ends'] = $showEndsAt->toDateTimeString();
             $shows[$index]['starts'] = $showStartsAt->toDateTimeString();
+            $shows[$index]['when'] = $showStartsAt->format('H:i').' - '. $showEndsAt->format('H:i');
             $shows[$index]['duration'] = $showStartsAt->diffInSeconds($showEndsAt);
             $length = \Carbon\CarbonInterval::seconds($shows[$index]['duration'])->cascade()->forHumans();
             $shows[$index]['duration_human'] = (string) $length;
+            
             // 1 day - 86400 s
             $shows[$index]['percentage_in_day'] = $shows[$index]['duration']/864;
             if ($wanted->between($showStartsAt, $showEndsAt)) {
@@ -260,7 +266,7 @@ http://localhost/media/stream/stream-3.ts
                 $out['playing']['info'] = $shows[$index];
                 $out['playing']['starts'] = $showStartsAt->format('H:i');;
                 $out['playing']['ends'] = $showEndsAt->format('H:i');
-                $shows[$time]['now'] = true;
+                $shows[$index]['now'] = true;
                 
             }
         }
