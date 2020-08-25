@@ -39,12 +39,12 @@
               />
             </svg>
 
-            {{ config.playing.starts }} -  {{ config.playing.ends }}
+            {{ config.playing.when }}
           </span>
 
           <span
             class="p-2"
-            v-for="(person, index) in config.playing.info.people"
+            v-for="(person, index) in config.playing.people"
             :key="index"
           >
             <a
@@ -75,7 +75,7 @@
 
           <br>
           <span class="text-muted">
-            {{ config.playing.info.desc }}
+            {{ config.playing.desc }}
           </span>
         </div>
       </div>
@@ -109,11 +109,11 @@
               d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"
             />
           </svg>
-          {{ config.playing.starts }} -  {{ config.playing.ends }}
+
           <br>
 
           <p
-            v-for="(person, index) in config.playing.info.people"
+            v-for="(person, index) in config.playing.people"
             :key="index"
           >
             <a
@@ -122,7 +122,7 @@
             >{{ person.name }}</a>
           </p>
 
-          {{ config.playing.info.desc }}
+          {{ config.playing.desc }}
         </div>
       </div>
     </div>
@@ -429,11 +429,11 @@ export default {
         }
 
         let artist = 'N/A'
-        if (this.config.playing.info.people !== undefined) {
-          artist = this.config.playing.info.people[0].name
+        if (this.config.playing.people !== undefined) {
+          artist = this.config.playing.people[0].name
         }
         const album = 'Radio 1 🕰Machine'
-        if (this.config.playing.info.desc !== undefined) {
+        if (this.config.playing.desc !== undefined) {
         // album = this.config.playing.info.desc
         }
         // Serving show from <strong>{{ config.recoded_at }} </strong>- {{ radioThen }}

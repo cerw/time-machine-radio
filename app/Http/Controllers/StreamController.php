@@ -56,7 +56,7 @@ class StreamController extends Controller
         
 
             $track->release_date = $song['release_date'];
-            $track->label = $song['label'];
+            $track->label = $song['label'] ?? '';
             $track->song_link = $song['song_link'];
             $track->score = $song['score'];
             $track->metadata = $request->input();

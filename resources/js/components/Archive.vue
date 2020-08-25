@@ -35,7 +35,7 @@
             >
               <li
                 class="list-group-item p-1 rounded"
-                :class="{'list-group-item-info': show.ks,'list-group-item-success': slotPlaying === time , 'list-group-item-danger': show.now, 'hidden': isFuture(time) }"
+                :class="{'list-group-item-info': show.ks,'list-group-item-success': slotPlaying === show.starts_hours , 'list-group-item-danger': show.now, 'hidden': isFuture(show.starts_hours) }"
                 v-for="(show, time) in shows"
                 :key="time"
               >
@@ -44,11 +44,11 @@
                 >
                   <button
                     class="btn btn-sm"
-                    @click="playArchive(time)"
-                    :class="{'btn-success':slotPlaying == time,'btn-warning':slotPlaying !== time}"
+                    @click="playArchive(show.starts_hours)"
+                    :class="{'btn-success':slotPlaying == show.starts_hours,'btn-warning':slotPlaying !== show.starts_hours}"
                   >
                     <svg
-                      v-if="slotPlaying !== time"
+                      v-if="slotPlaying !== show.starts_hours"
                       width="2em"
                       height="2em"
                       viewBox="0 0 16 16"
@@ -64,7 +64,7 @@
                     </svg>
 
                     <svg
-                      v-if="slotPlaying === time"
+                      v-if="slotPlaying === show.starts_hours"
                       width="2em"
                       height="2em"
                       viewBox="0 0 16 16"
@@ -80,9 +80,9 @@
                   </button>
                   <strong> {{ show.when }} </strong>
                   <i> {{ show.duration_human }} </i>
-                  <strong class="float-right">
+                  <!-- <strong class="float-right">
                     {{ toYourTime(time) }}
-                  </strong>
+                  </strong> -->
 
                   <span
                     v-for="(person, pindex) in show.people"
@@ -176,7 +176,7 @@ export default {
             // self.url = this.config.url + '#t=' + this.config.offset
             // self.$refs.player.load()
             self.$parent.$refs.player.loaded = true
-            self.playArchive(moment().format('HH:mm'))
+            self.playArchive(moment().format('HH:mm:ss'))
             resolve(data)
             // play timemachine time
           }).catch(function (error) {
@@ -191,7 +191,7 @@ export default {
       const self = this
       return new Promise((resolve, reject) => {
         this.loading = true
-        axios.get('/api/play/' + time + ':00/' + self.today)
+        axios.get('/api/play/' + time + '/' + self.today)
           .then(({ data }) => {
             self.$parent.config = data
             self.$parent.$refs.player.url = self.$parent.config.url + '#t=' + self.$parent.config.offset

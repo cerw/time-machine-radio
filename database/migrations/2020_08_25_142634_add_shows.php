@@ -19,6 +19,7 @@ class AddShows extends Migration
             $table->text('desc')->nullable();
             $table->string('title')->nullable();
             $table->json('people')->nullable();
+            $table->boolean('ks')->default(0);
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->integer('duration')->nullable();

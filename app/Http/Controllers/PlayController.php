@@ -96,10 +96,6 @@ http://localhost/media/stream/stream-3.ts
         
         $out['shows'] = $info['shows'];
         $out['wanted'] =  $time;
-        $next = $wanted->clone()->addHour();
-        
-        //$out['files'] = $files;
-        // $out['urls'] = $urls;
         
 
         return response()->json($out);

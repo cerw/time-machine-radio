@@ -7,6 +7,7 @@ use simplehtmldom\HtmlDocument;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Show extends Model
 {
@@ -15,12 +16,76 @@ class Show extends Model
         'people' => 'json'
     ];
 
-    
-
     protected $dates = [
         'starts_at',
         'ends_at'
     ];
+
+    protected $appends = [
+        'duration_human',
+        'when',
+        'tracks',
+        'files',
+        'starts_hours'
+    ];
+
+
+
+    
+
+    public function getStartsHoursAttribute() 
+    {
+        return $this->starts_at->format('H:i:s');
+    }
+    public function getTracksAttribute()
+    {
+        
+        return Track::whereBetween('stream_at', [$this->starts_at, $this->ends_at])->get();
+        
+    }
+    public function getFilesAttribute()
+    {
+        
+        $files = Storage::files('radio1');
+       
+        // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
+        // dump($wanted);
+        
+        $urls = [];
+        foreach($files as $file) {
+            if(preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#",$file,$match)) {
+                $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', $match[1]);
+                $perthTime =  $fileStartedAt->toDateTimeString();
+                $fileStartedAt->setTimezone('Europe/Prague');
+                
+                if ($fileStartedAt->between($this->starts_at, $this->ends_at)) {
+                    $urls[] = Storage::url($file);
+                }
+                
+            }
+            
+        }
+        
+
+        return $urls;
+        
+    }
+
+    public function getDurationHumanAttribute()
+    {
+        
+        return \Carbon\CarbonInterval::seconds($this->duration)->cascade()->forHumans();
+        
+    }
+
+
+    public function getWhenAttribute()
+    {
+        
+        return  $this->starts_at->format('H:i'). ' - '. $this->ends_at->format('H:i');
+        
+    }
+   
 
     static public function playing($wanted) 
     {
@@ -40,16 +105,17 @@ class Show extends Model
             // 1 day - 86400 s
             
             if ($wanted->between($showStartsAt, $showEndsAt)) {
-                $out['playing'] = [];
-                $out['playing']['date'] = $showStartsAt->toDateTimeString();
-                // $out['playing']['info'] = $shows[$index];
-                $out['playing']['starts'] = $showStartsAt->format('H:i');;
-                $out['playing']['ends'] = $showEndsAt->format('H:i');
+                // $out['playing'] = [];
+                // $out['playing']['date'] = $showStartsAt->toDateTimeString();
+                // // $out['playing']['info'] = $shows[$index];
+                // $out['playing']['starts'] = $showStartsAt->format('H:i');;
+                // $out['playing']['ends'] = $showEndsAt->format('H:i');
+                return $show;
                 
                 
             }
         }
-        return $out['playing'];
+        return [];
     }
 
 
@@ -200,6 +266,7 @@ class Show extends Model
             $dbShow->title = $show['people'][0]['name'];
             $dbShow->duration = $show['duration'];
             $dbShow->desc = $show['desc'];
+            $dbShow->ks = $show['ks'] ?? 0;
             $dbShow->save();
         }
 
