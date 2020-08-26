@@ -106,8 +106,8 @@ class Show extends Model
         foreach($existingShow as $index => $show) {
 
             // dd($time);
-            $showStartsAt =  Carbon::parse($show->starts_at, 'Europe/Prague');
-            $showEndsAt = Carbon::parse($show->ends_at, 'Europe/Prague')->timezone('Europe/Prague');
+            $showStartsAt =  Carbon::parse($show->starts_at)->subHour();
+            $showEndsAt = Carbon::parse($show->ends_at)->subHour();
             
             
             
