@@ -54,7 +54,7 @@ class StreamController extends Controller
             ]);
         
 
-            $track->release_date = $song['release_date'] ?? '';
+            $track->release_date = $song['release_date'] ?? null;
             $track->label = $song['label'] ?? '';
             $track->album = $song['album'] ?? '';
             $track->song_link = $song['song_link'] ?? '';

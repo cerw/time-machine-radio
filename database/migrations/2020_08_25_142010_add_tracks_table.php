@@ -18,7 +18,7 @@ class AddTracksTable extends Migration
             $table->string('artist');
             $table->string('title');
             $table->string('album');
-            $table->date('release_date');
+            $table->date('release_date')->nullable();
             $table->string('label');
             $table->string('song_link');
             $table->integer('score');
