@@ -119,7 +119,7 @@
                       <a
                         :href="track.song_link"
                         target="_blank"
-                      >{{ track.title }} -  {{ track.artist }}</a>
+                      >{{ track.artist }} - {{ track.title }}</a>
                       {{ track.release_date | formatYear }} @ {{ track.label }}
                       <span class="text-muted float-right">
                         {{ track.duration_human }}
