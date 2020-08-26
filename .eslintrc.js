@@ -19,7 +19,8 @@ module.exports = {
     'window': true,
     'Bugsnag': true,
     '_': true,
-    'google': true
+    'google': true,
+    'ga': true
   },
   // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
   extends: [

@@ -151,6 +151,13 @@ export default {
         self.$refs.archives.loadDay(self.radioDate)
       })
       .catch(error => console.log(error))
+
+    ga('send', {
+      hitType: 'event',
+      eventCategory: 'Videos',
+      eventAction: 'play',
+      eventLabel: 'Fall Campaign'
+    })
   },
   computed: {
     radioTime () {

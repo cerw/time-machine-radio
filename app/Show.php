@@ -39,13 +39,22 @@ class Show extends Model
     }
     public function getTracksAttribute()
     {
+        // return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at, 'CEST')
+        //         ->setTimezone('Europe/Prague');
         
-        return Track::whereBetween('stream_at', [$this->starts_at, $this->ends_at])->get();
+        $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->addHour();
+                //  ->setTimezone('Europe/Prague');
+        $to = Carbon::createFromFormat('Y-m-d H:i:s', $this->ends_at)->addHour();
+                //  ->setTimezone('Europe/Prague');
+                //  dd($from,$to,$this->when);
+        // return Track::whereDate('stream_at',$this->starts_at)->get();
+        return Track::whereBetween('stream_at', [$from, $to])->get();
         
     }
     public function getFilesAttribute()
     {
         
+       return [];
         $files = Storage::files('radio1');
        
         // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
@@ -82,6 +91,8 @@ class Show extends Model
     public function getWhenAttribute()
     {
         
+        
+
         return  $this->starts_at->format('H:i'). ' - '. $this->ends_at->format('H:i');
         
     }

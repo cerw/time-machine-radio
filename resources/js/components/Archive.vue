@@ -105,6 +105,28 @@
                   <span class="text-muted float-right">
                     {{ show.desc }}
                   </span>
+                  <!-- tracks -->
+                  <div
+                    class="p-2"
+                    v-if="show.tracks.length"
+                  >
+                    <strong>Track list - EXPERIMENT ({{ show.tracks.length }})</strong>
+                    <div
+                      v-for="(track, tindex) in show.tracks"
+                      :key="tindex+'-'+time"
+                    >
+                      {{ track.radio_time }}
+                      <a
+                        :href="track.song_link"
+                        target="_blank"
+                      >{{ track.title }} -  {{ track.artist }}</a>
+                      {{ track.release_date | formatYear }} @ {{ track.label }}
+                      <span class="text-muted float-right">
+                        {{ track.duration_human }}
+                      </span>
+                      <!-- {{ track.timecode }} -->
+                    </div>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -124,6 +146,15 @@ export default {
       shows: [],
       slotPlaying: null,
       today: moment().format('YYYY-MM-DD')
+    }
+  },
+  filters: {
+    formatYear: function (value) {
+      if (value !== undefined) {
+        return moment(value).format('Y')
+      } else {
+        return false
+      }
     }
   },
   mounted () {
@@ -150,8 +181,8 @@ export default {
   methods: {
     showSize (show) {
       // default none
-      if (show.ks) return ''
-      return 'height: ' + show.duration / 100 + 'px'
+      if (show.ks || show.duration < 1200) return ''
+      return 'min-height: ' + show.duration / 100 + 'px'
     },
     isFuture (time) {
       const playing = moment(this.today + ' ' + time, 'YYYY-MM-DD HH:mm:ss').tz(this.$parent.radioTZ, true)

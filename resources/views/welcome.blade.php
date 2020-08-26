@@ -30,7 +30,7 @@
 
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
-@if(App::environment('production'))
+@if(App::environment('production','local'))
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-174008818-1"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

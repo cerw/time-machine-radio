@@ -14,7 +14,8 @@ class Track extends Model
     ];
 
     protected $appends = [
-        'radio_time'
+        'radio_time',
+        'duration_human',
     ];
 
     protected $dates = [
@@ -24,8 +25,20 @@ class Track extends Model
 
     public function getRadioTimeAttribute()
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at, 'CEST')
-                ->setTimezone('Europe/Prague');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at)
+                ->subHour()
+                ->toTimeString();
+        
+    }
+
+    public function getDurationHumanAttribute()
+    {
+        
+        
+        if (isset($this->metadata['result']['play_length'])) {
+
+        }
+        return \Carbon\CarbonInterval::seconds($this->metadata['result']['play_length'])->cascade()->forHumans();
         
     }
 }
