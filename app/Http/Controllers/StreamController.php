@@ -50,14 +50,14 @@ class StreamController extends Controller
             
             $track = Track::firstOrNew([
                 'artist' =>  $song['artist'],
-                'title' => $song['title'],
-                'album' => $song['album']
+                'title' => $song['title']
             ]);
         
 
             $track->release_date = $song['release_date'];
             $track->label = $song['label'] ?? '';
-            $track->song_link = $song['song_link'];
+            $track->album = $song['album'] ?? '';
+            $track->song_link = $song['song_link'] ?? '';
             $track->score = $song['score'];
             $track->metadata = $request->input();
             $track->timecode = $song['timecode'];
