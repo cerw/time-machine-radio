@@ -22,9 +22,8 @@
 <meta name="msapplication-TileImage" content="/images/icons/icon-512x512.png">
 <meta name="theme-color" content="#f20000">
 
-
-        <!-- CSRF Token -->
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <!-- CSRF Token -->
+{{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
 
   <title>{{ config('app.name', '') }} {{ $title ?? '' }}</title>
 

@@ -1,6 +1,6 @@
 <template>
   <div
-    v-show="true"
+    v-show="!loaded"
     class="text-center"
   >
     <div

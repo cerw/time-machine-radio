@@ -26,7 +26,7 @@
               class="h6 nav-link"
               @click.prevent="loadDay(day.format)"
             >
-              {{ day.calendar }}
+              {{ day.niceday }}
             </a>
 
             <ul
@@ -35,7 +35,10 @@
             >
               <li
                 class="list-group-item p-1 rounded"
-                :class="{'list-group-item-info': show.ks,'list-group-item-success': slotPlaying === show.starts_hours , 'list-group-item-danger': show.now, 'hidden': isFuture(show.starts_hours) }"
+                v-show="!isFuture(show.starts_hours)"
+                :class="{'list-group-item-info': show.ks,
+                         'list-group-item-success': isShowPlaying(show) ,
+                         'list-group-item-danger': show.now }"
                 v-for="(show, time) in shows"
                 :key="time"
               >
@@ -45,7 +48,8 @@
                   <button
                     class="btn btn-sm"
                     @click="playArchive(show.starts_hours)"
-                    :class="{'btn-success':slotPlaying == show.starts_hours,'btn-warning':slotPlaying !== show.starts_hours}"
+                    :class="{'btn-success':slotPlaying == show.starts_hours,
+                             'btn-warning':slotPlaying !== show.starts_hours}"
                   >
                     <svg
                       v-if="slotPlaying !== show.starts_hours"
@@ -188,6 +192,20 @@ export default {
       const playing = moment(this.today + ' ' + time, 'YYYY-MM-DD HH:mm:ss').tz(this.$parent.radioTZ, true)
       const now = moment().tz(this.$parent.radioTZ)
       return now.diff(playing) < 0
+    },
+    isShowPlaying (show) {
+      // radioThen
+      // playing clock now - this.$parent.radioThen / "Tuesday 23:00:40
+      var format = 'hh:mm:ss'
+      var time = moment(this.$parent.radioThen.split(' ')[1], format)
+      var beforeTime = moment(show.starts_hours, format)
+      var afterTime = moment(show.ends_hours, format)
+
+      if (time.isBetween(beforeTime, afterTime)) {
+        return true
+      } else {
+        return false
+      }
     },
     toYourTime (time) {
       const prague = moment(this.today + ' ' + time, 'YYYY-MM-DD HH:mm:ss').tz(this.$parent.radioTZ, true)

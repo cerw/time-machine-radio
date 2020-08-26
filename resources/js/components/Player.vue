@@ -454,6 +454,7 @@ export default {
         .then(() => {
           console.log('player - playAudio callback')
           this.updateMetadata()
+          this.$parent.$refs.loader.loaded = true
           this.$forceUpdate()
         })
         .catch(error => console.log(error))

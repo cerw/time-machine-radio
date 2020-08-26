@@ -26,16 +26,21 @@ class Show extends Model
         'when',
         'tracks',
         'files',
-        'starts_hours'
+        'starts_hours',
+        'ends_hours',
     ];
 
-
-
+    
     
 
     public function getStartsHoursAttribute() 
     {
         return $this->starts_at->format('H:i:s');
+    }
+
+    public function getEndsHoursAttribute() 
+    {
+        return $this->ends_at->format('H:i:s');
     }
     public function getTracksAttribute()
     {
@@ -48,7 +53,7 @@ class Show extends Model
                 //  ->setTimezone('Europe/Prague');
                 //  dd($from,$to,$this->when);
         // return Track::whereDate('stream_at',$this->starts_at)->get();
-        return Track::whereBetween('stream_at', [$from, $to])->get();
+        return Track::whereBetween('stream_at', [$from, $to])->orderBy('stream_at')->get();
         
     }
     public function getFilesAttribute()
@@ -90,11 +95,7 @@ class Show extends Model
 
     public function getWhenAttribute()
     {
-        
-        
-
         return  $this->starts_at->format('H:i'). ' - '. $this->ends_at->format('H:i');
-        
     }
    
 
@@ -107,11 +108,8 @@ class Show extends Model
 
             // dd($time);
             $showStartsAt =  Carbon::parse($show->starts_at,'Europe/Prague')->timezone('Europe/Prague');
-            $showEndsAt = Carbon::parse($show->ends_at, 'Europe/Prague')->timezone('Europe/Prague');
-            
-            
-            
-            
+            $showEndsAt = Carbon::parse($show->ends_at, 'Europe/Prague')->timezone('Europe/Prague')->subSecond();
+        
             // dd($c);
             // 1 day - 86400 s
             
@@ -142,7 +140,7 @@ class Show extends Model
         $date = $wanted->format('Y-m-d');
         
 
-        $existingShow = Show::whereDate('date',$date)->get();
+        $existingShow = Show::whereDate('date',$date)->orderBy('starts_at','DESC')->get();
         
         if($existingShow->count()) {
             return  $existingShow;
@@ -229,8 +227,10 @@ class Show extends Model
 
             if(isset($times[$index+1])) {
                 $endSplit = explode(":",$times[$index+1]);
-                $showEndsAt = $showStartsAt->clone()->setTime($endSplit[0], $endSplit[1]);
+            } else {
+                $endSplit = explode(":","23:59");
             }
+            $showEndsAt = $showStartsAt->clone()->setTime($endSplit[0], $endSplit[1]);
             
             //dump($showStartsAt,$showEndsAt,$wanted);
             

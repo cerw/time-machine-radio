@@ -152,12 +152,12 @@ export default {
       })
       .catch(error => console.log(error))
 
-    ga('send', {
-      hitType: 'event',
-      eventCategory: 'Videos',
-      eventAction: 'play',
-      eventLabel: 'Fall Campaign'
-    })
+    // ga('send', {
+    //   hitType: 'event',
+    //   eventCategory: 'Videos',
+    //   eventAction: 'play',
+    //   eventLabel: 'Fall Campaign'
+    // })
   },
   computed: {
     radioTime () {
