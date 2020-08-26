@@ -23,7 +23,7 @@
 <meta name="theme-color" content="#f20000">
 
   <!-- CSRF Token -->
-{{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
+
 
   <title>{{ config('app.name', '') }} {{ $title ?? '' }}</title>
 
