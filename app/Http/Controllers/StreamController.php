@@ -54,14 +54,14 @@ class StreamController extends Controller
             ]);
         
 
-            $track->release_date = $song['release_date'];
+            $track->release_date = $song['release_date'] ?? '';
             $track->label = $song['label'] ?? '';
             $track->album = $song['album'] ?? '';
             $track->song_link = $song['song_link'] ?? '';
-            $track->score = $song['score'];
+            $track->score = $song['score'] ?? '';
             $track->metadata = $request->input();
-            $track->timecode = $song['timecode'];
-            $track->stream_at = $request->result['timestamp'];
+            $track->timecode = $song['timecode'] ?? '';
+            $track->stream_at = $request->result['timestamp'] ?? '';
             $track->save();
         }
         return response()->json($request->input());
