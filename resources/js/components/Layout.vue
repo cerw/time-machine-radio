@@ -76,11 +76,23 @@
                   fill-rule="evenodd"
                   d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"
                 />
-              </svg> <a
+              </svg>
+
+              <a
                 title="Made by cerw - please send feedback"
                 href="https://twitter.com/cerw"
                 target="_blank"
               >@cerw</a>
+              <img
+                src="https://audd.io/images/icon-180x180.png"
+                height="12"
+                class="img"
+              >
+              <a
+                title="Track decoded by audd.io"
+                href="https://audd.io/"
+                target="_blank"
+              >audd.io</a>
             </span>
           </div>
         </div>
