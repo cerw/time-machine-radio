@@ -62,7 +62,10 @@ class StreamController extends Controller
             $track->metadata = $request->input();
             $track->timecode = $song['timecode'] ?? '';
             $track->stream_at = $request->result['timestamp'] ?? '';
+            $track->play_length = $request->result['play_length'] ?? null;
+            
             $track->save();
+            // track.metadata.result.play_length 
         }
         return response()->json($request->input());
         

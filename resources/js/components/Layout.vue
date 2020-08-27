@@ -278,6 +278,7 @@ export default {
         //   console.log('Loading API from internal')
         //   this.load()
         // }
+        this.$refs.player.updateMetadata()
       }
     },
     load (time) {

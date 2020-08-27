@@ -81,6 +81,15 @@
       </div>
 
       <div
+        class="alert p-0 m-0 small alert-primary"
+        v-if="currentTrack !== undefined"
+      >
+        Song playing now
+
+        <Track :track="currentTrack" />
+      </div>
+
+      <div
         class="alert alert-success"
         v-if="livePlaying()"
       >
@@ -272,10 +281,14 @@
   </div>
 </template>
 <script>
-// import moment from 'moment-timezone'
+import moment from 'moment-timezone'
+import Track from './Track'
 
 export default {
   name: 'Player',
+  components: {
+    Track
+  },
   props: {
     config: {
       type: [Object, Array],
@@ -288,6 +301,7 @@ export default {
       url: null
       // radioDate: moment().format('HH:mm:ss'),
       // radioCalendar: moment().format('HH:mm:ss'),
+
     }
   },
   mounted () {
@@ -346,7 +360,46 @@ export default {
     },
     mediaTime () {
       return 0
+    },
+    currentTrack () {
+      if (this.config.playing !== undefined) {
+        const self = this
+        const trackPlayings = this.config.playing.tracks.filter(function (track, index) {
+          // song started
+          // next song started / aprox lenght of song?
+          var format = 'hh:mm:ss'
+          var time = moment(self.radioThen.split(' ')[1], format)
+          var trackStarted = moment(track.radio_time, format)
+          var trackEnded = moment(track.radio_time_ends, format)
+          // console.log(time, beforeTime, afterTime)
+          // console.log(index, track.title, track.stream_at, track.stream_ends_at)
+          if (time.isBetween(trackStarted, trackEnded)) {
+            return true
+          } else {
+            return false
+          }
+        })
+        if (trackPlayings.length) {
+          return trackPlayings[0]
+        }
+      }
+      return undefined
+    },
+    isShowPlaying (show) {
+      // radioThen
+      // playing clock now - this.$parent.radioThen / "Tuesday 23:00:40
+      var format = 'hh:mm:ss'
+      var time = moment(this.$parent.radioThen.split(' ')[1], format)
+      var beforeTime = moment(show.starts_hours, format)
+      var afterTime = moment(show.ends_hours, format)
+
+      if (time.isBetween(beforeTime, afterTime)) {
+        return true
+      } else {
+        return false
+      }
     }
+
     // radioTime () {
     //   return moment.tz(this.radioTZ)
     // },
@@ -438,12 +491,22 @@ export default {
         }
         // Serving show from <strong>{{ config.recoded_at }} </strong>- {{ radioThen }}
 
-        navigator.mediaSession.metadata = new window.MediaMetadata({
-          title: title,
-          artist: artist,
-          album: album,
-          artwork: artwork
-        })
+        // console.log('MediaMetadata', this.currentTrack)
+        if (this.currentTrack !== undefined) {
+          navigator.mediaSession.metadata = new window.MediaMetadata({
+            title: this.currentTrack.title,
+            artist: this.currentTrack.artist,
+            album: this.currentTrack.album,
+            artwork: artwork
+          })
+        } else {
+          navigator.mediaSession.metadata = new window.MediaMetadata({
+            title: title,
+            artist: artist,
+            album: album,
+            artwork: artwork
+          })
+        }
       }
     },
 

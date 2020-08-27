@@ -119,16 +119,7 @@
                       v-for="(track, tindex) in show.tracks"
                       :key="tindex+'-'+time"
                     >
-                      {{ track.radio_time }}
-                      <a
-                        :href="track.song_link"
-                        target="_blank"
-                      >{{ track.artist }} - {{ track.title }}</a>
-                      {{ track.release_date | formatYear }} @ {{ track.label }}
-                      <span class="text-muted float-right">
-                        {{ track.duration_human }}
-                      </span>
-                      <!-- {{ track.timecode }} -->
+                      <Track :track="track" />
                     </div>
                   </div>
                 </div>
@@ -142,8 +133,12 @@
 </template>
 <script>
 import moment from 'moment-timezone'
+import Track from './Track'
 export default {
   name: 'Archive',
+  components: {
+    Track
+  },
   data () {
     return {
       days: [],
@@ -152,15 +147,7 @@ export default {
       today: moment().format('YYYY-MM-DD')
     }
   },
-  filters: {
-    formatYear: function (value) {
-      if (value !== undefined) {
-        return moment(value).format('Y')
-      } else {
-        return false
-      }
-    }
-  },
+
   mounted () {
     const current = moment()
     let n = 4
