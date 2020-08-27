@@ -1,12 +1,20 @@
 <template>
   <span>
+    <img
+      :src="track.song_link+'?thumb'"
+      class="img"
+      lazy
+      height="50px"
+    >
     {{ track.radio_time }}
+
     <a
       :href="track.song_link"
       target="_blank"
     >{{ track.artist }} - {{ track.title }}</a>
     {{ track.release_date | formatYear }} @ {{ track.label }}
     <span class="text-muted float-right">
+
       {{ track.duration_human }}
     </span>
     <!-- {{ track.timecode }} -->
