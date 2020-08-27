@@ -117,6 +117,7 @@
                     <strong>Track list - EXPERIMENT ({{ show.tracks.length }})</strong>
                     <div
                       v-for="(track, tindex) in show.tracks"
+                      :class="{'alert-primary p-1': currentTrack !== undefined && track.id === currentTrack.id}"
                       :key="tindex+'-'+time"
                     >
                       <Track :track="track" />
@@ -167,6 +168,9 @@ export default {
     },
     isToday () {
       return moment().format('YYYY-MM-DD') === this.today
+    },
+    currentTrack () {
+      return this.$parent.$refs.player.currentTrack
     }
   },
   methods: {
