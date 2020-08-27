@@ -140,6 +140,29 @@
     >
       <button
         type="button"
+        class="btn btn-outline-info"
+        @click="prevSong()"
+      >
+        <svg
+          width="2em"
+          height="2em"
+          viewBox="0 0 16 16"
+          class="bi bi-skip-start"
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4.5 3.5A.5.5 0 0 0 4 4v8a.5.5 0 0 0 1 0V4a.5.5 0 0 0-.5-.5z"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M5.696 8L11.5 4.633v6.734L5.696 8zm-.792-.696a.802.802 0 0 0 0 1.392l6.363 3.692c.52.302 1.233-.043 1.233-.696V4.308c0-.653-.713-.998-1.233-.696L4.904 7.304z"
+          />
+        </svg>
+      </button>
+      <button
+        type="button"
         class="btn btn-dark"
         @click="seekBack(60)"
       >
@@ -262,6 +285,29 @@
         </svg>
         60s
       </button>
+      <button
+        type="button"
+        class="btn btn-outline-info"
+        @click="nextSong()"
+      >
+        <svg
+          width="2em"
+          height="2em"
+          viewBox="0 0 16 16"
+          class="bi bi-skip-end"
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"
+          />
+        </svg>
+      </button>
     </div>
 
     <audio
@@ -339,15 +385,15 @@ export default {
 
       navigator.mediaSession.setActionHandler('previoustrack', function (event) {
         console.log('> User clicked "previoustrack" icon.')
-        const skipTime = event.seekOffset || defaultSkipTime
-        self.seekForward(skipTime)
+
+        self.prevSong()
         self.updatePositionState()
       })
 
       navigator.mediaSession.setActionHandler('nexttrack', function (event) {
         console.log('> User clicked "nexttrack" icon.')
-        const skipTime = event.seekOffset || defaultSkipTime
-        self.seekForward(skipTime)
+
+        self.nextSong()
         self.updatePositionState()
       })
     }
@@ -396,6 +442,30 @@ export default {
       }
       return undefined
     },
+    nextTrack () {
+      if (this.config.playing !== undefined && this.config.playing.tracks !== undefined) {
+        const self = this
+        var currentIndex = this.config.playing.tracks.findIndex(function (track) {
+          return track.id === self.currentTrack.id
+        })
+        if (currentIndex !== -1) {
+          return this.config.playing.tracks[currentIndex + 1]
+        }
+      }
+      return undefined
+    },
+    prevTrack () {
+      if (this.config.playing !== undefined && this.config.playing.tracks !== undefined) {
+        const self = this
+        var currentIndex = this.config.playing.tracks.findIndex(function (track) {
+          return track.id === self.currentTrack.id
+        })
+        if (currentIndex !== -1) {
+          return this.config.playing.tracks[currentIndex - 1]
+        }
+      }
+      return undefined
+    },
     isShowPlaying (show) {
       // radioThen
       // playing clock now - this.$parent.radioThen / "Tuesday 23:00:40
@@ -434,6 +504,12 @@ export default {
     },
     seekBack (skipTime) {
       this.$refs.player.currentTime = Math.max(this.$refs.player.currentTime - skipTime, 0)
+    },
+    nextSong () {
+      this.$parent.$refs.archives.playArchive(this.nextTrack.radio_time)
+    },
+    prevSong () {
+      this.$parent.$refs.archives.playArchive(this.prevTrack.radio_time)
     },
     canplay (event) {
       console.log('Player - can play')
