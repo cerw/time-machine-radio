@@ -3,7 +3,7 @@
     <img
       :src="track.song_link+'?thumb'"
       class="img"
-      lazy
+      loading="lazy"
       height="50px"
     >
     {{ track.radio_time }}
