@@ -336,6 +336,20 @@ export default {
         self.seekForward(skipTime)
         self.updatePositionState()
       })
+
+      navigator.mediaSession.setActionHandler('previoustrack', function (event) {
+        console.log('> User clicked "previoustrack" icon.')
+        const skipTime = event.seekOffset || defaultSkipTime
+        self.seekForward(skipTime)
+        self.updatePositionState()
+      })
+
+      navigator.mediaSession.setActionHandler('nexttrack', function (event) {
+        console.log('> User clicked "nexttrack" icon.')
+        const skipTime = event.seekOffset || defaultSkipTime
+        self.seekForward(skipTime)
+        self.updatePositionState()
+      })
     }
 
     window.addEventListener('keypress', function (e) {

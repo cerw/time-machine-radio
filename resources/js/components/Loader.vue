@@ -1,7 +1,7 @@
 <template>
   <div
     v-show="!loaded"
-    class="text-center"
+    class="text-center loader"
   >
     <div
       class="spinner-grow text-warning text-center"
@@ -44,9 +44,11 @@ export default {
 </script>
 <style lang="css" scoped>
 
-.fixed {
-  position: absolute;
-  top:0;
+.loader {
+  position: fixed;
+  top: 50px;
+  left: 40%;
+  z-index: 999999;
 }
 
 </style>

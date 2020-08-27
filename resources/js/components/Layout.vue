@@ -4,6 +4,7 @@
       role="main"
       class="flex-shrink-0"
     >
+      <Loader ref="loader" />
       <div class="container">
         <!-- Logo -->
         <div class="row pb-2">
@@ -96,8 +97,6 @@
             </span>
           </div>
         </div>
-
-        <Loader ref="loader" />
 
         <!-- Main App-->
         <div class="card">

@@ -85,7 +85,7 @@
                     </svg>
                   </button>
                   <div class="col-9 small">
-                    <strong> {{ show.when }} </strong> <i> {{ show.duration_human }} </i> <br>
+                    <strong> {{ show.when }} </strong> <i> {{ show.duration_human }} </i><br>
                     <span
                       v-for="(person, pindex) in show.people"
                       :key="pindex"
