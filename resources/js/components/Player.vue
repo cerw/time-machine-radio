@@ -2,10 +2,10 @@
   <div class="player-fixed card p-0">
     <!-- Info -->
     <div
-      class="text-center p-0"
+      class=""
     >
       <div
-        class="alert alert-success small mb-0"
+        class="alert alert-success small mb-0 text-center"
         v-if="timemachinePlaying()"
       >
         Serving show from <strong>{{ config.recoded_at }} </strong>
@@ -48,7 +48,7 @@
             :key="index"
           >
             <a
-              class="btn btn-sm btn-outline-primary"
+              class="btn btn-xs btn-outline-primary"
               :href="person.link"
               target="_blank"
             >
@@ -78,13 +78,6 @@
             {{ config.playing.desc }}
           </span>
         </div>
-      </div>
-
-      <div
-        class="alert p-0 m-0 small alert-primary"
-        v-if="currentTrack !== undefined"
-      >
-        <Track :track="currentTrack" />
       </div>
 
       <div
@@ -132,6 +125,12 @@
           {{ config.playing.desc }}
         </div>
       </div>
+    </div>
+    <div class="pl-1">
+      <Track
+        :track="currentTrack"
+        v-if="currentTrack !== undefined"
+      />
     </div>
 
     <div
@@ -181,7 +180,7 @@
               d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z"
             />
           </svg>
-          Stop
+
         </span>
         <span v-else>
           <svg
@@ -197,7 +196,7 @@
               d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"
             />
           </svg>
-          Play
+
         </span>
         Live
       </button>
@@ -221,7 +220,7 @@
             d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z"
           />
           </svg>
-          Stop
+
         </span>
         <span v-else>
           <svg
@@ -238,7 +237,7 @@
             />
 
           </svg>
-          Play
+
         </span>
         Timemachine
       </button>
@@ -455,7 +454,7 @@ export default {
       }
     },
     updateMetadata () {
-      if ('mediaSession' in navigator) {
+      if ('mediaSession' in navigator && this.config.playing !== undefined) {
         /*
       src: '/images/icons/icon-96x96.png',
       title: 'Snow Fight',
@@ -480,7 +479,7 @@ export default {
         }
 
         let artist = 'N/A'
-        if (this.config.playing.people !== undefined) {
+        if (this.config.playing !== undefined && this.config.playing.people !== undefined) {
           artist = this.config.playing.people[0].name
         }
         const album = 'Radio 1 🕰Machine'

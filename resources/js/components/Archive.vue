@@ -21,6 +21,7 @@
             :class="{'list-group-item-secondary': day.format === today}"
             :key="day.format"
           >
+            <!-- Days -->
             <a
               :href="'/archive/'+day.format"
               class="h6 nav-link"
@@ -29,6 +30,7 @@
               {{ day.niceday }}
             </a>
 
+            <!-- Shows -->
             <ul
               class="list-group  list-group-flush"
               v-if="day.format === today"
@@ -37,7 +39,7 @@
                 class="list-group-item p-1 rounded"
                 v-show="!isFuture(show.starts_hours)"
                 :class="{'list-group-item-info': show.ks,
-                         'list-group-item-success': isShowPlaying(show) ,
+                         'lactive': isShowPlaying(show) ,
                          'list-group-item-danger': show.now }"
                 v-for="(show, time) in shows"
                 :key="time"
@@ -46,7 +48,7 @@
                   :style="showSize(show)"
                 >
                   <button
-                    class="btn btn-sm"
+                    class="btn btn-xs"
                     @click="playArchive(show.starts_hours)"
                     :class="{'btn-success':slotPlaying == show.starts_hours,
                              'btn-warning':slotPlaying !== show.starts_hours}"
@@ -87,7 +89,7 @@
                   <!-- <strong class="float-right">
                     {{ toYourTime(time) }}
                   </strong> -->
-
+                  <!-- People -->
                   <span
                     v-for="(person, pindex) in show.people"
                     :key="pindex"
@@ -109,18 +111,22 @@
                   <span class="text-muted float-right">
                     {{ show.desc }}
                   </span>
-                  <!-- tracks -->
+                  <!-- Tracks -->
                   <div
-                    class="p-2"
-                    v-if="show.tracks.length"
+                    class="p-1"
+                    v-if="show.tracks.length && isShowPlaying(show)"
                   >
                     <strong>Track list - EXPERIMENT ({{ show.tracks.length }})</strong>
                     <div
                       v-for="(track, tindex) in show.tracks"
-                      :class="{'alert-primary p-1': currentTrack !== undefined && track.id === currentTrack.id}"
+                      class="border-bottom"
+                      :class="{'alert-success': currentTrack !== undefined && track.id === currentTrack.id}"
                       :key="tindex+'-'+time"
                     >
-                      <Track :track="track" />
+                      <Track
+                        :track="track"
+                        :play="true"
+                      />
                     </div>
                   </div>
                 </div>
