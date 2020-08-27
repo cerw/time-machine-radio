@@ -55,9 +55,10 @@ http://localhost/media/stream/stream-3.ts
         // dump($wanted);
         $expiresAt = Carbon::now()->subDays(4);
         
+
         foreach($files as $file) {
             if(preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#",$file,$match)) {
-                $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', $match[1]);
+                $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', $match[1],'Australia/Perth');
                 $perthTime =  $fileStartedAt->toDateTimeString();
                 if($perthTime < $expiresAt) {
                     \Log::info("Removing old files {$file}");
@@ -68,6 +69,7 @@ http://localhost/media/stream/stream-3.ts
                 // $diff = $date->diffInDays($wanted);
                 $diff = $wanted->diffInSeconds($fileStartedAt);
                 // dump($diff,$file);
+                // dump($fileStartedAt);
                 if($fileStartedAt->lessThanOrEqualTo($wanted) && $diff < $closest){
                     // edited at is newer than created at
                 //    dump($fileStartedAt, $diff, $fileStartedAt->format('H:i:s'));

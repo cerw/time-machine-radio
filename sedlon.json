@@ -1,0 +1,401 @@
+{
+  "status": "success",
+  "result": [
+    {
+      "songs": [
+        {
+          "artist": "Brijean",
+          "title": "Moody",
+          "album": "Moody",
+          "release_date": "2020-07-22",
+          "label": "Ghostly International",
+          "timecode": "01:05",
+          "song_link": "https://lis.tn/jDXXSx"
+        }
+      ],
+      "offset": "00:00"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Hudson Mohawke",
+          "title": "Black Cherry",
+          "album": "Black Cherry",
+          "release_date": "2020-07-08",
+          "label": "Warp Records",
+          "timecode": "01:06",
+          "song_link": "https://lis.tn/BlackCherry"
+        }
+      ],
+      "offset": "02:06"
+    },
+    {
+      "songs": [
+        {
+          "artist": "ODESZA",
+          "title": "Loyal",
+          "album": "Loyal",
+          "release_date": "2018-09-13",
+          "label": "Ninja Tune",
+          "timecode": "00:15",
+          "song_link": "https://lis.tn/xzKwod"
+        }
+      ],
+      "offset": "04:12"
+    },
+    {
+      "songs": [
+        {
+          "artist": "ODESZA",
+          "title": "Loyal",
+          "album": "Loyal",
+          "release_date": "2018-09-13",
+          "label": "Ninja Tune",
+          "timecode": "02:21",
+          "song_link": "https://lis.tn/xzKwod"
+        }
+      ],
+      "offset": "06:18"
+    },
+    {
+      "songs": [
+        {
+          "artist": "The Chemical Brothers",
+          "title": "Get Yourself High (Extended Version) (Feat. K-OS)",
+          "album": "Get Yourself High",
+          "release_date": "2004-01-27",
+          "label": "Astralwerks",
+          "timecode": "01:42",
+          "song_link": "https://lis.tn/cdymt"
+        },
+        {
+          "artist": "K-Os;The Chemical Brothers",
+          "title": "Get Yourself High",
+          "album": "Get Yourself High",
+          "release_date": "2019-06-28",
+          "label": "UMC (Universal Music Catalogue)",
+          "timecode": "01:42",
+          "song_link": "https://lis.tn/GetYourselfHigh"
+        },
+        {
+          "artist": "The Chemical Brothers",
+          "title": "Get Yourself High",
+          "album": "Get Yourself High",
+          "release_date": "2019-06-28",
+          "label": "UMG - UMC (Universal Music Catalogue)",
+          "timecode": "00:59",
+          "song_link": "https://lis.tn/usNvdN"
+        }
+      ],
+      "offset": "08:24"
+    },
+    {
+      "songs": [
+        {
+          "artist": "The Chemical Brothers",
+          "title": "Get Yourself High (Extended Version) (Feat. K-OS)",
+          "album": "Get Yourself High",
+          "release_date": "2004-01-27",
+          "label": "Astralwerks",
+          "timecode": "03:55",
+          "song_link": "https://lis.tn/cdymt"
+        },
+        {
+          "artist": "The Chemical Brothers",
+          "title": "Get Yourself High",
+          "album": "Get Yourself High",
+          "release_date": "2019-06-28",
+          "label": "UMG - UMC (Universal Music Catalogue)",
+          "timecode": "03:55",
+          "song_link": "https://lis.tn/GetYourselfHigh"
+        },
+        {
+          "artist": "The Chemical Brothers",
+          "title": "Get Yourself High",
+          "album": "Get Yourself High",
+          "release_date": "2019-06-28",
+          "label": "UMG - UMC (Universal Music Catalogue)",
+          "timecode": "03:55",
+          "song_link": "https://lis.tn/cdymt"
+        }
+      ],
+      "offset": "10:30"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Etherwood",
+          "title": "Begin By Letting Go (Isolation Jam)",
+          "album": "Begin By Letting Go (Isolation Jam)",
+          "release_date": "2020-07-08",
+          "label": "Hospital Records",
+          "timecode": "01:07",
+          "song_link": "https://lis.tn/WxGfA"
+        }
+      ],
+      "offset": "12:36"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Etherwood",
+          "title": "Begin By Letting Go (Isolation Jam)",
+          "album": "Begin By Letting Go (Isolation Jam)",
+          "release_date": "2020-07-08",
+          "label": "Hospital Records",
+          "timecode": "03:13",
+          "song_link": "https://lis.tn/WxGfA"
+        }
+      ],
+      "offset": "14:42"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Zero 7",
+          "title": "In The Waiting Line",
+          "album": "Simple Things",
+          "release_date": "2001-04-23",
+          "label": "EastWest U.K.",
+          "timecode": "01:02",
+          "song_link": "https://lis.tn/InTheWaitingLine"
+        }
+      ],
+      "offset": "16:48"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Zero 7",
+          "title": "In The Waiting Line",
+          "album": "Simple Things",
+          "release_date": "2001-04-23",
+          "label": "EastWest U.K.",
+          "timecode": "03:08",
+          "song_link": "https://lis.tn/InTheWaitingLine"
+        }
+      ],
+      "offset": "18:54"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Kletis",
+          "title": "Future Echoes",
+          "album": "Black Rainbow",
+          "release_date": "2020-01-31",
+          "label": "DOLEC",
+          "timecode": "01:56",
+          "song_link": "https://lis.tn/FutureEchoes"
+        }
+      ],
+      "offset": "23:06"
+    },
+    {
+      "songs": [
+        {
+          "artist": "D.K.",
+          "title": "Marimba Theme",
+          "album": "Love on Delivery",
+          "release_date": "2015-02-16",
+          "label": "Antinote",
+          "timecode": "00:17",
+          "song_link": "https://lis.tn/MarimbaTheme"
+        }
+      ],
+      "offset": "29:24"
+    },
+    {
+      "songs": [
+        {
+          "artist": "D.K.",
+          "title": "Marimba Theme",
+          "album": "Love on Delivery",
+          "release_date": "2015-02-16",
+          "label": "Antinote",
+          "timecode": "02:24",
+          "song_link": "https://lis.tn/MarimbaTheme"
+        }
+      ],
+      "offset": "31:30"
+    },
+    {
+      "songs": [
+        {
+          "artist": "D.K.",
+          "title": "Marimba Theme",
+          "album": "Love on Delivery",
+          "release_date": "2015-02-16",
+          "label": "Antinote",
+          "timecode": "04:30",
+          "song_link": "https://lis.tn/MarimbaTheme"
+        }
+      ],
+      "offset": "33:36"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Brrd",
+          "title": "Embrace!",
+          "album": "Towers / Anointing",
+          "release_date": "2013-09-16",
+          "label": "Blueberry Records",
+          "timecode": "00:18",
+          "song_link": "https://lis.tn/Embrace!"
+        },
+        {
+          "artist": "Brrd",
+          "title": "Embrace!",
+          "album": "Towers / Anointing",
+          "release_date": "2013-09-16",
+          "label": "Blueberry Records",
+          "timecode": "00:18",
+          "song_link": "https://lis.tn/Embrace!"
+        }
+      ],
+      "offset": "35:42"
+    },
+    {
+      "songs": [
+        {
+          "artist": "MOS",
+          "title": "Legacy",
+          "album": "That Was Audio Therapy Volume 2",
+          "release_date": "2009-08-31",
+          "label": "Audio Therapy",
+          "timecode": "00:02",
+          "song_link": "https://lis.tn/csFJuP"
+        }
+      ],
+      "offset": "37:48"
+    },
+    {
+      "songs": [
+        {
+          "artist": "MOS",
+          "title": "Legacy",
+          "album": "That Was Audio Therapy Volume 2",
+          "release_date": "2009-08-31",
+          "label": "Audio Therapy",
+          "timecode": "02:08",
+          "song_link": "https://lis.tn/csFJuP"
+        }
+      ],
+      "offset": "39:54"
+    },
+    {
+      "songs": [
+        {
+          "artist": "MOS",
+          "title": "Legacy",
+          "album": "That Was Audio Therapy Volume 2",
+          "release_date": "2009-08-31",
+          "label": "Audio Therapy",
+          "timecode": "04:14",
+          "song_link": "https://lis.tn/csFJuP"
+        }
+      ],
+      "offset": "42:00"
+    },
+    {
+      "songs": [
+        {
+          "artist": "MOS",
+          "title": "Legacy",
+          "album": "That Was Audio Therapy Volume 2",
+          "release_date": "2009-08-31",
+          "label": "Audio Therapy",
+          "timecode": "06:20",
+          "song_link": "https://lis.tn/csFJuP"
+        }
+      ],
+      "offset": "44:06"
+    },
+    {
+      "songs": [
+        {
+          "artist": "MOS",
+          "title": "Legacy",
+          "album": "That Was Audio Therapy Volume 2",
+          "release_date": "2009-08-31",
+          "label": "Audio Therapy",
+          "timecode": "08:26",
+          "song_link": "https://lis.tn/csFJuP"
+        }
+      ],
+      "offset": "46:12"
+    },
+    {
+      "songs": [
+        {
+          "artist": "ovrkast.",
+          "title": "Face (feat. Navy Blue)",
+          "album": "Try Again",
+          "release_date": "2020-01-17",
+          "label": "do more.",
+          "timecode": "01:06",
+          "song_link": "https://lis.tn/FaceFeatNavyBlue"
+        }
+      ],
+      "offset": "50:24"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Liv.e",
+          "title": "Lessons From My Mistakes...but I lost your number",
+          "album": "Bout These Pipedreams / Lessons From My Mistakes... but I lost your number",
+          "release_date": "2020-05-06",
+          "label": "In Real Life Music",
+          "timecode": "00:12",
+          "song_link": "https://lis.tn/Krzaw"
+        }
+      ],
+      "offset": "52:30"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Liv.e",
+          "title": "Lessons From My Mistakes...but I lost your number",
+          "album": "Bout These Pipedreams / Lessons From My Mistakes... but I lost your number",
+          "release_date": "2020-05-06",
+          "label": "In Real Life Music",
+          "timecode": "02:17",
+          "song_link": "https://lis.tn/Krzaw"
+        }
+      ],
+      "offset": "54:36"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Tawiah",
+          "title": "Don\u2019t Hold Your Breath",
+          "album": "Recreate",
+          "release_date": "2017-12-06",
+          "label": "Lima Limo Records",
+          "timecode": "01:46",
+          "song_link": "https://lis.tn/wKDAV"
+        }
+      ],
+      "offset": "56:42"
+    },
+    {
+      "songs": [
+        {
+          "artist": "Dominic Fike",
+          "title": "Vampire",
+          "album": "What Could Possibly Go Wrong",
+          "release_date": "2020-07-09",
+          "label": "SME - Columbia",
+          "timecode": "00:10",
+          "song_link": "https://lis.tn/SnBoPO"
+        }
+      ],
+      "offset": "58:48"
+    }
+  ],
+  "execution_time": "38.230775368s"
+}
