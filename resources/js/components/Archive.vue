@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="pushtop p-0">
-      <div class="h5 text-center text-secondary">
+      <!-- <div class="h5 text-center text-secondary">
         Archive
-      </div>
+      </div> -->
       <div class="col-12 p-0">
         <!-- <button
           class="btn btn-sm btn-success"
@@ -45,13 +45,13 @@
                 :key="time"
               >
                 <div
+                  class="row pl-3"
                   :style="showSize(show)"
                 >
                   <button
-                    class="btn btn-xs"
+                    class="btn col-2 btn-sm btn-outline-success"
                     @click="playArchive(show.starts_hours)"
-                    :class="{'btn-success':slotPlaying == show.starts_hours,
-                             'btn-warning':slotPlaying !== show.starts_hours}"
+                    :class="{'btn-outline-success':isShowPlaying(show)}"
                   >
                     <svg
                       v-if="slotPlaying !== show.starts_hours"
@@ -84,33 +84,31 @@
 
                     </svg>
                   </button>
-                  <strong> {{ show.when }} </strong>
-                  <i> {{ show.duration_human }} </i>
-                  <!-- <strong class="float-right">
-                    {{ toYourTime(time) }}
-                  </strong> -->
-                  <!-- People -->
-                  <span
-                    v-for="(person, pindex) in show.people"
-                    :key="pindex"
-                  >
-                    <a
-                      :href="person.link"
-                      target="_blank"
-                    >{{ person.name }}</a>
-                  </span>
+                  <div class="col-9 small">
+                    <strong> {{ show.when }} </strong> <i> {{ show.duration_human }} </i> <br>
+                    <span
+                      v-for="(person, pindex) in show.people"
+                      :key="pindex"
+                    >
+                      <a
+                        :href="person.link"
+                        target="_blank"
+                      >{{ person.name }}</a>
+                    </span>
 
-                  <span
+                    <span class="text-muted float-right">
+                      {{ show.desc }}
+                    </span>
+                  </div>
+
+                  <!-- <span
                     v-if="show.now"
                     class="badge badge-info"
                   >
                     <span v-if="!isToday">TimeMachine now</span>
 
-                  </span>
+                  </span> -->
 
-                  <span class="text-muted float-right">
-                    {{ show.desc }}
-                  </span>
                   <!-- Tracks -->
                   <div
                     class="p-1"

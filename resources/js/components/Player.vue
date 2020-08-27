@@ -359,7 +359,7 @@ export default {
       return 0
     },
     currentTrack () {
-      if (this.config.playing !== undefined) {
+      if (this.config.playing !== undefined && this.config.playing.tracks !== undefined) {
         const self = this
         const trackPlayings = this.config.playing.tracks.filter(function (track, index) {
           // song started
