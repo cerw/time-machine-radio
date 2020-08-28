@@ -14,7 +14,7 @@
           {{ day.niceday }}
         </button> -->
 
-        <ul class="list-group list-group-striped list-group-flush small">
+        <ul class="list-group list-group-striped list-group-flush">
           <li
             class="list-group-item p-2 rounded list-day"
             v-for="day in days"
@@ -85,7 +85,8 @@
                     </svg>
                   </button>
                   <div class="col-9 small">
-                    <strong> {{ show.when }} </strong> <i> {{ show.duration_human }} </i><br>
+                    <strong> {{ show.when }}  | {{ show.tracks.length }} tracks </strong>| <i> {{ show.duration_human }} </i><br>
+
                     <span
                       v-for="(person, pindex) in show.people"
                       :key="pindex"
@@ -114,7 +115,7 @@
                     class="p-1"
                     v-if="show.tracks.length && isShowPlaying(show)"
                   >
-                    <strong>Track list - EXPERIMENT ({{ show.tracks.length }})</strong>
+                    <strong>Tracks</strong>
                     <div
                       v-for="(track, tindex) in show.tracks"
                       class="border-bottom"
