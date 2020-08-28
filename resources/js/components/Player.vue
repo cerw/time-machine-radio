@@ -140,7 +140,7 @@
     >
       <button
         type="button"
-        class="btn btn-outline-info"
+        class="btn btn-outline-danger"
         @click="prevSong()"
       >
         <svg
@@ -163,7 +163,7 @@
       </button>
       <button
         type="button"
-        class="btn btn-dark"
+        class="btn btn-outline-danger"
         @click="seekBack(60)"
       >
         60s
@@ -185,8 +185,8 @@
       <!-- Live -->
       <button
         type="button"
-        class="btn"
-        :class="{'btn-success':livePlaying(),'btn-warning':!livePlaying()}"
+        class="btn btn-outline-danger"
+        :class="{'active':livePlaying()}"
         @click="playLive()"
       >
         <span v-if="livePlaying()">
@@ -226,9 +226,9 @@
       <!-- Time Machine -->
       <button
         type="button"
-        class="btn"
+        class="btn btn-outline-danger"
         @click="playTimemachine()"
-        :class="{'btn-success':timemachinePlaying(),'btn-warning':!timemachinePlaying()}"
+        :class="{'active':timemachinePlaying()}"
       >
         <span v-if="timemachinePlaying()">
           <svg
@@ -267,7 +267,7 @@
 
       <button
         type="button"
-        class="btn btn-dark"
+        class="btn btn-outline-danger"
         @click="seekForward(60)"
       >
         <svg
@@ -287,7 +287,7 @@
       </button>
       <button
         type="button"
-        class="btn btn-outline-info"
+        class="btn btn-outline-danger"
         @click="nextSong()"
       >
         <svg
