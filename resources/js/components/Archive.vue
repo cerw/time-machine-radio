@@ -82,7 +82,7 @@
                 class="list-group-item p-1 rounded"
                 v-show="!isFuture(show.starts_hours)"
                 :class="{'list-group-item-info': show.ks,
-                         'active': isShowPlaying(show) ,
+                         'list-group-item-success': isShowPlaying(show) ,
                          'list-group-item-danger': show.now }"
                 v-for="(show, time) in filter(shows)"
                 :key="time"
@@ -249,7 +249,7 @@ export default {
   methods: {
     filter (shows) {
       if (this.dj === null) return shows
-      var currentDj = new RegExp(this.dj, 'gi')
+      var currentDj = new RegExp(this.dj.replaceAll('-', ' '), 'gi')
       return shows.filter(function (show) {
         return show.people.filter(function (person) {
           return person.name.match(currentDj)
@@ -257,11 +257,14 @@ export default {
       })
     },
     setDj (dj) {
-      history.replaceState(null, null, '/@' + dj)
+      // filter it a bit
+      const djNice = dj.toLowerCase().replaceAll(' ', '-')
+      history.replaceState(null, null, '/@' + djNice)
       this.$parent.dj = dj
     },
     resetDj () {
       this.$parent.dj = null
+      this.$parent.djNice = null
       history.replaceState(null, null, '/')
     },
     showSize (show) {

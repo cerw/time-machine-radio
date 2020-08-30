@@ -262,7 +262,7 @@
           </svg>
 
         </span>
-        Timemachine
+        Time
       </button>
 
       <button
@@ -500,8 +500,7 @@ export default {
   },
   methods: {
     setDj (dj) {
-      history.replaceState(null, null, '/@' + dj)
-      this.$parent.dj = dj
+      this.$parent.$refs.archives.setDj(dj)
     },
     seekForward (skipTime) {
       this.$refs.player.currentTime = Math.min(this.$refs.player.currentTime + skipTime, this.$refs.player.duration)
