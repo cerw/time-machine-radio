@@ -14,6 +14,49 @@
           {{ day.niceday }}
         </button> -->
 
+        <div
+          v-if="dj !== null"
+          class="text-center alert-info p-2"
+        >
+          Filter:
+          <button
+            class="btn btn-xs btn-outline-primary "
+            @click="resetDj()"
+          >
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 16 16"
+              class="bi bi-file-person"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"
+              />
+              <path d="M13.784 14c-.497-1.27-1.988-3-5.784-3s-5.287 1.73-5.784 3h11.568z" />
+              <path
+                fill-rule="evenodd"
+                d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+              />
+            </svg>
+            {{ dj }}
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 16 16"
+              class="bi bi-eject-fill"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.27 1.047a1 1 0 0 1 1.46 0l6.345 6.77c.6.638.146 1.683-.73 1.683H1.656C.78 9.5.326 8.455.926 7.816L7.27 1.047zM.5 11.5a1 1 0 0 1 1-1h13a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-1z"
+              />
+            </svg>
+          </button>
+        </div>
         <ul class="list-group list-group-striped list-group-flush">
           <li
             class="list-group-item p-2 rounded list-day"
@@ -33,15 +76,15 @@
             <!-- Shows -->
             <ul
               class="list-group  list-group-flush"
-              v-if="day.format === today"
+              v-if="day.format === today || dj !==null"
             >
               <li
                 class="list-group-item p-1 rounded"
                 v-show="!isFuture(show.starts_hours)"
                 :class="{'list-group-item-info': show.ks,
-                         'lactive': isShowPlaying(show) ,
+                         'active': isShowPlaying(show) ,
                          'list-group-item-danger': show.now }"
-                v-for="(show, time) in shows"
+                v-for="(show, time) in filter(shows)"
                 :key="time"
               >
                 <div
@@ -91,10 +134,30 @@
                       v-for="(person, pindex) in show.people"
                       :key="pindex"
                     >
-                      <a
-                        :href="person.link"
-                        target="_blank"
-                      >{{ person.name }}</a>
+                      <button
+                        class="btn btn-xs btn-outline-primary"
+                        @click="setDj(person.name)"
+                      >
+                        <svg
+                          width="1em"
+                          height="1em"
+                          viewBox="0 0 16 16"
+                          class="bi bi-file-person"
+                          fill="currentColor"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"
+                          />
+                          <path d="M13.784 14c-.497-1.27-1.988-3-5.784-3s-5.287 1.73-5.784 3h11.568z" />
+                          <path
+                            fill-rule="evenodd"
+                            d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+                          />
+                        </svg>
+                        {{ person.name }}
+                      </button>
                     </span>
 
                     <span class="text-muted float-right">
@@ -153,7 +216,12 @@ export default {
       today: moment().format('YYYY-MM-DD')
     }
   },
-
+  props: {
+    dj: {
+      type: [String],
+      default: null
+    }
+  },
   mounted () {
     const current = moment()
     let n = 4
@@ -179,6 +247,23 @@ export default {
     }
   },
   methods: {
+    filter (shows) {
+      if (this.dj === null) return shows
+      var currentDj = new RegExp(this.dj, 'gi')
+      return shows.filter(function (show) {
+        return show.people.filter(function (person) {
+          return person.name.match(currentDj)
+        }).length
+      })
+    },
+    setDj (dj) {
+      history.replaceState(null, null, '/@' + dj)
+      this.$parent.dj = dj
+    },
+    resetDj () {
+      this.$parent.dj = null
+      history.replaceState(null, null, '/')
+    },
     showSize (show) {
       // default none
       if (show.ks || show.duration < 1200) return ''

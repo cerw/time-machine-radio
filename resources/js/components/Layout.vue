@@ -138,7 +138,14 @@
               :config="config"
             />
             <hr>
-            <archive ref="archives" />
+            <!-- <podcast
+              ref="podcast"
+
+            /> -->
+            <archive
+              ref="archives"
+              :dj="dj"
+            />
           </div>
         </div>
         <!-- End of App -->
@@ -151,6 +158,7 @@ import moment from 'moment-timezone'
 import Archive from './Archive'
 import Player from './Player'
 import Loader from './Loader'
+// import Podcast from './Podcast'
 
 export default {
   name: 'Layout',
@@ -158,6 +166,7 @@ export default {
     Archive,
     Player,
     Loader
+    // Podcast
   },
   data () {
     return {
@@ -175,7 +184,8 @@ export default {
         offset: 0
       },
       offset: 0,
-      secondsLeft: 0
+      secondsLeft: 0,
+      dj: null
     }
   },
   mounted () {
@@ -189,9 +199,14 @@ export default {
     // 17:34:27
     let currentTime = this.youNow
     const currentUrl = window.location.href.split('/')
+
     if (currentUrl.length === 5) {
       currentTime = currentUrl[4] + '/' + currentUrl[3]
       console.log('got url', currentTime)
+    }
+    // @bln
+    if (currentUrl.length === 4) {
+      this.dj = currentUrl[3].split('@')[1]
     }
 
     this.load(currentTime)

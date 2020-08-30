@@ -47,10 +47,9 @@
             v-for="(person, index) in config.playing.people"
             :key="index"
           >
-            <a
+            <button
               class="btn btn-xs btn-outline-primary"
-              :href="person.link"
-              target="_blank"
+              @click="setDj(person.name)"
             >
               <svg
                 width="1em"
@@ -70,7 +69,8 @@
                   d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
                 />
               </svg>
-              {{ person.name }}</a>
+              {{ person.name }}
+            </button>
           </span>
 
           <br>
@@ -499,6 +499,10 @@ export default {
     // }
   },
   methods: {
+    setDj (dj) {
+      history.replaceState(null, null, '/@' + dj)
+      this.$parent.dj = dj
+    },
     seekForward (skipTime) {
       this.$refs.player.currentTime = Math.min(this.$refs.player.currentTime + skipTime, this.$refs.player.duration)
     },

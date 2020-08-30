@@ -124,6 +124,14 @@ http://localhost/media/stream/stream-3.ts
 
     }
 
+    public function person ($person, Request $request) {
+        
+        $shows= Show::where('title', 'like', '%'.$person.'%')->orderBy('starts_at','DESC')->get();
+        
+        return response()->json($shows);
+
+    }
+
 
     public function archive ($date, $time = false, Request $request) {
         
