@@ -97,6 +97,14 @@ http://localhost/media/stream/stream-3.ts
         $out['playing'] = $info['playing'];
         
         $out['shows'] = $info['shows'];
+        
+        $existingShow = Show::whereDate('date','>',$expiresAt)
+        ->orderBy('starts_at','DESC')->get();
+        $dates = [];
+        foreach($existingShow as $show) {
+            $dates[$show->date][] = $show;
+        }
+        $out['archive'] = $dates;
         $out['wanted'] =  $time;
         
 
@@ -126,7 +134,9 @@ http://localhost/media/stream/stream-3.ts
 
     public function person ($person, Request $request) {
         
-        $shows= Show::where('title', 'like', '%'.$person.'%')->orderBy('starts_at','DESC')->get();
+        $shows= Show::where('title', 'like', '%'.$person.'%')
+            ->orderBy('starts_at','DESC')
+            ->get();
         
         return response()->json($shows);
 

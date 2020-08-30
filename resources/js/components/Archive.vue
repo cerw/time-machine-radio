@@ -84,7 +84,7 @@
                 :class="{'list-group-item-info': show.ks,
                          'list-group-item-success': isShowPlaying(show) ,
                          'list-group-item-danger': show.now }"
-                v-for="(show, time) in filter(shows)"
+                v-for="(show, time) in filter(day.format,shows)"
                 :key="time"
               >
                 <div
@@ -247,14 +247,16 @@ export default {
     }
   },
   methods: {
-    filter (shows) {
+    filter (day, shows) {
       if (this.dj === null) return shows
       var currentDj = new RegExp(this.dj.replaceAll('-', ' '), 'gi')
-      return shows.filter(function (show) {
-        return show.people.filter(function (person) {
-          return person.name.match(currentDj)
-        }).length
-      })
+      if (this.$parent.config.archive[day] !== undefined) {
+        return this.$parent.config.archive[day].filter(function (show) {
+          return show.people.filter(function (person) {
+            return person.name.match(currentDj)
+          }).length
+        })
+      }
     },
     setDj (dj) {
       // filter it a bit
@@ -297,26 +299,11 @@ export default {
     },
     loadDay (day) {
       this.$parent.$refs.loader.loaded = false
-      const self = this
+      // const self = this
       this.today = day
-      this.shows = []
-      return new Promise((resolve, reject) => {
-        this.loading = true
-        axios.get('/api/archive/' + day)
-          .then(({ data }) => {
-            self.shows = data.shows
-            console.log(data)
-            // self.url = this.config.url + '#t=' + this.config.offset
-            // self.$refs.player.load()
-            self.$parent.$refs.player.loaded = true
-            self.playArchive(moment().format('HH:mm:ss'))
-            resolve(data)
-            // play timemachine time
-          }).catch(function (error) {
-            console.log('error getting archive', error)
-            reject(error)
-          })
-      })
+      this.shows = this.$parent.config.archive[day]
+      this.$parent.$refs.loader.loaded = true
+      this.playArchive(moment().format('HH:mm:ss'))
     },
     playArchive (time) {
       this.slotPlaying = time
