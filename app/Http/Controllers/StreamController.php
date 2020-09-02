@@ -49,11 +49,12 @@ class StreamController extends Controller
             \Log::info('Tracks Success');
             
             $track = Track::firstOrNew([
-                'artist' =>  $song['artist'],
+                'song_link' => $song['song_link'],
                 'title' => $song['title']
             ]);
-        
-            $track->release_date = (empty($song['release_date']) || $song['release_date'] == 'None') ? null : $song['release_date'];
+            
+            $track->artist = $song['artist'] ?? '';
+            $track->release_date = (empty($song['release_date']) || $song['release_date'] == 'None') ? null : Carbon::parse($song['release_date']);
             $track->label = $song['label'] ?? '';
             $track->album = $song['album'] ?? '';
             $track->song_link = $song['song_link'] ?? '';

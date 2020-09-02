@@ -28,11 +28,15 @@ class Show extends Model
         'files',
         'starts_hours',
         'ends_hours',
+        'stream_at'
     ];
 
     
     
-
+    public function getStreamAtAttribute() 
+    {
+        return $this->starts_at->diffForHumans();
+    }
     public function getStartsHoursAttribute() 
     {
         return $this->starts_at->format('H:i:s');
