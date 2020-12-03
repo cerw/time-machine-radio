@@ -5,22 +5,22 @@
       class="flex-shrink-0"
     >
       <Loader ref="loader" />
-      <div class="container">
+      <div class="container-fluid">
         <!-- Logo -->
         <div class="row pb-2">
-          <div class="col-3 text-center">
+          <div class="col-2 text-center">
             <a href="/">
               <img
                 src="/images/icons/icon-192x192.png"
                 title="Time Machine"
-                width="50"
-                class="logo rounded-circle img img-fluid"
+                width="60"
+                class="logo rounded-circle img img-fluid pt-1"
               >
             </a>
           </div>
-          <div class="col-9 text-center">
-            <h1 class="h2">
-              R1 Time Machine
+          <div class="col-10 text-center">
+            <h1 class="h2 m-0">
+              Radio 1 Time Machine
             </h1>
 
             <span class="text-muted small">
@@ -109,16 +109,16 @@
       </button>
     </div> -->
           <div class="card-body p-0">
-            <p class="pb-2 text-center">
+            <div class="pb-2 text-center">
               Radio1 Time: <strong>{{ radioNow }}</strong><br>
               Your Time: <strong>{{ youDate }}</strong><br>
               Timemachine Time: <strong>{{ radioCalendar }}</strong>
-            </p>
+            </div>
 
             <!-- Live {{ livePlaying() }}
       Time {{ timemachinePlaying() }} -->
 
-            <p class="text-muted text-center">
+            <div class="text-muted text-center">
               You are {{ youOffset }} hours
               <span v-if="youOffset > 0">
                 in front of Radio 1
@@ -131,13 +131,13 @@
               <span v-if="youOffset == 0">
                 In Prague :)
               </span>
-            </p>
+            </div>
 
             <player
               ref="player"
               :config="config"
             />
-            <hr>
+            <hr class="m-0">
             <!-- <podcast
               ref="podcast"
 
@@ -275,7 +275,7 @@ export default {
         this.radioCalendar = moment(this.config.recoded_timestamp)
           .add(audioPlayer.currentTime, 'seconds')
           // .tz(this.radioTZ)
-          .calendar()
+          .calendar().replace()
 
         // const url = moment(this.config.recoded_timestamp)
         //   .add(this.$refs.player.currentTime, 'seconds')

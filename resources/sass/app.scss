@@ -13,6 +13,14 @@ $input-btn-line-height-xs: 1.1 !default;
    // line-height: ensure proper height of button next to small input
    @include button-size($btn-padding-y-xs, $btn-padding-x-xs, $font-size-sm, $input-btn-line-height-xs, $btn-border-radius-sm);
 }
+.btn-outline-danger:not(:disabled):not(.disabled):active:focus:hover.btn-nofocus
+{
+    outline: none !important;
+    box-shadow: none;
+    background-color: #ffffff;
+    box-shadow: none;
+    color: #dc3545;
+}
 
 body {
     background-color: #ffffff;

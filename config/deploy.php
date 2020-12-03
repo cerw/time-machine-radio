@@ -1,5 +1,6 @@
 <?php
 
+// require 'recipe/bugsnag.php';
 return [
 
     /*
@@ -71,6 +72,7 @@ return [
         // Deployment succeeded.
         'success' => [
             //
+            'bugsnag:notify'
         ],
         
         // Deployment failed.
@@ -97,6 +99,7 @@ return [
 
     'options' => [
         'application' => config('app.name'),
+        'bugsnag_api_key' => config('bugsnag.api_key'),
         'repository' => 'https://github.com/cerw/time-machine-radio.git',
         'php_fpm_service' => 'php7.2-fpm',
         'default_stage' => 'production',
@@ -150,6 +153,7 @@ return [
 
     'include' => [
         //
+        'recipe/bugsnag.php'
     ],
 
     /*

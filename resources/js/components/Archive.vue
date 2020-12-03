@@ -59,7 +59,7 @@
         </div>
         <ul class="list-group list-group-striped list-group-flush">
           <li
-            class="list-group-item p-2 rounded list-day"
+            class="list-group-item p-0 rounded list-day"
             v-for="day in days"
             :class="{'list-group-item-secondary': day.format === today}"
             :key="day.format"

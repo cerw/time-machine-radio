@@ -5,7 +5,7 @@
       class=""
     >
       <div
-        class="alert alert-success small mb-0 text-center"
+        class="small m-0 text-center"
         v-if="timemachinePlaying()"
       >
         Serving show from <strong>{{ config.recoded_at }} </strong>
@@ -140,7 +140,7 @@
     >
       <button
         type="button"
-        class="btn btn-outline-danger"
+        class="btn btn-outline-danger btn-nofocus"
         @click="prevSong()"
       >
         <svg
@@ -163,7 +163,7 @@
       </button>
       <button
         type="button"
-        class="btn btn-outline-danger"
+        class="btn btn-outline-danger btn-nofocus"
         @click="seekBack(60)"
       >
         60s
@@ -185,7 +185,7 @@
       <!-- Live -->
       <button
         type="button"
-        class="btn btn-outline-danger"
+        class="btn btn-outline-danger "
         :class="{'active':livePlaying()}"
         @click="playLive()"
       >
@@ -226,7 +226,7 @@
       <!-- Time Machine -->
       <button
         type="button"
-        class="btn btn-outline-danger"
+        class="btn btn-outline-danger btn-nofocus"
         @click="playTimemachine()"
         :class="{'active':timemachinePlaying()}"
       >
@@ -267,7 +267,7 @@
 
       <button
         type="button"
-        class="btn btn-outline-danger"
+        class="btn btn-outline-danger btn-nofocus"
         @click="seekForward(60)"
       >
         <svg
@@ -396,6 +396,20 @@ export default {
         self.nextSong()
         self.updatePositionState()
       })
+
+      try {
+        navigator.mediaSession.setActionHandler('seekto', function (event) {
+          console.log('> User clicked "Seek To" icon.')
+          if (event.fastSeek && ('fastSeek' in self.$refs.player)) {
+            self.$refs.player.fastSeek(event.seekTime)
+            return
+          }
+          self.$refs.player.currentTime = event.seekTime
+          self.updatePositionState()
+        })
+      } catch (error) {
+        console.log('Warning! The "seekto" media session action is not supported.')
+      }
     }
 
     window.addEventListener('keypress', function (e) {
