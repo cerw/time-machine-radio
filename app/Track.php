@@ -20,11 +20,19 @@ class Track extends Model
         
     ];
 
+    
+
     protected $dates = [
         'stream_at'
     ];
 
-    protected $hidden = ['metadata','created_at', 'updated_at'];
+    protected $hidden = [
+        'metadata',
+        'created_at', 
+        'updated_at',
+        // 'timecode',
+        // 'score'
+    ];
 
 
     public function getRadioTimeAttribute()

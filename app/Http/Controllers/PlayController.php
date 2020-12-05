@@ -183,6 +183,7 @@ http://localhost/media/stream/stream-3.ts
         $playing = Show::playing($wanted);
         
         
+        
         if($extended) {
             $ext = [];
             $ext['shows'] = $shows;

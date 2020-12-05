@@ -53,17 +53,18 @@ class Show extends Model
         
         // $hours = (now()->isDST()) ?  1  : 2;
         
-        $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->addHours(config('app.offset_hours'));
-        //$from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->tz('Europe/Berlin');
         
-        //dd($this,$from,$from2);
-        //$date->tz('Europe/Berlin');
-                //  ->setTimezone('Europe/Prague');
-        $to = Carbon::createFromFormat('Y-m-d H:i:s', $this->ends_at)->addHours(config('app.offset_hours'));
-                //  ->setTimezone('Europe/Prague');
                 //  dd($from,$to,$this->when);
         // return Track::whereDate('stream_at',$this->starts_at)->get();
-        return Track::whereBetween('stream_at', [$from, $to])->orderBy('stream_at')->get();
+
+
+        return Cache::remember('tracks-'.$this->id, 60 * 60, function (){
+            $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->addHours(config('app.offset_hours'));
+            $to = Carbon::createFromFormat('Y-m-d H:i:s', $this->ends_at)->addHours(config('app.offset_hours'));
+                //  ->setTimezone('Europe/Prague');
+            return Track::whereBetween('stream_at', [$from, $to])->orderBy('stream_at')->get();
+        });
+        
         
     }
     public function getFilesAttribute()
@@ -150,7 +151,7 @@ class Show extends Model
         $date = $wanted->format('Y-m-d');
         
 
-        $existingShow = Show::whereDate('date',$date)->orderBy('starts_at','DESC')->get();
+        $existingShow = Show::whereDate('date',$date)->orderBy('starts_at','DESC')->get()->makeHidden('tracks');
         
         if($existingShow->count()) {
             return  $existingShow;
