@@ -126,7 +126,7 @@ http://localhost/media/stream/stream-3.ts
 
     public function tracks (Request $request) {
         
-
+        dd(1);
         $tracks = Track::all();
         return response()->json($tracks);
 

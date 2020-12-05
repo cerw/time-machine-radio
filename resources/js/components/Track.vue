@@ -2,7 +2,7 @@
   <div class="media">
     <img
       :src="track.song_link+'?thumb'"
-      class="mr-3 align-self-center"
+      class="pr-3 align-self-center"
       height="50"
       loading="lazy"
       alt=""
@@ -10,7 +10,7 @@
     <button
       v-if="play"
       class="btn btn-sm  play-button text-white"
-      @click="playArchive(track.radio_time)"
+      @click="playTrack(track.radio_time)"
     >
       <svg
         width="2.4em"
@@ -79,8 +79,8 @@ export default {
 
   },
   methods: {
-    playArchive (time) {
-      this.$parent.playArchive(time)
+    playTrack (time) {
+      this.$parent.playTrack(time)
     }
 
   }

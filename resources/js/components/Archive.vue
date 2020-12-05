@@ -200,14 +200,14 @@
 
                   <!-- Tracks -->
                   <div
-                    class="p-1"
+                    class="p-0"
                     v-if="show.tracks.length && isShowPlaying(show)"
                   >
                     <strong>Tracks</strong>
                     <div
                       v-for="(track, tindex) in show.tracks"
                       class="border-bottom"
-                      :class="{'alert-success': currentTrack !== undefined && track.id === currentTrack.id}"
+                      :class="{'bg-dark text-light': currentTrack !== undefined && track.id === currentTrack.id}"
                       :key="tindex+'-'+time"
                     >
                       <Track
@@ -336,6 +336,12 @@ export default {
       this.shows = this.$parent.config.archive[day]
       this.$parent.$refs.loader.loaded = true
       this.playArchive(moment().format('HH:mm:ss'))
+    },
+    playTrack (time) {
+      // console.log('play song on ', time)
+      // console.log(this.$parent.$refs.player.currentTime)
+      // console.log(this.$parent.radioTime)
+      this.playArchive(time)
     },
     playArchive (time) {
       this.slotPlaying = time

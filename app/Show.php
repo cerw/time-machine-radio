@@ -51,9 +51,15 @@ class Show extends Model
         // return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at, 'CEST')
         //         ->setTimezone('Europe/Prague');
         
-        $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->addHour();
+        // $hours = (now()->isDST()) ?  1  : 2;
+        
+        $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->addHours(config('app.offset_hours'));
+        //$from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->tz('Europe/Berlin');
+        
+        //dd($this,$from,$from2);
+        //$date->tz('Europe/Berlin');
                 //  ->setTimezone('Europe/Prague');
-        $to = Carbon::createFromFormat('Y-m-d H:i:s', $this->ends_at)->addHour();
+        $to = Carbon::createFromFormat('Y-m-d H:i:s', $this->ends_at)->addHours(config('app.offset_hours'));
                 //  ->setTimezone('Europe/Prague');
                 //  dd($from,$to,$this->when);
         // return Track::whereDate('stream_at',$this->starts_at)->get();

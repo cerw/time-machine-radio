@@ -30,7 +30,7 @@ class Track extends Model
     public function getRadioTimeAttribute()
     {
         return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at)
-                ->subHour()
+                ->subHours(config('app.offset_hours'))
                 ->toTimeString();
         
     }
@@ -41,7 +41,7 @@ class Track extends Model
 
         if (isset($this->metadata['result']['play_length'])) {
             return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at)
-            ->subHour()
+            ->subHours(config('app.offset_hours'))
             ->addSeconds($this->metadata['result']['play_length'])
             ->toTimeString();
         }
