@@ -33,13 +33,13 @@ rm -rf /
 
 ```bash
  curl https://api.audd.io/addStream/ \
--F api_token='a6635a32d2752fee94f90d3fe847c4b4' \
+-F api_token='TOKEN' \
 -F url='http://icecast2.play.cz/radio1-192.mp3' \
 -F callbacks='before' \
 -F radio_id=1
 
 curl https://api.audd.io/setCallbackUrl/ \
-   -F api_token='a6635a32d2752fee94f90d3fe847c4b4' \
+   -F api_token='-F api_token='TOKEN' \
       -F url='https://radio1.rocks/api/stream'
 
 ```
