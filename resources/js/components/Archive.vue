@@ -88,9 +88,9 @@
                 :key="time"
               >
                 <div
-                  class="row pl-3"
-                  :style="showSize(show)"
+                  class="row pl-3 pr-3"
                 >
+                  <!-- :style="showSize(show)" -->
                   <button
                     v-if="!isFuture(show.starts_hours)"
                     class="btn col-2 btn-sm btn-outline-success"
@@ -206,8 +206,8 @@
                     <strong>Tracks</strong>
                     <div
                       v-for="(track, tindex) in show.tracks"
-                      class="border-bottom"
-                      :class="{'bg-dark text-light': currentTrack !== undefined && track.id === currentTrack.id}"
+                      class="border-bottom border-light"
+                      :class="{'bg-white text-dark border border-danger p-2 text-light': currentTrack !== undefined && track.id === currentTrack.id}"
                       :key="tindex+'-'+time"
                     >
                       <Track

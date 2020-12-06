@@ -2,10 +2,10 @@
   <div class="media">
     <img
       :src="track.song_link+'?thumb'"
-      class="pr-3 align-self-center"
-      height="50"
+      class="p-1 align-self-center rounded"
+      height="80"
       loading="lazy"
-      alt=""
+      :alt="track.title"
     >
     <button
       v-if="play"
@@ -13,9 +13,9 @@
       @click="playTrack(track.radio_time)"
     >
       <svg
-        width="2.4em"
-        height="2.4em"
-        viewBox="0 0 16 16"
+        width="3.6em"
+        height="3.6em"
+        viewBox="0 0 12 14"
         class="bi bi-stop"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"

@@ -1,6 +1,6 @@
 {
-  "name": "Radio Time Machine",
-  "short_name": "TimeMachine",
+  "name": "Radio1 Time Machine",
+  "short_name": "R1TimeMachine",
   "theme_color": "#f20000",
   "background_color": "#000000",
   "display": "standalone",
