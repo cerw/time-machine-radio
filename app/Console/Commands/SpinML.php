@@ -13,8 +13,8 @@ class SpinML extends Command
      *
      * @var string
      */
-    protected $signature = 'ai';
-
+    protected $signature = 'ai 
+    {--delete : Delete existing instance if any}';
     /**
      * The console command description.
      *
@@ -43,40 +43,64 @@ class SpinML extends Command
     {
        
 
-        $response = Http::withHeaders([
-            'X-Auth-Token' => env('TOKEN'),
-        ])->get('https://api.genesiscloud.com/compute/v1/instances');
-        $instances = $response->json()['instances'];
+        $delete = $this->option('delete');
+        
+       
+        $instance = $this->detail();
 
-        if(count($instances)) {
-            $instance = $instances[0];
+        if($instance) {
             $created = Carbon::parse($instance['created_at']);
-            $this->info("Instance ".$instance['name']." already running. Created ".$created->diffForHumans());
-            return;
-        }
+            $this->info("Instance ".$instance['name']." already running. ");
+            $this->info("Created ".$created->diffForHumans());
+            
 
-        // create one
+
+            while(is_null($instance['public_ip'])) {
+                $this->comment("No ip address.. lets  wait");
+                sleep(5);
+                $instance = $this->detail();
+            }
+            dump($instance);
+
+            
+            if($delete) {
+                $this->info("Deleting");
+                // delete
+                // DELETE /compute/v1/instances/{instance_id}  (HTTP 204 - No content)
+                $response = Http::withHeaders([
+                    'X-Auth-Token' => env('TOKEN'),
+                ])->delete('https://api.genesiscloud.com/compute/v1/instances/'.$instance['id']);
+                $this->info("Deleted");
+                dump($response->status());
+            }
+            return;
+        } else {
+            $this->comment("No instance and running");
+            // create one
 
         $params = [
             "name" => "timemachine",
             "hostname"=>  "ml.radio1.rocks",
             "type"=>  "vcpu-4_memory-12g_disk-80g_nvidia1080ti-1",
-            "image"=>  "7b1644e2-d97d-4725-a927-0028bc60bc28", # snaphsot of timemachine
+            "image"=>  "2ec2d436-cbe0-43b7-bb3d-33daafa164ca", # snaphsot of timemachine
             "ssh_keys"=>  ["7238a5f9-01b6-4efd-95eb-6f23e7d8b637"],
             "metadata"=>  [
                "startup_script" => "#!/bin/bash\nsudo apt update && sudo apt install iperf3"
             ]
         ];
 
+        $this->info("Creating instance");
         $response = Http::withHeaders([
             'X-Auth-Token' => env('TOKEN'),
         ])->post('https://api.genesiscloud.com/compute/v1/instances',
             $params
         );
-        $instances = $response->json()['instances'];
-
+        dump($response->json());
+        }
 
         
+
+
         
 
         /*
@@ -85,5 +109,17 @@ class SpinML extends Command
         */
         // POST /compute/v1/instances (HTTP 201 - Created)
         return 0;
+    }
+    public function detail()
+    {
+        $response = Http::withHeaders([
+            'X-Auth-Token' => env('TOKEN'),
+        ])->get('https://api.genesiscloud.com/compute/v1/instances');
+        $instances = $response->json()['instances'];
+        if(count($instances)) {
+            return $instances[0];
+        }
+        return false;
+        
     }
 }
