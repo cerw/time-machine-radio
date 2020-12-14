@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use phpseclib\Net\SSH2;
+use phpseclib\Crypt\RSA;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -41,29 +43,27 @@ class SpinML extends Command
      */
     public function handle()
     {
-       
-
         $delete = $this->option('delete');
         
        
         $instance = $this->detail();
 
-        if($instance) {
+        if ($instance) {
             $created = Carbon::parse($instance['created_at']);
             $this->info("Instance ".$instance['name']." already running. ");
             $this->info("Created ".$created->diffForHumans());
             
 
 
-            while(is_null($instance['public_ip'])) {
+            while (is_null($instance['public_ip'])) {
                 $this->comment("No ip address.. lets  wait");
                 sleep(5);
                 $instance = $this->detail();
             }
-            dump($instance);
+            // dump($instance);
 
             
-            if($delete) {
+            if ($delete) {
                 $this->info("Deleting");
                 // delete
                 // DELETE /compute/v1/instances/{instance_id}  (HTTP 204 - No content)
@@ -73,41 +73,57 @@ class SpinML extends Command
                 $this->info("Deleted");
                 dump($response->status());
             }
-            return;
+            
         } else {
             $this->comment("No instance and running");
             // create one
 
-        $params = [
-            "name" => "timemachine",
-            "hostname"=>  "ml.radio1.rocks",
-            "type"=>  "vcpu-4_memory-12g_disk-80g_nvidia1080ti-1",
-            "image"=>  "2ec2d436-cbe0-43b7-bb3d-33daafa164ca", # snaphsot of timemachine
-            "ssh_keys"=>  ["7238a5f9-01b6-4efd-95eb-6f23e7d8b637"],
-            "metadata"=>  [
-               "startup_script" => "#!/bin/bash\nsudo apt update && sudo apt install iperf3"
-            ]
-        ];
+            $params = [
+                "name" => "timemachine",
+                "hostname"=>  "ml.radio1.rocks",
+                "type"=>  "vcpu-4_memory-12g_disk-80g_nvidia1080ti-1",
+                "image"=>  "dd40b66b-7555-4f47-8521-d9ea431d71b2", # snaphsot of timemachine
+                "ssh_keys"=>  ["7238a5f9-01b6-4efd-95eb-6f23e7d8b637"],
+                "metadata"=>  [
+                "startup_script" => "#!/bin/bash\n/root/run.sh"
+                ]
+            ];
 
-        $this->info("Creating instance");
-        $response = Http::withHeaders([
+            $this->info("Creating instance");
+            $response = Http::withHeaders([
             'X-Auth-Token' => env('TOKEN'),
-        ])->post('https://api.genesiscloud.com/compute/v1/instances',
-            $params
-        );
-        dump($response->json());
+            ])->post(
+                'https://api.genesiscloud.com/compute/v1/instances',
+                $params
+            );
+            dump($response->json());
         }
 
+        if(is_null($instance)) $instance = $this->detail();
         
+        while (is_null($instance['public_ip'])) {
+            $this->comment("No ip address.. lets  wait");
+            sleep(5);
+            $instance = $this->detail();
+        }
+        // dump($instance);
+        $ip = $instance['public_ip'];
+        $this->info("Connecting to machine {$ip}");
+
+        // SSH 
+        $key = new RSA();
+        $key->loadKey(file_get_contents(env('SSH_KEY_PATH')));
+        $ssh = new SSH2($ip);
+        if (!$ssh->login('root', $key)) {
+            // Login failed, do something
+            $this->error("Can not connect");
+        }
+        $ssh->exec('/root/run.sh', function ($str) {
+            $this->comment($str);
+        });
+        $this->info("Done - delete");
 
 
-        
-
-        /*
-            curl -H 'X-Auth-Token: <TOKEN>' \
-            '
-        */
-        // POST /compute/v1/instances (HTTP 201 - Created)
         return 0;
     }
     public function detail()
@@ -116,10 +132,9 @@ class SpinML extends Command
             'X-Auth-Token' => env('TOKEN'),
         ])->get('https://api.genesiscloud.com/compute/v1/instances');
         $instances = $response->json()['instances'];
-        if(count($instances)) {
+        if (count($instances)) {
             return $instances[0];
         }
         return false;
-        
     }
 }
