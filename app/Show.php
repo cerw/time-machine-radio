@@ -123,6 +123,7 @@ class Show extends Model
         
             // dd($c);
             // 1 day - 86400 s
+            // dd($show,$showStartsAt);
             
             if ($wanted->between($showStartsAt, $showEndsAt)) {
                 // $out['playing'] = [];
@@ -228,7 +229,6 @@ class Show extends Model
         }
 
         
-        
         foreach($times as $index => $time) {
             // dd($time);
             $split = explode(":",$time);
@@ -265,6 +265,7 @@ class Show extends Model
             }
         }
 
+        
 
         /*
 
