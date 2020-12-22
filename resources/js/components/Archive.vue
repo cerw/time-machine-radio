@@ -131,7 +131,7 @@
                     </svg>
                   </button>
                   <div class="col-9 small">
-                    <strong> {{ show.when }}  | {{ show.tracks.length }} tracks </strong> <br>
+                    <strong> {{ show.when }}</strong> <br>
                     <svg
                       width="1em"
                       height="1em"
@@ -201,7 +201,7 @@
                   <!-- Tracks -->
                   <div
                     class="p-0"
-                    v-if="show.tracks.length && isShowPlaying(show)"
+                    v-if="show.tracks && show.tracks.length && isShowPlaying(show)"
                   >
                     <strong>Tracks</strong>
                     <div

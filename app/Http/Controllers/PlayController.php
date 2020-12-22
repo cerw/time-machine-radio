@@ -99,7 +99,10 @@ http://localhost/media/stream/stream-3.ts
         $out['shows'] = $info['shows'];
         
         $existingShow = Show::whereDate('date','>',$expiresAt)
-        ->orderBy('starts_at','DESC')->get();
+                        ->orderBy('starts_at','DESC')
+                        ->get()
+                        ->makeHidden('tracks');
+                        
         $dates = [];
         foreach($existingShow as $show) {
             $dates[$show->date][] = $show;
