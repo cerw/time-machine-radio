@@ -53,7 +53,7 @@ http://localhost/media/stream/stream-3.ts
         $out = [];
         // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
         // dump($wanted);
-        $expiresAt = Carbon::now()->subDays(4);
+        $expiresAt = Carbon::now()->subDays(14);
         
 
         foreach($files as $file) {

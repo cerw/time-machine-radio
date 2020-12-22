@@ -72,6 +72,7 @@ class SpinML extends Command
                 ])->delete('https://api.genesiscloud.com/compute/v1/instances/'.$instance['id']);
                 $this->info("Deleted");
                 dump($response->status());
+                return ;
             }
             
         } else {
@@ -82,10 +83,10 @@ class SpinML extends Command
                 "name" => "timemachine",
                 "hostname"=>  "ml.radio1.rocks",
                 "type"=>  "vcpu-4_memory-12g_disk-80g_nvidia1080ti-1",
-                "image"=>  "dd40b66b-7555-4f47-8521-d9ea431d71b2", # snaphsot of timemachine
-                "ssh_keys"=>  ["7238a5f9-01b6-4efd-95eb-6f23e7d8b637"],
+                "image"=>  "5bafab01-01be-458c-a46d-4857f1f64363", # snaphsot of timemachine
+                "ssh_keys"=>  ["7238a5f9-01b6-4efd-95eb-6f23e7d8b637","0362420d-dda3-43f2-8cc8-d55233a07a84"],
                 "metadata"=>  [
-                "startup_script" => "#!/bin/bash\n/root/run.sh"
+                    "startup_script" => ""
                 ]
             ];
 
@@ -99,10 +100,10 @@ class SpinML extends Command
             dump($response->json());
         }
 
-        if(is_null($instance)) $instance = $this->detail();
+        if(empty($instance)) $instance = $this->detail();
         
         while (is_null($instance['public_ip'])) {
-            $this->comment("No ip address.. lets  wait");
+            $this->comment("No ip address.. lets wait");
             sleep(5);
             $instance = $this->detail();
         }
@@ -114,11 +115,11 @@ class SpinML extends Command
         $key = new RSA();
         $key->loadKey(file_get_contents(env('SSH_KEY_PATH')));
         $ssh = new SSH2($ip);
-        if (!$ssh->login('root', $key)) {
+        if (!$ssh->login('ubuntu', $key)) {
             // Login failed, do something
             $this->error("Can not connect");
         }
-        $ssh->exec('/root/run.sh', function ($str) {
+        $ssh->exec('/home/ubuntu/run.sh', function ($str) {
             $this->comment($str);
         });
         $this->info("Done - delete");

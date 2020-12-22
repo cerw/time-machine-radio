@@ -44,7 +44,6 @@ curl https://api.audd.io/setCallbackUrl/ \
 
 ```
 
-
 ## Usage example
 
 You must record the shows using , in your `storage/app/public/radio1`

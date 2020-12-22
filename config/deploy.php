@@ -101,7 +101,7 @@ return [
         'application' => config('app.name'),
         'bugsnag_api_key' => config('bugsnag.api_key'),
         'repository' => 'https://github.com/cerw/time-machine-radio.git',
-        'php_fpm_service' => 'php7.2-fpm',
+        'php_fpm_service' => 'php7.4-fpm',
         'default_stage' => 'production',
         'php_fpm_command' => 'echo "" | sudo -S /usr/sbin/service {{php_fpm_service}} reload',
     ],
@@ -119,9 +119,9 @@ return [
 
     'hosts' => [
         'radio1.rocks' => [
-            'deploy_path' => '/home/cerw/web/radio1.rocks/private',
+            'deploy_path' => '/home/app/',
             'stage' => 'production',
-            'user' => 'cerw'
+            'user' => 'app'
         ],
     ],
 
