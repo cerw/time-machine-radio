@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 class StreamController extends Controller
 {
    /**
-    * 
+    *
     {
   "status": "success",
   "result": {
@@ -38,13 +38,13 @@ class StreamController extends Controller
     * @param Request $request
     * @return void
     */
-    public function update (Request $request) {
+    public function update(Request $request)
+    {
         
         \Log::info('stream vole');
         \Log::info($request->input());
 
-        if($request->status == 'success' AND is_array($request->result['results'])) {
-
+        if ($request->status == 'success' and is_array($request->result['results'])) {
             $song = $request->result['results'][0];
             \Log::info('Tracks Success');
             
@@ -65,13 +65,8 @@ class StreamController extends Controller
             $track->play_length = $request->result['play_length'] ?? null;
             
             $track->save();
-            // track.metadata.result.play_length 
+            // track.metadata.result.play_length
         }
         return response()->json($request->input());
-        
     }
-
-    
-
-
 }

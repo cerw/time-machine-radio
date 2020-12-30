@@ -74,7 +74,6 @@ class SpinML extends Command
                 dump($response->status());
                 return ;
             }
-            
         } else {
             $this->comment("No instance and running");
             // create one
@@ -84,9 +83,12 @@ class SpinML extends Command
                 "hostname"=>  "ml.radio1.rocks",
                 "type"=>  "vcpu-4_memory-12g_disk-80g_nvidia1080ti-1",
                 "image"=>  "5bafab01-01be-458c-a46d-4857f1f64363", # snaphsot of timemachine
-                "ssh_keys"=>  ["7238a5f9-01b6-4efd-95eb-6f23e7d8b637","0362420d-dda3-43f2-8cc8-d55233a07a84"],
+                "ssh_keys"=>  [
+                    "7238a5f9-01b6-4efd-95eb-6f23e7d8b637" // cerw
+                    // "0362420d-dda3-43f2-8cc8-d55233a07a84" // not supported
+                ],
                 "metadata"=>  [
-                    "startup_script" => ""
+                    "startup_script" => "#!/bin/bash\necho ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDrzqn+N6J8p2VTHGgJgJRJn8glNR8YqE+fLxHGpsYgCIIOWzl6i3JV2RQzWoFcERYsIhvfnzKBBZtb1EwZAIHfTdNWoE3hh3iyYcVnyU6PrCtv6wpGb8fHZTyIM4Mi+HsXGiVLI0+TO/wtsiKtXznPnEnRRhHjPNjup2elt6mpTBD4mqaI8zy2ANkvw6ElIlnBwzNwiQ5K7PUy0UeW1jqL45pMwA83HFp86hddTLo4go1sE3rvSHqHPgV7RDayCCHHCALTxazDpiYirkP7NiLDerWDFJx4qPL3yNyrtCQ1lMVJKNjuKBPE+t2JZcDtLLlNE8/o3QCyykdDkO1sOcR3BEnno9YlsqHnzdm4DxikyqMxSRFXNyjN9zBkqPieHq3S2W0qvXaSA+zDbKJk/L3ofhtdn73hjam4uXl9nC7RLgMof+oIjrUNYTL3vyjaZ/fu6ErIUsvtjYDSU7Vro09cVJIiR4RffBeazocu3J2oPnbaV6jr1yqy1RkY+8hK/KE= cerw@Petas-MacBook-Pro.local >> /home/ubuntu/.ssh/authorized_keys"
                 ]
             ];
 
@@ -100,18 +102,20 @@ class SpinML extends Command
             dump($response->json());
         }
 
-        if(empty($instance)) $instance = $this->detail();
+        if (empty($instance)) {
+            $instance = $this->detail();
+        }
         
         while (is_null($instance['public_ip'])) {
             $this->comment("No ip address.. lets wait");
-            sleep(5);
+            sleep(10);
             $instance = $this->detail();
         }
         // dump($instance);
         $ip = $instance['public_ip'];
         $this->info("Connecting to machine {$ip}");
 
-        // SSH 
+        // SSH
         $key = new RSA();
         $key->loadKey(file_get_contents(env('SSH_KEY_PATH')));
         $ssh = new SSH2($ip);
@@ -119,10 +123,16 @@ class SpinML extends Command
             // Login failed, do something
             $this->error("Can not connect");
         }
+        // copy things over
+        $dir = storage_path('app/public/radio1');
+        $cmd = "rsync -avP --delete-after ".$dir." ubuntu@".$ip.":/home/ubuntu/radio1";
+        $this->info("Shoudl run ".$cmd);
         $ssh->exec('/home/ubuntu/run.sh', function ($str) {
             $this->comment($str);
         });
         $this->info("Done - delete");
+        $cmd = "rsync -avP --exclude=*.mp3 ubuntu@".$ip.":/home/ubuntu/radio1 ".$dir;
+        $this->info("Shoudl run ".$cmd);
 
 
         return 0;

@@ -33,16 +33,16 @@ class Show extends Model
 
     
     
-    public function getStreamAtAttribute() 
+    public function getStreamAtAttribute()
     {
         return $this->starts_at->diffForHumans();
     }
-    public function getStartsHoursAttribute() 
+    public function getStartsHoursAttribute()
     {
         return $this->starts_at->format('H:i:s');
     }
 
-    public function getEndsHoursAttribute() 
+    public function getEndsHoursAttribute()
     {
         return $this->ends_at->format('H:i:s');
     }
@@ -58,27 +58,25 @@ class Show extends Model
         // return Track::whereDate('stream_at',$this->starts_at)->get();
 
 
-        return Cache::remember('tracks-'.$this->id, 60 * 60, function (){
+        return Cache::remember('tracks-'.$this->id, 60 * 60, function () {
             $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->addHours(config('app.offset_hours'));
             $to = Carbon::createFromFormat('Y-m-d H:i:s', $this->ends_at)->addHours(config('app.offset_hours'));
                 //  ->setTimezone('Europe/Prague');
             return Track::whereBetween('stream_at', [$from, $to])->orderBy('stream_at')->get();
         });
-        
-        
     }
     public function getFilesAttribute()
     {
         
-       return [];
+        return [];
         $files = Storage::files('radio1');
        
         // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
         // dump($wanted);
         
         $urls = [];
-        foreach($files as $file) {
-            if(preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#",$file,$match)) {
+        foreach ($files as $file) {
+            if (preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#", $file, $match)) {
                 $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', $match[1]);
                 $perthTime =  $fileStartedAt->toDateTimeString();
                 $fileStartedAt->setTimezone('Europe/Prague');
@@ -86,21 +84,17 @@ class Show extends Model
                 if ($fileStartedAt->between($this->starts_at, $this->ends_at)) {
                     $urls[] = Storage::url($file);
                 }
-                
             }
-            
         }
         
 
         return $urls;
-        
     }
 
     public function getDurationHumanAttribute()
     {
         
         return \Carbon\CarbonInterval::seconds($this->duration)->cascade()->forHumans();
-        
     }
 
 
@@ -110,15 +104,14 @@ class Show extends Model
     }
    
 
-    static public function playing($wanted) 
+    public static function playing($wanted)
     {
         
 
-        $existingShow = Show::whereDate('date',$wanted)->get();
-        foreach($existingShow as $index => $show) {
-
+        $existingShow = Show::whereDate('date', $wanted)->get();
+        foreach ($existingShow as $index => $show) {
             // dd($time);
-            $showStartsAt =  Carbon::parse($show->starts_at,'Europe/Prague')->timezone('Europe/Prague');
+            $showStartsAt =  Carbon::parse($show->starts_at, 'Europe/Prague')->timezone('Europe/Prague');
             $showEndsAt = Carbon::parse($show->ends_at, 'Europe/Prague')->timezone('Europe/Prague')->subSecond();
         
             // dd($c);
@@ -132,8 +125,6 @@ class Show extends Model
                 // $out['playing']['starts'] = $showStartsAt->format('H:i');;
                 // $out['playing']['ends'] = $showEndsAt->format('H:i');
                 return $show;
-                
-                
             }
         }
         return [];
@@ -146,15 +137,15 @@ class Show extends Model
      * @param [type] $wanted
      * @return void
      */
-    static public function show($wanted) 
+    public static function show($wanted)
     {
 
         $date = $wanted->format('Y-m-d');
         
 
-        $existingShow = Show::whereDate('date',$date)->orderBy('starts_at','DESC')->get()->makeHidden('tracks');
+        $existingShow = Show::whereDate('date', $date)->orderBy('starts_at', 'DESC')->get()->makeHidden('tracks');
         
-        if($existingShow->count()) {
+        if ($existingShow->count()) {
             return  $existingShow;
         }
         
@@ -174,12 +165,12 @@ class Show extends Model
         $shows = [];
         // $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', '2020-08-04_');
         // $fileStartedAt->setTimezone('Europe/Prague');
-        $times = [];  
+        $times = [];
         $out = [];
         
-        foreach($table->find('tr') as $row) {
+        foreach ($table->find('tr') as $row) {
             // initialize array to store the cell data from each row
-            $cols = [];  
+            $cols = [];
             
             foreach ($row->find('td') as $key => $cell) {
                 $cols[$key] = $cell;
@@ -187,9 +178,7 @@ class Show extends Model
             $show = [];
             
             if (count($cols) === 4) {
-                
                 foreach ($cols as $key => $cell) {
-                    
                     // 0 time
                     // 1 title
                     // 2 desc
@@ -207,7 +196,7 @@ class Show extends Model
                             $person['name'] = $link->plaintext;
                             $person['link'] = $link->href;
                             
-                            if($person['name'] == "KULTURNÍ SERVIS") {
+                            if ($person['name'] == "KULTURNÍ SERVIS") {
                                 $show['ks'] = true;
                             }
                             $people[] = $person;
@@ -220,26 +209,23 @@ class Show extends Model
 
                     if ($key == 3) {
                         $shows[] = $show;
-                        
                     }
-                    
                 }
             }
-            
         }
 
         
-        foreach($times as $index => $time) {
+        foreach ($times as $index => $time) {
             // dd($time);
-            $split = explode(":",$time);
+            $split = explode(":", $time);
             $showStartsAt = $wanted->clone();
             
             $showStartsAt->setTime($split[0], $split[1]);
 
-            if(isset($times[$index+1])) {
-                $endSplit = explode(":",$times[$index+1]);
+            if (isset($times[$index+1])) {
+                $endSplit = explode(":", $times[$index+1]);
             } else {
-                $endSplit = explode(":","23:59");
+                $endSplit = explode(":", "23:59");
             }
             $showEndsAt = $showStartsAt->clone()->setTime($endSplit[0], $endSplit[1]);
             
@@ -258,10 +244,10 @@ class Show extends Model
                 $out['playing'] = [];
                 $out['playing']['date'] = $showStartsAt->toDateTimeString();
                 $out['playing']['info'] = $shows[$index];
-                $out['playing']['starts'] = $showStartsAt->format('H:i');;
+                $out['playing']['starts'] = $showStartsAt->format('H:i');
+                ;
                 $out['playing']['ends'] = $showEndsAt->format('H:i');
                 $shows[$index]['now'] = true;
-                
             }
         }
 
@@ -279,7 +265,7 @@ class Show extends Model
             $table->timestamps();
         */
 
-        foreach($shows as $show) {
+        foreach ($shows as $show) {
             $dbShow = Show::firstOrCreate([
                 'date' => $wanted->format('Y-m-d'),
                 'starts_at' => $show['starts'],
@@ -299,5 +285,4 @@ class Show extends Model
         $ext['playing'] = $out['playing'];
         return $ext;
     }
-   
 }

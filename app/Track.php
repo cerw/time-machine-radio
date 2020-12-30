@@ -28,7 +28,7 @@ class Track extends Model
 
     protected $hidden = [
         'metadata',
-        'created_at', 
+        'created_at',
         'updated_at',
         // 'timecode',
         // 'score'
@@ -40,7 +40,6 @@ class Track extends Model
         return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at)
                 ->subHours(config('app.offset_hours'))
                 ->toTimeString();
-        
     }
 
 
@@ -53,20 +52,17 @@ class Track extends Model
             ->addSeconds($this->metadata['result']['play_length'])
             ->toTimeString();
         }
-        
-        
     }
     
 
     public function getDurationHumanAttribute()
     {
         
-        if(is_null($this->play_length)) {
+        if (is_null($this->play_length)) {
             if (isset($this->metadata['result']['play_length'])) {
                 return \Carbon\CarbonInterval::seconds($this->metadata['result']['play_length'])->cascade()->forHumans();
             }
         }
         return \Carbon\CarbonInterval::seconds($this->play_length)->cascade()->forHumans();
-        
     }
 }

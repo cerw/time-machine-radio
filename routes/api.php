@@ -19,11 +19,10 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::get('/play/{time?}/{date?}','PlayController@play');
-Route::get('/live','PlayController@live');
-Route::get('/archive/{day}/{time?}','PlayController@archive');
-Route::get('/tracks','PlayController@tracks');
-Route::get('/person/{person}','PlayController@person');
+Route::get('/play/{time?}/{date?}', 'PlayController@play');
+Route::get('/live', 'PlayController@live');
+Route::get('/archive/{day}/{time?}', 'PlayController@archive');
+Route::get('/tracks', 'PlayController@tracks');
+Route::get('/person/{person}', 'PlayController@person');
 
-Route::post('/stream','StreamController@update');
-
+Route::post('/stream', 'StreamController@update');
