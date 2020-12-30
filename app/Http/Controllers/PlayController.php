@@ -130,9 +130,7 @@ http://localhost/media/stream/stream-3.ts
 
     public function tracks(Request $request)
     {
-        
-        dd(1);
-        $tracks = Track::all();
+        $tracks = Track::latest()->with('spins')->take(10)->get();
         return response()->json($tracks);
     }
 

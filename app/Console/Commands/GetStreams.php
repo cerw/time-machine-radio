@@ -83,6 +83,7 @@ class GetStreams extends Command
                 Stream::firstOrCreate([
                     'name' => $file,
                     'duration' => 60 * 60,
+                    'recorded_at' => $perthTime,
                     'starts_at' => $fileStartedAt->toDateTimeString(),
                     'ends_at' => $fileStartedAt->addHour()->toDateTimeString()
                 ]);

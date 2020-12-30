@@ -65,4 +65,10 @@ class Track extends Model
         }
         return \Carbon\CarbonInterval::seconds($this->play_length)->cascade()->forHumans();
     }
+
+    public function spins()
+    {
+
+        return $this->hasMany(Spin::class);
+    }
 }

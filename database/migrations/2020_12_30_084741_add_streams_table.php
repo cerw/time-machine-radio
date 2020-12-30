@@ -17,6 +17,7 @@ class AddStreamsTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('duration')->nullable();
+            $table->timestamp('recorded_at')->nullable();
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
         });
