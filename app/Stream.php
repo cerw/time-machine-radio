@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Stream extends Model
 {
@@ -11,6 +12,17 @@ class Stream extends Model
     protected $guarded = [];
 
     protected $dates = [
-        // 'stream_at'
+        'recorded_at',
+        'starts_at',
+        'ends_at'
     ];
+
+    protected $appends = [
+        'url'
+    ];
+
+    public function getURLAttribute()
+    {
+        return Storage::url($this->name);
+    }
 }

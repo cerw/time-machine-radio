@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Show;
+use App\Spin;
 use App\Track;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use simplehtmldom\HtmlDocument;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Resources\TrackCollection;
 use Illuminate\Support\Facades\Storage;
 
 class PlayController extends Controller
@@ -130,7 +132,9 @@ http://localhost/media/stream/stream-3.ts
 
     public function tracks(Request $request)
     {
-        $tracks = Track::latest()->with('spins')->take(10)->get();
+        //
+        $tracks = Spin::with(['track','show:title','stream'])->orderBy('id', 'desc')->take(10)->get();
+        // return new TrackCollection($tracks);
         return response()->json($tracks);
     }
 

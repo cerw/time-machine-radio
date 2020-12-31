@@ -17,7 +17,10 @@ class GetShows extends Command
      *
      * @var string
      */
-    protected $signature = 'get:shows';
+    protected $signature = 'get:shows 
+                            {date?} 
+                            ';
+
 
     /**
      * The console command description.
@@ -44,8 +47,14 @@ class GetShows extends Command
     public function handle()
     {
         
-        
-        $wanted = now();
+
+        $date = $this->argument('date');
+
+        if (is_null($date)) {
+            $wanted = now();
+        } else {
+            $wanted = Carbon::parse($date);
+        }
         
         $date = $wanted->format('Y-m-d');
             // dd(1);

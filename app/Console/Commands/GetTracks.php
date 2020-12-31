@@ -9,6 +9,7 @@ use App\Stream;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class GetTracks extends Command
@@ -44,10 +45,12 @@ class GetTracks extends Command
      */
     public function handle()
     {
-        $this->info("Getting tracks");
 
         DB::table('tracks_spins')->truncate();
-        foreach (Track::all() as $track) {
+        $expiresAt = Carbon::now()->subDays(20);
+        $tracks = Track::where('stream_at', '>=', $expiresAt)->get();
+        $this->info("Getting tracks ".$tracks->count());
+        foreach ($tracks as $track) {
             // find show
 
             // $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->addHours(config('app.offset_hours'));
@@ -60,16 +63,40 @@ class GetTracks extends Command
                     // dump($track,$show);
                     // dd($track,$show);
 
+            if (is_null($show)) {
+                $showsCount = Show::where('date', $track->stream_at->format('Y-m-d'))->count();
+                if (!$showsCount) {
+                    $this->info("No show - lets get shows from radio1.cz -> ".$track->stream_at->format('Y-m-d'));
+                    Artisan::call('get:shows', [
+                        'date' => $track->stream_at->format('Y-m-d')
+                    ]);
+                    $show = Show::where('starts_at', '<=', $track_stream_at)
+                    ->where('ends_at', '>=', $track_stream_at)
+                    ->first();
+                    if (is_null($show)) {
+                        $this->error('Stil no show, skiping..');
+                    }
+                } else {
+                    $this->error('We have showsin DB but track not matching -> '.$track->stream_at->format('Y-m-d'));
+                }
+            }
+
             $stream = Stream::where('starts_at', '<=', $track_stream_at)
                     ->where('ends_at', '>=', $track_stream_at)
                     ->first();
                     // dump($track,$show);
 
+            if (is_null($stream)) {
+                $this->error("No Stream - ".$track->stream_at->format('Y-m-d'));
+            } else {
+            }
+
+
             Spin::firstOrCreate([
                 'track_id' => $track->id,
                 'show_id' => (is_null($show)) ? null: $show->id,
                 'stream_id' => (is_null($stream)) ? null: $stream->id,
-                'timecode' => $track->timecode,
+                'timecode' => (is_null($stream)) ? 0: $stream->starts_at->diffInSeconds($track_stream_at),
                 'stream_at' => $track_stream_at
             ]);
         }
