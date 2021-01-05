@@ -49,6 +49,7 @@ class GetTracks extends Command
         DB::table('tracks_spins')->truncate();
         $expiresAt = Carbon::now()->subDays(20);
         $tracks = Track::where('stream_at', '>=', $expiresAt)->get();
+        // $tracks = Track::where('id', 10987)->get();
         $this->info("Getting tracks ".$tracks->count());
         foreach ($tracks as $track) {
             // find show
@@ -84,7 +85,7 @@ class GetTracks extends Command
             $stream = Stream::where('starts_at', '<=', $track_stream_at)
                     ->where('ends_at', '>=', $track_stream_at)
                     ->first();
-                    // dump($track,$show);
+                    // dump($track_stream_at->toDateTimeString(),$stream);
 
             if (is_null($stream)) {
                 $this->error("No Stream - ".$track->stream_at->format('Y-m-d'));

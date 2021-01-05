@@ -24,7 +24,7 @@ class Show extends Model
     protected $appends = [
         'duration_human',
         'when',
-        'tracks',
+        // 'tracks',
         'files',
         'starts_hours',
         'ends_hours',

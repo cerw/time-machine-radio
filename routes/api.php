@@ -23,6 +23,7 @@ Route::get('/play/{time?}/{date?}', 'PlayController@play');
 Route::get('/live', 'PlayController@live');
 Route::get('/archive/{day}/{time?}', 'PlayController@archive');
 Route::get('/tracks', 'PlayController@tracks');
+Route::get('/spins', 'PlayController@spins');
 Route::get('/person/{person}', 'PlayController@person');
 
 Route::post('/stream', 'StreamController@update');

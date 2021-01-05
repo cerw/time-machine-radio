@@ -33,7 +33,7 @@
         "@bugsnag/js": "^7.5.3",
         "@bugsnag/plugin-vue": "^7.5.3",
         "animate.css": "^4.1.1",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "babel-eslint": "^10.1.0",
         "bootstrap": "^4.5.3",
         "moment": "^2.29.1",
@@ -43,6 +43,7 @@
         "vue": "^2.6.12",
         "vue-sweetalert2": "^3.0.8",
         "vuetify-audio": "^0.3.3",
+        "wavesurfer.js": "^4.3.0",
         "workbox-core": "^5.1.4",
         "workbox-window": "^5.1.4"
     }

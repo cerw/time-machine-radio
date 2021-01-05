@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Stream;
+use maximal\audio\Waveform;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -59,20 +60,20 @@ class GetStreams extends Command
                     Storage::delete($file);
                     continue;
                 }
+                
                 $fileStartedAt->setTimezone('Europe/Prague');
-                // $diff = $date->diffInDays($wanted);
-                    // edited at is newer than created at
-                //    dump($fileStartedAt, $diff, $fileStartedAt->format('H:i:s'));
-                $out['url'] = Storage::url($file);
-                // $out['play_at'] = '00:'.round($diff/60).':'.($diff-round($diff/60)*60);
-                $out['start_at'] = $fileStartedAt->format('H:i:s');
-                $out['perth_started_at'] = $perthTime;
-                $out['prague_started_at'] = $fileStartedAt->toDateTimeString();
-                ;
-                $out['recoded_at'] = $fileStartedAt->diffForHumans();
-                $out['recoded_timestamp'] = $fileStartedAt->toDateTimeString();
-                $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
-                $out['next'] =  $fileStartedAt->format('H:i:s/Y-m-d');
+                // // $diff = $date->diffInDays($wanted);
+                //     // edited at is newer than created at
+                // //    dump($fileStartedAt, $diff, $fileStartedAt->format('H:i:s'));
+                // $out['url'] = Storage::url($file);
+                // // $out['play_at'] = '00:'.round($diff/60).':'.($diff-round($diff/60)*60);
+                // $out['start_at'] = $fileStartedAt->format('H:i:s');
+                // $out['perth_started_at'] = $perthTime;
+                // $out['prague_started_at'] = $fileStartedAt->toDateTimeString();
+                // $out['recoded_at'] = $fileStartedAt->diffForHumans();
+                // $out['recoded_timestamp'] = $fileStartedAt->toDateTimeString();
+                // $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
+                // $out['next'] =  $fileStartedAt->format('H:i:s/Y-m-d');
 
                 /*
                 $table->string('name');
@@ -80,12 +81,19 @@ class GetStreams extends Command
                 $table->timestamp('starts_at')->nullable();
                 $table->timestamp('ends_at')->nullable();
                 */
+                // dump($perthTime,$fileStartedAt,$fileStartedAt->toDateTimeString());
+
+                $waveform = new Waveform(Storage::path($file));
+                $width = 100;
+                $data = $waveform->getWaveformData($width, true);
                 Stream::firstOrCreate([
                     'name' => $file,
+                    'waveform' => $data,
                     'duration' => 60 * 60,
                     'recorded_at' => $perthTime,
+                    'size' => Storage::size($file),
                     'starts_at' => $fileStartedAt->toDateTimeString(),
-                    'ends_at' => $fileStartedAt->addHour()->toDateTimeString()
+                    'ends_at' => $fileStartedAt->clone()->addHour()->toDateTimeString()
                 ]);
             }
         }

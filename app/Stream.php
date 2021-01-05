@@ -17,6 +17,10 @@ class Stream extends Model
         'ends_at'
     ];
 
+    protected $casts = [
+        'waveform' => 'json'
+    ];
+
     protected $appends = [
         'url'
     ];

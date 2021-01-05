@@ -133,9 +133,19 @@ http://localhost/media/stream/stream-3.ts
     public function tracks(Request $request)
     {
         //
-        $tracks = Spin::with(['track','show:title','stream'])->orderBy('id', 'desc')->take(10)->get();
+        $tracks = Spin::with(['track','show','stream'])->orderBy('id', 'desc')->take(50)->get();
         // return new TrackCollection($tracks);
         return response()->json($tracks);
+    }
+
+    public function spins(Request $request)
+    {
+        //
+        $tracks = Spin::with(['track','show','stream'])->orderBy('id', 'desc')->take(50)->get();
+        // dd($tracks);
+        return new TrackCollection($tracks);
+        // return UserResource::collection(User::all());
+        // return response()->json($tracks);
     }
 
     public function person($person, Request $request)

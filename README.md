@@ -17,6 +17,13 @@ One to two paragraph statement about your product and what it does.
 [radio1.rocks](http://radio1.rocks)
 
 
+## TODO
+
+* https://github.com/katspaugh/wavesurfer.js
+* https://github.com/azcoppen/waveform-generation
+* https://github.com/maximal/audio-waveform-php
+* 
+
 ## Installation
 
 OS X & Linux:

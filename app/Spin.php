@@ -22,6 +22,9 @@ class Spin extends Model
 
     public function getPlayITAttribute()
     {
+        if (is_null($this->stream)) {
+            return;
+        }
         return $this->stream->url."#t=".$this->timecode;
     }
     
