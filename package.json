@@ -33,7 +33,7 @@
         "@bugsnag/js": "^7.5.3",
         "@bugsnag/plugin-vue": "^7.5.3",
         "animate.css": "^4.1.1",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "babel-eslint": "^10.1.0",
         "bootstrap": "^4.5.3",
         "moment": "^2.29.1",
