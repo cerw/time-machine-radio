@@ -84,7 +84,8 @@ class SpinML extends Command
                 "type"=>  "vcpu-4_memory-12g_disk-80g_nvidia1080ti-1",
                 "image"=>  "5bafab01-01be-458c-a46d-4857f1f64363", # snaphsot of timemachine
                 "ssh_keys"=>  [
-                    "7238a5f9-01b6-4efd-95eb-6f23e7d8b637" // cerw
+                    // "7238a5f9-01b6-4efd-95eb-6f23e7d8b637" // cerw
+                    "0362420d-dda3-43f2-8cc8-d55233a07a84"// timemachine
                     // "0362420d-dda3-43f2-8cc8-d55233a07a84" // not supported
                 ],
                 "metadata"=>  [
@@ -124,15 +125,17 @@ class SpinML extends Command
             $this->error("Can not connect");
         }
         // copy things over
+
         $dir = storage_path('app/public/radio1');
-        $cmd = "rsync -avP --delete-after ".$dir." ubuntu@".$ip.":/home/ubuntu/radio1";
-        $this->info("Shoudl run ".$cmd);
+        $cmd = "rsync -avP  ".$dir."/radio1-".now()->format("Y-m-d")."* ubuntu@".$ip.":/home/ubuntu/radio1/";
+        $this->info("Running: ".$cmd);
+        system($cmd);
         $ssh->exec('/home/ubuntu/run.sh', function ($str) {
             $this->comment($str);
         });
         $this->info("Done - delete");
-        $cmd = "rsync -avP --exclude=*.mp3 ubuntu@".$ip.":/home/ubuntu/radio1 ".$dir;
-        $this->info("Shoudl run ".$cmd);
+        $cmd = "rsync -avP ubuntu@".$ip.":/home/ubuntu/radio1/radio1-".now()->format("Y-m-d")."*.csv ".$dir;
+        $this->info("Running: ".$cmd);
 
 
         return 0;

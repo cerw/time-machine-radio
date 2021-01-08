@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Layout from './components/Layout.vue'
 import VueSweetalert2 from 'vue-sweetalert2'
 import bugsnagClient from './bugsnag-client'
+import router from './routes'
+import store from './store'
 
 // const options = {
 //   customClass: {
@@ -26,6 +28,8 @@ require('./service-worker')
 // eslint-disable-next-line no-new
 new Vue({
   el: '#app',
+  store,
+  router, // vue-router
   methods: {},
   render: h => h(Layout)
 })

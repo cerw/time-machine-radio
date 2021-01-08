@@ -249,7 +249,7 @@ export default {
   },
   mounted () {
     const current = moment()
-    let n = 4
+    let n = 14
     while (n > 0) {
       const day = {}
       day.calendar = current.calendar()

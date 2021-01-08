@@ -18,7 +18,7 @@ class Stream extends Model
     ];
 
     protected $casts = [
-        'waveform' => 'json'
+        'analytics' => 'json'
     ];
 
     protected $appends = [

@@ -98,16 +98,17 @@
           </div>
         </div>
 
+        <!-- Nav -->
+        <navigation />
         <!-- Main App-->
+        <transition
+          name="slide-fade"
+          mode="out-in"
+        >
+          <router-view />
+        </transition>
+
         <div class="card">
-          <!-- <div class="card-header">
-      <button
-        class="btn btn-success"
-        @click="app()"
-      >
-        Install App
-      </button>
-    </div> -->
           <div class="card-body p-0">
             <div class="pb-2 text-center">
               Radio1 Time: <strong>{{ radioNow }}</strong><br>
@@ -137,15 +138,10 @@
               ref="player"
               :config="config"
             />
-            <hr class="m-0">
-            <!-- <podcast
-              ref="podcast"
-
-            /> -->
-            <archive
+            <!-- <archive
               ref="archives"
               :dj="dj"
-            />
+            /> -->
           </div>
         </div>
         <!-- End of App -->
@@ -155,17 +151,17 @@
 </template>
 <script>
 import moment from 'moment-timezone'
-import Archive from './Archive'
 import Player from './Player'
 import Loader from './Loader'
+import Navigation from './Navigation'
 // import Podcast from './Podcast'
 
 export default {
   name: 'Layout',
   components: {
-    Archive,
     Player,
-    Loader
+    Loader,
+    Navigation
     // Podcast
   },
   data () {

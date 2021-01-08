@@ -16,6 +16,16 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 
 mix
 .webpackConfig({
+    output: {
+      publicPath: '' // must set public path when using laravel mix, otherwise it will cause issues with precache manifest -- see https://github.com/GoogleChrome/workbox/issues/1534
+    },
+    resolve: {
+      extensions: ['.js', '.vue', '.json'],
+      alias: {
+        // 'vue$': 'vue/dist/vue.esm.js',
+        '@': __dirname + '/resources/js'
+      },
+    },
     module: {
       rules: [
         {

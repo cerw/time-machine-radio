@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Stream;
+use League\Csv\Reader;
+use League\Csv\Statement;
 use maximal\audio\Waveform;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
@@ -49,6 +51,7 @@ class GetStreams extends Command
         // dump($wanted);
         $expiresAt = Carbon::now()->subDays(60);
         
+        
 
         foreach ($files as $file) {
             if (preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#", $file, $match)) {
@@ -75,26 +78,47 @@ class GetStreams extends Command
                 // $out['ends_at'] = $fileStartedAt->addHour()->format('H:i:s');
                 // $out['next'] =  $fileStartedAt->format('H:i:s/Y-m-d');
 
-                /*
-                $table->string('name');
-                $table->integer('duration')->nullable();
-                $table->timestamp('starts_at')->nullable();
-                $table->timestamp('ends_at')->nullable();
-                */
+                
                 // dump($perthTime,$fileStartedAt,$fileStartedAt->toDateTimeString());
 
-                $waveform = new Waveform(Storage::path($file));
-                $width = 100;
-                $data = $waveform->getWaveformData($width, true);
-                Stream::firstOrCreate([
+                
+                $stream = Stream::firstOrCreate([
                     'name' => $file,
-                    'waveform' => $data,
                     'duration' => 60 * 60,
                     'recorded_at' => $perthTime,
-                    'size' => Storage::size($file),
                     'starts_at' => $fileStartedAt->toDateTimeString(),
                     'ends_at' => $fileStartedAt->clone()->addHour()->toDateTimeString()
                 ]);
+
+                $stream->size = Storage::size($file);
+                $stream->save();
+                // peak
+                $peak = Storage::path($file.".dat");
+                
+                if (!file_exists($peak)) {
+                    $this->comment("Generting peak: ".$peak);
+                    $cmd = "audiowaveform -i ".Storage::path($file)." -o ".$peak." -b 8";
+                    system($cmd);
+                } else {
+                    $this->comment("Got peak");
+                }
+                // analytics
+                
+                $csv = Storage::path(preg_replace("/mp3$/", 'csv', $file));
+                if (file_exists($csv)) {
+                    $this->comment("Importing  ".$csv);
+
+                    //load the CSV document from a file path
+                    $csv = Reader::createFromPath($csv, 'r');
+                    $csv->setDelimiter("\t");
+                    $csv->setHeaderOffset(0);
+
+                    $header = $csv->getHeader(); //returns the CSV header record
+                    // $records = $csv->getRecords(); //returns all the CSV records as an Iterator object
+                    $records = Statement::create()->process($csv);
+                    $stream->analytics = $records;
+                    $stream->save();
+                }
             }
         }
     }

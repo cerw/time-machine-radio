@@ -182,47 +182,6 @@
         60s
       </button>
 
-      <!-- Live -->
-      <button
-        type="button"
-        class="btn btn-outline-danger "
-        :class="{'active':livePlaying()}"
-        @click="playLive()"
-      >
-        <span v-if="livePlaying()">
-          <svg
-            width="2em"
-            height="2em"
-            viewBox="0 0 16 16"
-            class="bi bi-play"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z"
-            />
-          </svg>
-
-        </span>
-        <span v-else>
-          <svg
-            width="2em"
-            height="2em"
-            viewBox="0 0 16 16"
-            class="bi bi-stop"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"
-            />
-          </svg>
-
-        </span>
-        Live
-      </button>
       <!-- Time Machine -->
       <button
         type="button"
@@ -262,7 +221,6 @@
           </svg>
 
         </span>
-        Time
       </button>
 
       <button
@@ -340,7 +298,6 @@ export default {
   },
   data () {
     return {
-      liveUrl: 'https://icecast6.play.cz/radio1-128.mp3',
       url: null
       // radioDate: moment().format('HH:mm:ss'),
       // radioCalendar: moment().format('HH:mm:ss'),
@@ -412,6 +369,11 @@ export default {
       }
     }
 
+    //
+    this.$root.$on('play', (url) => {
+      console.log('play it man', url)
+      this.url = url
+    })
     window.addEventListener('keypress', function (e) {
       if (e.code === 'Space') {
         if (self.$refs.player.paused) {
@@ -661,22 +623,7 @@ export default {
           })
       }
       this.$forceUpdate()
-    },
-    playLive () {
-      // set live url
-      // const self = this
-      if (this.livePlaying()) {
-        this.$refs.player.pause()
-      } else {
-        console.log('playLive')
-        this.$parent.$refs.loader.loaded = false
-        this.url = this.liveUrl
-        this.$parent.live()
-        this.playAudio()
-      }
-      this.$forceUpdate()
     }
-
   }
 }
 </script>

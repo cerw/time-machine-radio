@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Show;
 use App\Spin;
 use App\Track;
+use App\Stream;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use simplehtmldom\HtmlDocument;
@@ -141,7 +142,7 @@ http://localhost/media/stream/stream-3.ts
     public function spins(Request $request)
     {
         //
-        $tracks = Spin::with(['track','show','stream'])->orderBy('id', 'desc')->take(50)->get();
+        $tracks = Spin::with(['track','show','stream'])->orderBy('id', 'desc')->take(10)->get();
         // dd($tracks);
         return new TrackCollection($tracks);
         // return UserResource::collection(User::all());

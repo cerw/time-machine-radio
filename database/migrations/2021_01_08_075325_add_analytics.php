@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddWaveform extends Migration
+class AddAnalytics extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddWaveform extends Migration
     public function up()
     {
         Schema::table('streams', function (Blueprint $table) {
-            $table->json('waveform')->nullable();
+            $table->json('analytics')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddWaveform extends Migration
     public function down()
     {
         Schema::table('streams', function (Blueprint $table) {
-            $table->dropColumn('waveform');
+            $table->dropColumn('analytics');
         });
     }
 }
