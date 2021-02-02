@@ -56,6 +56,7 @@ class StreamController extends Controller
                 'upc' => $song['upc']
             ]);
             
+            $track->isrc = $song['isrc'] ?? null;
             $track->artist = $song['artist'] ?? '';
             $track->release_date = (empty($song['release_date']) || $song['release_date'] == 'None' || $song['release_date'] == '0000-00-00') ? null : Carbon::parse($song['release_date']);
             $track->label = $song['label'] ?? '';

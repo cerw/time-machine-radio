@@ -50,7 +50,7 @@
       :key="index"
     >
       <NuTrack
-        :track="spin.track"
+        :track="spin"
         :url="spin.url"
         :play="true"
       />
