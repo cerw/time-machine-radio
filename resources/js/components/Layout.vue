@@ -100,13 +100,6 @@
 
         <!-- Nav -->
         <navigation />
-        <!-- Main App-->
-        <transition
-          name="slide-fade"
-          mode="out-in"
-        >
-          <router-view />
-        </transition>
 
         <div class="card">
           <div class="card-body p-0">
@@ -144,6 +137,19 @@
             /> -->
           </div>
         </div>
+        <!-- Main App-->
+        <transition
+          name="slide-fade"
+          mode="out-in"
+        >
+          <router-view />
+        </transition>
+        <div
+          style="height: 300px;"
+          class="text-center "
+        >
+          End
+        </div>
         <!-- End of App -->
       </div>
     </main>
@@ -154,8 +160,7 @@ import moment from 'moment-timezone'
 import Player from './Player'
 import Loader from './Loader'
 import Navigation from './Navigation'
-// import Podcast from './Podcast'
-
+import { mapMutations } from 'vuex'
 export default {
   name: 'Layout',
   components: {
@@ -205,14 +210,16 @@ export default {
       this.dj = currentUrl[3].split('@')[1]
     }
 
-    this.load(currentTime)
-      .then(() => {
-        console.log('playTimemachine load done', currentTime)
-        self.$refs.player.url = self.config.url + '#t=' + self.config.offset
-        self.$refs.player.playAudio()
+    this.get()
+      .then((data) => {
+        console.log('playTimemachine load done', data)
+        this.config = data
+        // self.$refs.player.url = self.config.url + '#t=' + self.config.offset
+        // self.$refs.player.playAudio()
+        this.$root.$emit('play', data.play_it)
         self.timeInternal()
-        console.log('Archive -  program for that day', self.radioDate)
-        self.$refs.archives.loadDay(self.radioDate)
+        // console.log('Archive -  program for that day', self.radioDate)
+        // self.$refs.archives.loadDay(self.radioDate)
       })
       .catch(error => console.log(error))
 
@@ -247,6 +254,7 @@ export default {
 
   },
   methods: {
+    ...mapMutations(['setConfig']),
     app () {
       window.addToHomeScreen()
     },
@@ -291,6 +299,23 @@ export default {
         this.$refs.player.updateMetadata()
       }
     },
+    // api V2
+    get () {
+      this.$refs.loader.loaded = false
+      // const self = this
+      const self = this
+      return new Promise((resolve, reject) => {
+        axios.get('/api/get/' + this.youTZ)
+          .then(({ data }) => {
+            console.log('ajax load done')
+            self.setConfig(data)
+            resolve(data)
+          }).catch(function (error) {
+            console.log('error getting crew', error)
+            reject(error)
+          })
+      })
+    },
     load (time) {
       this.$refs.loader.loaded = false
       const self = this
@@ -316,22 +341,6 @@ export default {
             resolve(data)
           }).catch(function (error) {
             console.log('error getting crew', error)
-            reject(error)
-          })
-      })
-    },
-    live () {
-      this.$refs.loader.loaded = false
-      const self = this
-      return new Promise((resolve, reject) => {
-        this.loading = true
-        axios.get('/api/live')
-          .then(({ data }) => {
-            self.config = data
-            // self.$refs.player.load()
-            resolve(data)
-          }).catch(function (error) {
-            console.log('error getting live', error)
             reject(error)
           })
       })

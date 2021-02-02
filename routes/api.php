@@ -21,11 +21,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/play/{time?}/{date?}', 'PlayController@play');
 Route::get('/live', 'PlayController@live');
-Route::get('/archive/{day}/{time?}', 'PlayController@archive');
+// Route::get('/archive/{day}/{time?}', 'PlayController@archive');
 Route::get('/tracks', 'PlayController@tracks');
 Route::get('/spins', 'PlayController@spins');
 
+#nuPlay
+Route::get('/get/{country}/{city}', 'PlayController@get');
 
+# archive
+Route::get('/archive', 'ArchiveController@index');
+Route::get('/archive/{show}', 'ArchiveController@show');
+
+#grid
+Route::get('/stream/{stream}', 'ArchiveController@stream');
+#
 Route::get('/person/{person}', 'PlayController@person');
-
+# audd
 Route::post('/stream', 'StreamController@update');

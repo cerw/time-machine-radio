@@ -136,6 +136,7 @@ class SpinML extends Command
         $this->info("Done - delete");
         $cmd = "rsync -avP ubuntu@".$ip.":/home/ubuntu/radio1/radio1-".now()->format("Y-m-d")."*.csv ".$dir;
         $this->info("Running: ".$cmd);
+        system($cmd);
 
 
         return 0;

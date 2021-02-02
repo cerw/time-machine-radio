@@ -89,7 +89,7 @@ registerRoute(
 )
 
 registerRoute(
-  /\.(?:mp3)$/,
+  /\.(?:mp3|dat|json)$/,
   new CacheFirst({
     cacheName: 'media',
     plugins: [

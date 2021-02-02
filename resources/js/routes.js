@@ -26,7 +26,7 @@ export default new Router({
     {
       path: '/archive',
       name: 'Archive',
-      component: require('@/components/Archive.vue').default
+      component: require('@/components/NuArchive.vue').default
     },
     {
       path: '/people',

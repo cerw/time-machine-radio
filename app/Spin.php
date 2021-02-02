@@ -12,7 +12,8 @@ class Spin extends Model
     protected $guarded = [];
 
     protected $dates = [
-        'stream_at'
+        'stream_at',
+        'date'
     ];
 
     protected $appends = [

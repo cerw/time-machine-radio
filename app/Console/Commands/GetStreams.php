@@ -95,7 +95,7 @@ class GetStreams extends Command
                 // peak
                 $peak = Storage::path($file.".dat");
                 
-                if (!file_exists($peak)) {
+                if (!file_exists($peak) and 0) {
                     $this->comment("Generting peak: ".$peak);
                     $cmd = "audiowaveform -i ".Storage::path($file)." -o ".$peak." -b 8";
                     system($cmd);

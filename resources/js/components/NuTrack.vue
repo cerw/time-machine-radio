@@ -1,53 +1,48 @@
 <template>
   <div
-    class="card mb-2"
+    class="row border-bottom g-0  "
+    :class="{'bg-white border border-danger': current,'bg-light border-darken-3' : !current}"
   >
-    <div class="row g-0">
-      <div
-        class="col-4 position-relative"
+    <div
+      class="col-2 p-0 position-relative"
+    >
+      <img
+        :src="track.link+'?thumb'"
+        loading="lazy"
+        class="rounded img-fluid"
       >
-        <img
-          :src="track.link+'?thumb'"
-          :alt="track.title"
-          loading="lazy"
-          class="rounded img-fluid"
+      <div
+        v-if="play"
+        class="position-absolute top-50 start-50 translate-middle text-white"
+        @click="playTrack(url)"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="35"
+          height="35"
+          fill="currentColor"
+          class="bi bi-play-circle"
+          viewBox="0 0 16 16"
         >
-        <button
-          v-if="play"
-          class="btn btn-sm play-button text-white"
-          @click="playTrack(url)"
-        >
-          <svg
-            width="5.6em"
-            height="5.6em"
-            viewBox="0 0 10 16"
-            class="bi bi-stop"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"
-            />
-          </svg>
-        </button>
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+          <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
+        </svg>
       </div>
-      <div class="col-8">
-        <div class="card-body">
-          <h5 class="card-title">
-            <a
-              :href="track.link"
-              target="_blank"
-            >{{ track.title }}</a>
-          </h5>
-          <p class="card-text">
-            <span class="text-muted">Artist:</span> {{ track.artist }}<br>
-            <span class="text-muted">Album:</span> {{ track.album }}<br>
-            <span class="text-muted">Year:</span>  {{ track.release_date | formatYear }} |
-            <span class="text-muted">Label:</span>  {{ track.label }}<br>
-          </p>
-        </div>
-      </div>
+    </div>
+    <div class="col-10 fs-7 pl-2">
+      <small>
+        <a
+          :href="track.link"
+          class="text-decoration-none"
+          target="_blank"
+        >{{ track.title }}</a>
+        ·
+        <span class="text-muted">Artist:</span> {{ track.artist }}<br>
+        <span class="text-muted">Album:</span> {{ track.album }} · {{ track.release_date | formatYear }} <br>
+        <!-- <span class="text-muted">Year:</span>   -->
+        <span class="text-muted">Label:</span>  {{ track.label }}
+        <div class="float-end text-muted">{{ track.radio_time }}</div><br>
+      </small>
     </div>
   </div>
 </template>
@@ -62,6 +57,10 @@ export default {
       default: null
     },
     play: {
+      type: [Boolean],
+      default: false
+    },
+    current: {
       type: [Boolean],
       default: false
     },
@@ -100,12 +99,6 @@ export default {
 </script>
 <style lang="css" scoped>
 
-.play-button {
-  position: absolute;
-  top:0;
-  left: 0;
-  bottom: 0;
-}
 .media {
   position: relative;
 }

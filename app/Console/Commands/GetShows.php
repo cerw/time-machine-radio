@@ -170,11 +170,18 @@ class GetShows extends Command
             $table->timestamps();
         */
         $this->info("Saving Model");
+        //$track_stream_at = $track->stream_at->subHours(config('app.offset_hours'));
         foreach ($shows as $show) {
+            $stream = Stream::where('starts_at', '<=', $show['starts'])
+                    ->where('ends_at', '>=', $show['starts'])
+                    ->first();
+
+            
             $dbShow = Show::firstOrCreate([
                 'date' => $wanted->format('Y-m-d'),
                 'starts_at' => $show['starts'],
-                'ends_at' => $show['ends']
+                'ends_at' => $show['ends'],
+                'stream_id' => (is_null($stream)) ? null: $stream->id,
             ]);
             $dbShow->people  = $show['people'];
             $dbShow->title = $show['people'][0]['name'];

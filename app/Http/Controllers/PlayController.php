@@ -16,18 +16,70 @@ use Illuminate\Support\Facades\Storage;
 
 class PlayController extends Controller
 {
+   
     /**
-     * Undocumented function
+     * Get user time in radio one based on timezone
      *
-     * #EXTM3U
-#EXT-X-TARGETDURATION:10
-#EXTINF:10,
-http://localhost/media/stream/stream-1.ts
-#EXTINF:10,
-http://localhost/media/stream/stream-2.ts
-#EXTINF:10,
-http://localhost/media/stream/stream-3.ts
-#EXT-X-ENDLIST
+     * @param [type] $country
+     * @param [type] $city
+     * @param Request $request
+     * @return void
+     */
+    public function get($country, $city, Request $request)
+    {
+
+        
+        $them = Carbon::now($country.'/'.$city);
+
+        $wanted = Carbon::createFromFormat('Y-m-d H:i:s', $them->format('Y-m-d H:i:s'));
+
+        if ($wanted->isFuture()) {
+            $wanted->subDay();
+        }
+        
+        $stream = Stream::where('starts_at', '<=', $wanted->toDateTimeString())
+        ->where('ends_at', '>=', $wanted->toDateTimeString())
+        ->firstOrFail();
+
+        $out = $stream->toArray();
+
+
+        $next = $stream = Stream::where('starts_at', '<=', $wanted->clone()->addHour()->toDateTimeString())
+        ->where('ends_at', '>=', $wanted->clone()->addHour()->toDateTimeString())
+        ->first();
+        
+        $out['next_url'] = $next->url;
+
+        $show = Show::where('starts_at', '<=', $wanted->toDateTimeString())
+        ->where('ends_at', '>=', $wanted->toDateTimeString())
+        ->first();
+        
+
+        $out['show'] = $show->makeHidden('spins');
+        
+        // trakc
+        //  dd($wanted->subHours(2)->toDateTimeString(),$wanted->addHours(2)->toDateTimeString());
+        $spins = Spin::with(['track','show','stream'])
+        ->where('stream_at', '>=', $wanted->clone()->subHours(2)->toDateTimeString())
+        ->where('stream_at', '<=', $wanted->clone()->addHours(2)->toDateTimeString())
+        ->orderBy('stream_at', 'asc')
+        ->get();
+        
+        
+        $tracks =  new TrackCollection($spins);
+
+        $out['spins'] = $tracks->toArray($request);
+
+        // return $this->stream->url."#t=".$this->timecode;
+        $out['play_it'] = $stream->url."#t=".$stream->starts_at->diffInSeconds($wanted);
+        $out['recoded_timestamp'] = $stream->starts_at->toDateTimeString();
+
+        return response()->json($out);
+    }
+
+    
+
+    /**
      *
      * @param [type] $time
      * @param Request $request
@@ -43,7 +95,6 @@ http://localhost/media/stream/stream-3.ts
         } else {
             $today = Carbon::createFromFormat('Y-m-d', $date);
         }
-
         
         //dd($today->format('H:m'));
         // find nearest $time record
@@ -118,26 +169,7 @@ http://localhost/media/stream/stream-3.ts
         return response()->json($out);
     }
 
-    public function live(Request $request)
-    {
-        
-
-        $wanted = Carbon::now()->tz('Europe/Prague');
-        $playing = $this->info($wanted);
-      
-        $out['playing'] = $playing;
-        //$out['shows'] = $shows;
-        //$out['wanted'] =  $time;
-        return response()->json($out);
-    }
-
-    public function tracks(Request $request)
-    {
-        //
-        $tracks = Spin::with(['track','show','stream'])->orderBy('id', 'desc')->take(50)->get();
-        // return new TrackCollection($tracks);
-        return response()->json($tracks);
-    }
+    
 
     public function spins(Request $request)
     {
@@ -149,38 +181,18 @@ http://localhost/media/stream/stream-3.ts
         // return response()->json($tracks);
     }
 
-    public function person($person, Request $request)
-    {
+    // public function person($person, Request $request)
+    // {
         
-        $shows= Show::where('title', 'like', '%'.$person.'%')
-            ->orderBy('starts_at', 'DESC')
-            ->get();
+    //     $shows= Show::where('title', 'like', '%'.$person.'%')
+    //         ->orderBy('starts_at', 'DESC')
+    //         ->get();
         
-        return response()->json($shows);
-    }
+    //     return response()->json($shows);
+    // }
 
 
-    public function archive($date, $time = false, Request $request)
-    {
-        
-
-        $today = now();
-        // if only date then match timemachien time
-        if (!$time) {
-            $wanted = Carbon::createFromFormat('Y-m-d H:i:s', $date. ' '. $today->format('H:i:s'), 'Europe/Prague');
-        } else {
-            $wanted = Carbon::createFromFormat('Y-m-d H:i:s', $date. ' '. $time, 'Europe/Prague');
-        }
-        // if date/time then match that  in radioe1 time
-        
-        if ($time) {
-            $this->info($wanted, true);
-        }
-        $info = $this->info($wanted, true);
-        
-        return response()->json($info);
-    }
-
+   
 
 
     
@@ -191,23 +203,23 @@ http://localhost/media/stream/stream-3.ts
      * @param [type] $wanted
      * @return void
      */
-    protected function info($wanted, $extended = false)
-    {
+    // protected function info($wanted, $extended = false)
+    // {
         
 
         
-        $shows = Show::show($wanted);
-        $playing = Show::playing($wanted);
+    //     $shows = Show::show($wanted);
+    //     $playing = Show::playing($wanted);
         
         
         
-        if ($extended) {
-            $ext = [];
-            $ext['shows'] = $shows;
-            $ext['playing'] = $playing;
-            return $ext;
-        }
+    //     if ($extended) {
+    //         $ext = [];
+    //         $ext['shows'] = $shows;
+    //         $ext['playing'] = $playing;
+    //         return $ext;
+    //     }
 
-        return $playing;
-    }
+    //     return $playing;
+    // }
 }

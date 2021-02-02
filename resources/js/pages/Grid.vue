@@ -50,47 +50,7 @@ export default {
     }
   },
   mounted () {
-    // var wavesurfer = WaveSurfer.create({
-    //   container: document.querySelector('#waveform'),
-    //   progressColor: '#dc3545',
-    //   waveColor: '#0d6efd',
-    //   cursorColor: '#000',
-    //   // This parameter makes the waveform look like SoundCloud's player
-    //   backend: 'MediaElement',
-    //   barWidth: 1,
-    //   barHeight: 1 // the height of the wave
-    //   // barGap: null // the optional spacing between bars of the wave, if not provided will be calculated in legacy format
-    // })
-
-    // fetch('https://timemachine.test/api/wave/8')
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       throw new Error('HTTP error ' + response.status)
-    //     }
-    //     return response.json()
-    //   })
-    //   .then(peaks => {
-    //     console.log('loaded peaks! sample_rate: ' + peaks.sample_rate)
-
-    //     // load peaks into wavesurfer.js
-    //     wavesurfer.load('https://timemachine.test/storage/radio1/radio1-2021-01-04_20-42.mp3', peaks.data)
-    //   })
-    //   .catch((e) => {
-    //     console.error('error', e)
-    //   })
-
-    // wavesurfer.on('ready', function () {
-    //   console.log('waversutrer')
-    //   wavesurfer.play()
-    // })
-
-    // // wavesurfer.on('audioprocess', function (event) {
-    // //   console.log('audioprocess', event)
-    // // })
-    // wavesurfer.on('finish', function (event) {
-    //   console.log('finish', event)
-    // })
-
+    // /api/stream/{stream}
     const options = {
       // webAudio: {
       //   // A Web Audio AudioContext instance which can be used
@@ -162,9 +122,11 @@ export default {
       }
       //      dataUri: 'https://timemachine.test/storage/radio1/radio1-2021-01-07_05-50.mp3.dat'// document.getElementById('player').src.split('#')[0] + '.dat'
     }
-
+    this.$root.$emit('pause')
+    const self = this
     this.instance = Peaks.init(options, function (err, peaks) {
       console.log('peak init', err)
+      self.$root.$emit('resume')
     })
     console.log('Peak started...', this.source)
   }

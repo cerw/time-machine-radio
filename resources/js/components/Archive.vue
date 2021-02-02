@@ -335,7 +335,7 @@ export default {
       this.today = day
       this.shows = this.$parent.config.archive[day]
       this.$parent.$refs.loader.loaded = true
-      this.playArchive(moment().format('HH:mm:ss'))
+      // this.playArchive(moment().format('HH:mm:ss'))
     },
     playTrack (time) {
       // console.log('play song on ', time)

@@ -19,20 +19,22 @@ class TrackCollection extends ResourceCollection
         // dd($this);
         return $this->collection->map(function ($spin) {
             return [
-                'track' => [
-                    'artist' => $spin->track->artist,
-                    'title' => $spin->track->title,
-                    'album' => $spin->track->album,
-                    'release_date' => $spin->track->release_date,
-                    'label' => $spin->track->label,
-                    'link' => $spin->track->song_link
-                ],
-                'show' => [
-                    'date' => $spin->show->date,
-                    'desc' => $spin->show->desc,
-                    'title' => $spin->show->title,
-                    'when' => $spin->show->when,
-                ],
+                'id' => $spin->id,
+                'artist' => $spin->track->artist,
+                'title' => $spin->track->title,
+                'album' => $spin->track->album,
+                'release_date' => $spin->track->release_date,
+                'label' => $spin->track->label,
+                'link' => $spin->track->song_link,
+                'radio_time' => $spin->track->radio_time,
+                'radio_time_ends' => $spin->track->radio_time_ends,
+                // 'show' => [
+                //     'date' => $spin->show->date,
+                //     'desc' => $spin->show->desc,
+                //     'title' => $spin->show->title,
+                //     'when' => $spin->show->when,
+                // ],
+                
                 'stream_at' => $spin->stream_at->toDateTimeString(),
                 'url' => $spin->play_it
             ];
