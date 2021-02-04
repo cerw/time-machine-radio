@@ -1,7 +1,7 @@
 <template>
   <div
-    class="row border-bottom g-0  "
-    :class="{'bg-white border border-danger': current,'bg-light border-darken-3' : !current}"
+    class="row border-bottom"
+    :class="{'bg-white border border-danger border-2': current,'bg-light border-darken-3' : !current}"
   >
     <div
       class="col-2 p-0 position-relative"
