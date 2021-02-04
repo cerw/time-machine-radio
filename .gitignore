@@ -4,6 +4,7 @@
 /public/css/app.css
 /public/js/manifest.js
 /public/js/vendor.js
+/public/sw.js
 /storage/*.key
 /vendor
 .env

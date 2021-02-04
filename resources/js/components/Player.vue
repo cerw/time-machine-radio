@@ -8,7 +8,7 @@
         class="small m-0 text-center"
         v-if="timemachinePlaying()"
       >
-        Serving show from <strong>{{ config.recoded_timestamp }} </strong>
+        <!-- Serving show from <strong>{{ config.recoded_timestamp }} </strong> -->
         <br>
 
         <div v-if="config.show !== undefined">
