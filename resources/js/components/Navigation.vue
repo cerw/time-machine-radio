@@ -1,5 +1,5 @@
 <template>
-  <ul class="nav nav-tabs nav-fill">
+  <ul class="nav nav-tabs nav-fill p-0">
     <li class="nav-item">
       <router-link
         :to="{ name: 'Home' }"
@@ -19,7 +19,7 @@
       </router-link>
     </li>
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <router-link
         :to="{ name: 'People' }"
         class="nav-link"
@@ -27,7 +27,7 @@
       >
         People
       </router-link>
-    </li>
+    </li> -->
     <li class="nav-item">
       <router-link
         :to="{ name: 'Latest' }"
