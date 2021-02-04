@@ -26,7 +26,7 @@ Route::get('/tracks', 'PlayController@tracks');
 Route::get('/spins', 'PlayController@spins');
 
 #nuPlay
-Route::get('/get/{country}/{city}', 'PlayController@get');
+Route::get('/get/{country}/{city}/{timestamp?}', 'PlayController@get');
 
 # archive
 Route::get('/archive', 'ArchiveController@index');

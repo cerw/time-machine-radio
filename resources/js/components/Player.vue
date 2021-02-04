@@ -11,7 +11,7 @@
         <!-- Serving show from <strong>{{ config.recoded_timestamp }} </strong> -->
         <br>
 
-        <div v-if="config.show !== undefined">
+        <div v-if="show !== undefined">
           <span class="h3 text-white btn btn-sm btn-danger">
             {{ radioThen }}
           </span>
@@ -39,12 +39,12 @@
               />
             </svg>
 
-            {{ config.show.when }}
+            {{ show.when }}
           </span>
 
           <span
             class="p-2"
-            v-for="(person, index) in config.show.people"
+            v-for="(person, index) in show.people"
             :key="index"
           >
             <button
@@ -74,8 +74,16 @@
           </span>
 
           <br>
+          <meter
+            class="col-12"
+            :value="showPosition"
+            min="0"
+            :max="showLenght"
+          >
+            {{ show.starts_at }} - {{ show.ends_at }}
+          </meter><br>
           <span class="text-muted">
-            {{ config.show.desc }}
+            {{ show.desc }}
           </span>
         </div>
       </div>
@@ -87,7 +95,7 @@
         Serving live show from - {{ radioNow }}
         <br>
 
-        <div v-if="config.show !== undefined">
+        <div v-if="show !== undefined">
           <svg
             width="1em"
             height="1em"
@@ -113,7 +121,7 @@
           <br>
 
           <p
-            v-for="(person, index) in config.show.people"
+            v-for="(person, index) in show.people"
             :key="index"
           >
             <a
@@ -122,7 +130,7 @@
             >{{ person.name }}</a>
           </p>
 
-          {{ config.show.desc }}
+          {{ show.desc }}
         </div>
       </div>
     </div>
@@ -291,7 +299,7 @@ import moment from 'moment-timezone'
 
 import NuTrack from './NuTrack'
 
-import { mapState } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'Player',
@@ -301,9 +309,6 @@ export default {
   data () {
     return {
       url: null
-      // radioDate: moment().format('HH:mm:ss'),
-      // radioCalendar: moment().format('HH:mm:ss'),
-
     }
   },
   mounted () {
@@ -397,18 +402,31 @@ export default {
     })
   },
   computed: {
-    ...mapState(['config']),
+    ...mapState(['config', 'show', 'tracks', 'shows_by_ids']),
+    youTZ () {
+      return this.$parent.youTZ
+    },
     radioNow () {
       return this.$parent.radioNow
     },
     radioThen () {
       return this.$parent.radioThen
     },
-    mediaTime () {
-      return 0
+    radioThenFull () {
+      return this.$parent.radioThenFull
+    },
+    showLenght () {
+      const showStartsAt = moment(this.show.starts_at).unix() // lower
+      const showEndsAt = moment(this.show.ends_at).unix() // hihhger
+      return showEndsAt - showStartsAt
+    },
+    showPosition  () {
+      const showStartsAt = moment(this.show.starts_at).unix() // lower
+      const showNow = this.radioThenFull.unix()
+      return showNow - showStartsAt
     },
     currentTrack () {
-      if (this.config.show !== undefined && this.config.spins !== undefined) {
+      if (this.show !== undefined && this.config.spins !== undefined) {
         const self = this
         const trackPlayings = this.config.spins.filter(function (spin, index) {
           // song started
@@ -426,13 +444,20 @@ export default {
           }
         })
         if (trackPlayings.length) {
+          if (trackPlayings[0].show_id !== this.show.id) {
+            console.log('this is not the show man')
+            const currentShow = this.shows_by_ids.filter(function (show) {
+              return trackPlayings[0].show_id === show.id
+            })
+            this.setShow(currentShow[0])
+          }
           return trackPlayings[0]
         }
       }
       return undefined
     },
     nextTrack () {
-      if (this.config.show !== undefined && this.config.spins !== undefined) {
+      if (this.show !== undefined && this.config.spins !== undefined) {
         const self = this
         var currentIndex = this.config.spins.findIndex(function (track) {
           return track.id === self.currentTrack.id
@@ -444,7 +469,7 @@ export default {
       return undefined
     },
     prevTrack () {
-      if (this.config.show !== undefined && this.config.spins !== undefined) {
+      if (this.show !== undefined && this.config.spins !== undefined) {
         const self = this
         var currentIndex = this.config.spins.findIndex(function (track) {
           return track.id === self.currentTrack.id
@@ -469,25 +494,10 @@ export default {
         return false
       }
     }
-
-    // radioTime () {
-    //   return moment.tz(this.radioTZ)
-    // },
-    // radioZone () {
-    //   return moment.tz.zone(this.radioTZ)
-    // },
-    // // all baout you
-    // youTime () {
-    //   return moment.tz(this.youTZ)
-    // },
-    // youZone () {
-    //   return moment.tz.zone(this.youTZ)
-    // },
-    // youOffset () {
-    //   return (this.radioZone.utcOffset(moment.now()) - this.youZone.utcOffset(moment.now())) / 60
-    // }
   },
   methods: {
+    ...mapMutations(['setShow']),
+    ...mapActions(['get']),
     setDj (dj) {
       this.$parent.$refs.archives.setDj(dj)
     },
@@ -495,7 +505,14 @@ export default {
       this.$refs.player.currentTime = Math.min(this.$refs.player.currentTime + skipTime, this.$refs.player.duration)
     },
     seekBack (skipTime) {
-      this.$refs.player.currentTime = Math.max(this.$refs.player.currentTime - skipTime, 0)
+      const position = Math.max(this.$refs.player.currentTime - skipTime, 0)
+      if (position === 0) {
+        // load prev track
+        this.$root.$emit('play', this.config.prev_url)
+        this.$refs.player.currentTime = (60 * 60) - 60
+      } else {
+        this.$refs.player.currentTime = position
+      }
     },
     nextSong () {
       this.$root.$emit('play', this.nextTrack.url)
@@ -504,15 +521,24 @@ export default {
       this.$root.$emit('play', this.prevTrack.url)
     },
     canplay () {
-      console.log('Player - can play')
       this.$parent.$refs.loader.loaded = true
       this.playAudio()
     },
     ended () {
-      // this.$refs.player.pause()
-      // sound.currentTime = 0;
       console.log('Song ended getting next ' + this.config.next_url)
       this.$root.$emit('play', this.config.next_url)
+
+      const nextTime = moment(this.config.ends_at)
+        .add(2, 'seconds')
+        .format('YYYY-MM-DD HH:mm:ss')
+
+      this.get({ tz: this.youTZ, time: nextTime })
+        .then((data) => {
+          console.log('playTimemachine load done', data)
+        // console.log('Archive -  program for that day', self.radioDate)
+        // self.$refs.archives.loadDay(self.radioDate)
+        })
+        .catch(error => console.log(error))
     },
     updatePositionState () {
       if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
@@ -535,7 +561,7 @@ export default {
       }
     },
     updateMetadata () {
-      if ('mediaSession' in navigator && this.config.show !== undefined) {
+      if ('mediaSession' in navigator && this.show !== undefined) {
         /*
       src: '/images/icons/icon-96x96.png',
       title: 'Snow Fight',
@@ -560,11 +586,11 @@ export default {
         }
 
         let artist = 'N/A'
-        if (this.config.show !== undefined && this.config.show.people !== undefined) {
-          artist = this.config.show.people[0].name
+        if (this.show !== undefined && this.show.people !== undefined) {
+          artist = this.show.people[0].name
         }
         const album = 'Radio 1 🕰Machine'
-        if (this.config.show.desc !== undefined) {
+        if (this.show.desc !== undefined) {
         // album = this.config.show.info.desc
         }
         // Serving show from <strong>{{ config.recoded_at }} </strong>- {{ radioThen }}

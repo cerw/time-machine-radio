@@ -4,6 +4,7 @@ namespace App;
 
 use App\Track;
 use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 
 class Spin extends Model
@@ -21,6 +22,11 @@ class Spin extends Model
         'play_it'
     ];
 
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     public function getPlayITAttribute()
     {

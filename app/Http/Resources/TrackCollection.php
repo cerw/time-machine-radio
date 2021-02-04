@@ -34,7 +34,7 @@ class TrackCollection extends ResourceCollection
                 //     'title' => $spin->show->title,
                 //     'when' => $spin->show->when,
                 // ],
-                
+                'show_id' => $spin->show_id,
                 'stream_at' => $spin->stream_at->toDateTimeString(),
                 'url' => $spin->play_it
             ];

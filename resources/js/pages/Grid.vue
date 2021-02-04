@@ -1,12 +1,6 @@
-
 <template>
   <div>
     Grid
-
-    <strong>
-      {{ source }}
-    </strong>
-
     <div id="waveform-container">
       <div id="zoomview-container" />
       <div id="overview-container" />

@@ -4,6 +4,7 @@ namespace App;
 
 use App\Spin;
 use App\Stream;
+use DateTimeInterface;
 use Illuminate\Support\Carbon;
 use simplehtmldom\HtmlDocument;
 use Illuminate\Support\Facades\Http;
@@ -39,7 +40,10 @@ class Show extends Model
         'stream_at'
     ];
 
-    
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
     
     public function getStreamAtAttribute()
     {

@@ -129,7 +129,6 @@
 
             <player
               ref="player"
-              :config="config"
             />
             <!-- <archive
               ref="archives"
@@ -145,7 +144,7 @@
           <router-view />
         </transition>
         <div
-          style="height: 300px;"
+          style="height: 200px;"
           class="text-center "
         >
           End
@@ -160,7 +159,7 @@ import moment from 'moment-timezone'
 import Player from './Player'
 import Loader from './Loader'
 import Navigation from './Navigation'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions, mapState } from 'vuex'
 export default {
   name: 'Layout',
   components: {
@@ -178,12 +177,9 @@ export default {
       radioNow: moment().format('HH:mm:ss'),
       radioDate: moment().format('HH:mm:ss'),
       radioThen: moment().format('HH:mm:ss'),
+      radioThenFull: moment(),
       radioCalendar: moment().format('HH:mm:ss'),
       interval: null,
-      config: {
-        url: null,
-        offset: 0
-      },
       offset: 0,
       secondsLeft: 0,
       dj: null
@@ -210,14 +206,16 @@ export default {
       this.dj = currentUrl[3].split('@')[1]
     }
 
-    this.get()
+    this.$refs.loader.loaded = false
+    this.get({ tz: this.youTZ })
       .then((data) => {
         console.log('playTimemachine load done', data)
-        this.config = data
+        // this.config = data
         // self.$refs.player.url = self.config.url + '#t=' + self.config.offset
         // self.$refs.player.playAudio()
         this.$root.$emit('play', data.play_it)
         self.timeInternal()
+        self.$refs.loader.loaded = true
         // console.log('Archive -  program for that day', self.radioDate)
         // self.$refs.archives.loadDay(self.radioDate)
       })
@@ -231,6 +229,7 @@ export default {
     // })
   },
   computed: {
+    ...mapState(['config']),
     radioTime () {
       return moment.tz(this.radioTZ)
     },
@@ -254,7 +253,8 @@ export default {
 
   },
   methods: {
-    ...mapMutations(['setConfig']),
+    ...mapMutations(['setConfig', 'setShow', 'setTracks']),
+    ...mapActions(['get']),
     app () {
       window.addToHomeScreen()
     },
@@ -270,6 +270,9 @@ export default {
           .add(audioPlayer.currentTime, 'seconds')
           // .tz(this.radioTZ)
           .format('dddd HH:mm:ss')
+
+        this.radioThenFull = moment(this.config.recoded_timestamp)
+          .add(audioPlayer.currentTime, 'seconds')
 
         this.radioDate = moment(this.config.recoded_timestamp)
           .add(audioPlayer.currentTime, 'seconds')
@@ -300,22 +303,24 @@ export default {
       }
     },
     // api V2
-    get () {
-      this.$refs.loader.loaded = false
-      // const self = this
-      const self = this
-      return new Promise((resolve, reject) => {
-        axios.get('/api/get/' + this.youTZ)
-          .then(({ data }) => {
-            console.log('ajax load done')
-            self.setConfig(data)
-            resolve(data)
-          }).catch(function (error) {
-            console.log('error getting crew', error)
-            reject(error)
-          })
-      })
-    },
+    // get () {
+
+    //   // const self = this
+    //   const self = this
+    //   return new Promise((resolve, reject) => {
+    //     axios.get('/api/get/' + this.youTZ)
+    //       .then(({ data }) => {
+    //         console.log('ajax load done')
+    //         self.setConfig(data)
+    //         self.setShow(data.show)
+    //         self.setTracks(data.spins)
+    //         resolve(data)
+    //       }).catch(function (error) {
+    //         console.log('error getting crew', error)
+    //         reject(error)
+    //       })
+    //   })
+    // },
     load (time) {
       this.$refs.loader.loaded = false
       const self = this

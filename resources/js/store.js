@@ -12,7 +12,10 @@ const state = {
   stream_id: null,
   show_id: null,
   shows: [],
-  config: []
+  shows_by_ids: [],
+  config: [],
+  show: [],
+  tracks: []
 }
 
 const actions = {
@@ -43,6 +46,27 @@ const actions = {
           reject(error)
         })
     })
+  },
+  get: (context, payload) => {
+    const tz = payload.tz
+    var time = ''
+    if (payload.time !== undefined) {
+      time = payload.time
+    }
+    const url = '/api/get/' + tz + '/' + time
+    return new Promise((resolve, reject) => {
+      axios.get(url)
+        .then(({ data }) => {
+          console.log('ajax load done')
+          context.commit('setConfig', data)
+          context.commit('setShow', data.show)
+          context.commit('setTracks', data.spins)
+          resolve(data)
+        }).catch(function (error) {
+          console.log('error getting crew', error)
+          reject(error)
+        })
+    })
   }
 }
 
@@ -52,6 +76,17 @@ const mutations = {
   },
   setShows (state, shows) {
     state.shows = shows
+    var showsIds = []
+    for (const day in shows) {
+      showsIds = showsIds.concat(shows[day])
+    }
+    state.shows_by_ids = showsIds
+  },
+  setShow (state, show) {
+    state.show = show
+  },
+  setTracks (state, tracks) {
+    state.tracks = tracks
   },
   setURL (state, url) {
     state.url = url

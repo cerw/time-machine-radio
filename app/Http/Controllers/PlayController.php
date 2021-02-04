@@ -25,14 +25,18 @@ class PlayController extends Controller
      * @param Request $request
      * @return void
      */
-    public function get($country, $city, Request $request)
+    public function get($country, $city, $timestamp = false, Request $request)
     {
 
         
         $them = Carbon::now($country.'/'.$city);
 
-        $wanted = Carbon::createFromFormat('Y-m-d H:i:s', $them->format('Y-m-d H:i:s'));
-
+        if ($timestamp) {
+            $wanted = Carbon::createFromFormat('Y-m-d H:i:s', $timestamp);
+        } else {
+            $wanted = Carbon::createFromFormat('Y-m-d H:i:s', $them->format('Y-m-d H:i:s'));
+        }
+        
         if ($wanted->isFuture()) {
             $wanted->subDay();
         }
@@ -44,11 +48,18 @@ class PlayController extends Controller
         $out = $stream->toArray();
 
 
-        $next = $stream = Stream::where('starts_at', '<=', $wanted->clone()->addHour()->toDateTimeString())
+        $next = Stream::where('starts_at', '<=', $wanted->clone()->addHour()->toDateTimeString())
         ->where('ends_at', '>=', $wanted->clone()->addHour()->toDateTimeString())
         ->first();
         
         $out['next_url'] = $next->url;
+
+
+        $prev = Stream::where('starts_at', '<=', $wanted->clone()->subHour()->toDateTimeString())
+        ->where('ends_at', '>=', $wanted->clone()->subHour()->toDateTimeString())
+        ->first();
+        
+        $out['prev_url'] = $prev->url;
 
         $show = Show::where('starts_at', '<=', $wanted->toDateTimeString())
         ->where('ends_at', '>=', $wanted->toDateTimeString())
