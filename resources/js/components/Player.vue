@@ -553,7 +553,7 @@ export default {
           { src: '/images/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' }
         ]
 
-        let title = this.config.recoded_at + ' ' + this.radioThen
+        let title = this.radioThen
         if (this.livePlaying()) {
         // life
           title = 'Live ' + this.radioNow
