@@ -48,7 +48,10 @@ class TrackCollection extends ResourceCollection
                 // ],
                 'show_id' => $spin->show_id,
                 'stream_at' => $spin->stream_at->toDateTimeString(),
-                'url' => $spin->play_it
+                'stream_id' => $spin->stream_id,
+                'url' => $spin->play_it,
+                'timecode_starts' => (int) $spin->timecode,
+                'timecode_ends' => (int) $spin->timecode + $spin->track->metadata['result']['play_length'],
             ];
         });
 

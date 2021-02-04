@@ -19,12 +19,42 @@ export default {
     }
   },
   computed: {
-    ...mapState(['url', 'tracks']),
+    ...mapState(['url', 'tracks', 'show', 'stream_id']),
     source () {
       if (document.getElementById('player') !== null) {
         return document.getElementById('player').src.split('#')[0]
       }
       return null
+    },
+    segments () {
+      const self = this
+      const streamTracks = this.tracks.filter(function (track) {
+        return track.stream_id === self.stream_id
+      }).map(track => {
+        const segment = {}
+        segment.startTime = track.timecode_starts
+        segment.endTime = track.timecode_ends
+        segment.editable = false
+        // segment.color = '#ff0000'
+        segment.labelText = track.label
+        return segment
+      })
+      console.log(streamTracks)
+      return streamTracks
+      // return [{
+      //   startTime: 120,
+      //   endTime: 240,
+      //   editable: false,
+      //   color: '#ff0000',
+      //   labelText: 'My label'
+      // },
+      // {
+      //   startTime: 320,
+      //   endTime: 840,
+      //   editable: false,
+      //   color: '#00ff00',
+      //   labelText: 'My Second label'
+      // }]
     }
   },
   watch: {
@@ -68,33 +98,20 @@ export default {
       // Array of initial segment objects with startTime and
       // endTime in seconds and a boolean for editable.
       // See below.
-      segments: [{
-        startTime: 120,
-        endTime: 240,
-        editable: false,
-        color: '#ff0000',
-        labelText: 'My label'
-      },
-      {
-        startTime: 320,
-        endTime: 840,
-        editable: false,
-        color: '#00ff00',
-        labelText: 'My Second label'
-      }],
+      segments: this.segments,
 
-      points: [{
-        time: 150,
-        editable: false,
-        color: '#00ff00',
-        labelText: 'A point'
-      },
-      {
-        time: 160,
-        editable: false,
-        color: '#00ff00',
-        labelText: 'Another point'
-      }],
+      // points: [{
+      //   time: 150,
+      //   editable: false,
+      //   color: '#00ff00',
+      //   labelText: 'A point'
+      // },
+      // {
+      //   time: 160,
+      //   editable: false,
+      //   color: '#00ff00',
+      //   labelText: 'Another point'
+      // }],
 
       // the color of a point marker
       pointMarkerColor: '#FF0000',

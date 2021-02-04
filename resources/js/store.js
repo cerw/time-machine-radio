@@ -72,6 +72,7 @@ const actions = {
 const mutations = {
   setConfig (state, config) {
     state.config = config
+    state.stream_id = config.id
   },
   setShows (state, shows) {
     state.shows = shows
