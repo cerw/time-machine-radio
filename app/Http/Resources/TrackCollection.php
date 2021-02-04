@@ -23,7 +23,6 @@ class TrackCollection extends ResourceCollection
             $radio_time_ends = null;
             if (isset($spin->track->metadata['result']['play_length'])) {
                 $radio_time_ends = Carbon::createFromFormat('Y-m-d H:i:s', $spin->stream_at)
-                ->subHours(config('app.offset_hours'))
                 ->addSeconds($spin->track->metadata['result']['play_length'])
                 ->toTimeString();
             }
@@ -37,7 +36,6 @@ class TrackCollection extends ResourceCollection
                 'label' => $spin->track->label,
                 'link' => $spin->track->song_link,
                 'radio_time' => Carbon::createFromFormat('Y-m-d H:i:s', $spin->stream_at)
-                                ->subHours(config('app.offset_hours'))
                                 ->toTimeString(),
                 'radio_time_ends' => $radio_time_ends,
                 // 'show' => [
