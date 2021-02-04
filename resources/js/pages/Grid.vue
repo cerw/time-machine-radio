@@ -19,7 +19,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['url']),
+    ...mapState(['url', 'tracks']),
     source () {
       if (document.getElementById('player') !== null) {
         return document.getElementById('player').src.split('#')[0]

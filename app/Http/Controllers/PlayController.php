@@ -71,8 +71,8 @@ class PlayController extends Controller
         // trakc
         //  dd($wanted->subHours(2)->toDateTimeString(),$wanted->addHours(2)->toDateTimeString());
         $spins = Spin::with(['track','show','stream'])
-        ->where('stream_at', '>=', $wanted->clone()->subHours(2)->toDateTimeString())
-        ->where('stream_at', '<=', $wanted->clone()->addHours(2)->toDateTimeString())
+        ->where('stream_at', '>=', $wanted->clone()->subHours(1)->toDateTimeString())
+        ->where('stream_at', '<=', $wanted->clone()->addHours(4)->toDateTimeString())
         ->orderBy('stream_at', 'asc')
         ->get();
         

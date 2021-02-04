@@ -57,7 +57,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       axios.get(url)
         .then(({ data }) => {
-          console.log('ajax load done')
           context.commit('setConfig', data)
           context.commit('setShow', data.show)
           context.commit('setTracks', data.spins)

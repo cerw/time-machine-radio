@@ -449,7 +449,9 @@ export default {
             const currentShow = this.shows_by_ids.filter(function (show) {
               return trackPlayings[0].show_id === show.id
             })
-            this.setShow(currentShow[0])
+            if (currentShow.length) {
+              this.setShow(currentShow[0])
+            }
           }
           return trackPlayings[0]
         }

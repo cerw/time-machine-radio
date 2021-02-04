@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 //use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,6 +19,15 @@ class TrackCollection extends ResourceCollection
     {
         // dd($this);
         return $this->collection->map(function ($spin) {
+
+            $radio_time_ends = null;
+            if (isset($spin->track->metadata['result']['play_length'])) {
+                $radio_time_ends = Carbon::createFromFormat('Y-m-d H:i:s', $spin->stream_at)
+                ->subHours(config('app.offset_hours'))
+                ->addSeconds($spin->track->metadata['result']['play_length'])
+                ->toTimeString();
+            }
+
             return [
                 'id' => $spin->id,
                 'artist' => $spin->track->artist,
@@ -26,8 +36,10 @@ class TrackCollection extends ResourceCollection
                 'release_date' => $spin->track->release_date,
                 'label' => $spin->track->label,
                 'link' => $spin->track->song_link,
-                'radio_time' => $spin->track->radio_time,
-                'radio_time_ends' => $spin->track->radio_time_ends,
+                'radio_time' => Carbon::createFromFormat('Y-m-d H:i:s', $spin->stream_at)
+                                ->subHours(config('app.offset_hours'))
+                                ->toTimeString(),
+                'radio_time_ends' => $radio_time_ends,
                 // 'show' => [
                 //     'date' => $spin->show->date,
                 //     'desc' => $spin->show->desc,
@@ -39,6 +51,27 @@ class TrackCollection extends ResourceCollection
                 'url' => $spin->play_it
             ];
         });
+
+        /**
+         * public function getRadioTimeAttribute()
+    {
+        return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at)
+                ->subHours(config('app.offset_hours'))
+                ->toTimeString();
+    }
+
+
+    public function getRadioTimeEndsAttribute()
+    {
+
+        if (isset($this->metadata['result']['play_length'])) {
+            return Carbon::createFromFormat('Y-m-d H:i:s', $this->stream_at)
+            ->subHours(config('app.offset_hours'))
+            ->addSeconds($this->metadata['result']['play_length'])
+            ->toTimeString();
+        }
+    }
+         */
         // return [
         //     'data' => $this->collection,
         //     // 'name' => $this->name,
