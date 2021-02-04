@@ -52,10 +52,18 @@ class StreamController extends Controller
             $song = $request->result['results'][0];
             \Log::info('Tracks Success');
             
-            $track = Track::firstOrNew([
-                'upc' => $song['upc']
-            ]);
+            if (isset($song['upc'])) {
+                $track = Track::firstOrNew([
+                    'upc' => $song['upc']
+                ]);
+            } elseif (isset($song['song_link'])) {
+                $track = Track::firstOrNew([
+                    'song_link' => $song['song_link']
+                ]);
+            }
             
+            
+            $track->upc = $song['upc'] ?? null;
             $track->isrc = $song['isrc'] ?? null;
             $track->artist = $song['artist'] ?? '';
             $track->release_date = (empty($song['release_date']) || $song['release_date'] == 'None' || $song['release_date'] == '0000-00-00') ? null : Carbon::parse($song['release_date']);

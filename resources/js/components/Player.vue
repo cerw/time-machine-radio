@@ -572,8 +572,8 @@ export default {
         // console.log('MediaMetadata', this.currentTrack)
         if (this.currentTrack !== undefined) {
           const artwork = [
-            { src: this.currentTrack.song_link + '?thumb', sizes: '512x512', type: 'image/jpeg' },
-            { src: this.currentTrack.song_link + '?thumb', sizes: '640x640', type: 'image/jpeg' }
+            { src: this.currentTrack.link + '?thumb', sizes: '512x512', type: 'image/jpeg' },
+            { src: this.currentTrack.link + '?thumb', sizes: '640x640', type: 'image/jpeg' }
           ]
           navigator.mediaSession.metadata = new window.MediaMetadata({
             title: this.currentTrack.title,
