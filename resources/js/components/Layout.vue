@@ -145,9 +145,9 @@
         </transition>
         <div
           style="height: 200px;"
-          class="text-center "
+          class="text-center text-muted fs-7"
         >
-          End
+          Nothing to see here :)
         </div>
         <!-- End of App -->
       </div>

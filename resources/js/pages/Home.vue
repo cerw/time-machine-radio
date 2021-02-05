@@ -5,18 +5,27 @@
     v-if="tracks && tracks.length"
   >
     <div
-      v-for="spin in tracks"
+      v-for="trackShow in trackShows"
       class="border-bottom border-light"
-      :class="'spin-'+spin.id"
-      :key="spin.id"
+      :key="trackShow.id"
     >
-      <!-- :class="{'bg-white text-dark border border-danger text-light': currentTrack !== undefined && track.id === currentTrack.id}" -->
-      <NuTrack
-        :track="spin"
-        :url="spin.url"
-        :current="currentTrack !== undefined && spin.id === currentTrack.id"
-        :play="true"
+      <Show
+        :show="trackShow"
       />
+
+      <div
+        v-for="spin in trackShow.tracks"
+        class="border-bottom border-light"
+        :class="'spin-'+spin.id"
+        :key="spin.id"
+      >
+        <NuTrack
+          :track="spin"
+          :url="spin.url"
+          :current="currentTrack !== undefined && spin.id === currentTrack.id"
+          :play="true"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -25,11 +34,13 @@ import { mapState, mapActions } from 'vuex'
 import moment from 'moment-timezone'
 //
 import NuTrack from '@/components/NuTrack'
+import Show from '@/components/Show'
 //
 export default {
   name: 'Home',
   components: {
-    NuTrack
+    NuTrack,
+    Show
   },
   data () {
     return {
@@ -37,7 +48,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['shows', 'config']),
+    ...mapState(['shows', 'config', 'shows_by_ids']),
     show () {
       if (this.config.show !== undefined) {
         return this.config.show
@@ -52,6 +63,23 @@ export default {
     },
     currentTrack () {
       return this.$parent.$refs.player.currentTrack
+    },
+    trackShows () {
+      const shows = []
+      for (const track in this.tracks) {
+        const showId = this.tracks[track].show_id
+        const show = this.shows_by_ids.filter(function (show) {
+          return showId === show.id
+        })[0]
+
+        if (!shows.includes(show) && show !== undefined) {
+          show.tracks = this.tracks.filter(function (track) {
+            return track.show_id === show.id
+          })
+          shows.push(show)
+        }
+      }
+      return shows
     }
   },
   watch: {

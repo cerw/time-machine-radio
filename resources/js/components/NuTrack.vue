@@ -7,7 +7,14 @@
       class="col-2 p-0 position-relative"
     >
       <img
+        v-if="track.link.match('/lis\.tn/')"
         :src="track.link+'?thumb'"
+        loading="lazy"
+        class="rounded img-fluid"
+      >
+      <img
+        v-else
+        :src="'https://place-hold.it/100?text='+track.album"
         loading="lazy"
         class="rounded img-fluid"
       >
@@ -37,10 +44,11 @@
           target="_blank"
         >{{ track.title }}</a>
         ·
-        <span class="text-muted">Artist:</span> {{ track.artist }}<br>
+        <!-- <span class="text-muted">Artist:</span>  -->
+        {{ track.artist }}<br>
         <span class="text-muted">Album:</span> {{ track.album }} · {{ track.release_date | formatYear }} <br>
         <!-- <span class="text-muted">Year:</span>   -->
-        <span class="text-muted">Label:</span>  {{ track.label }}
+        <span class="text-muted">Label:</span>  {{ track.label | truncate(30) }}
         <div class="float-end text-muted">{{ track.radio_time }}</div><br>
       </small>
     </div>

@@ -62,6 +62,7 @@ export default {
       console.log('source changed: ', this.source)
       const options = {
         mediaUrl: this.source,
+        segments: this.segments,
         dataUri: {
           arraybuffer: this.source + '.dat'
         }

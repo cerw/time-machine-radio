@@ -22,6 +22,10 @@ if (process.env.MIX_BUGSNAG_JS_ENABLE === 'true') {
     .installVueErrorHandler(Vue)
 }
 
+Vue.filter('truncate', function (text, stop, clamp) {
+  return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
+})
+
 require('./bootstrap')
 require('./service-worker')
 

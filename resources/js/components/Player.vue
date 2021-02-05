@@ -5,18 +5,17 @@
       class=""
     >
       <div
-        class="small m-0 text-center"
+        class="small m-0 text-center pt-1"
         v-if="timemachinePlaying()"
       >
         <!-- Serving show from <strong>{{ config.recoded_timestamp }} </strong> -->
-        <br>
 
         <div v-if="show !== undefined">
-          <span class="h3 text-white btn btn-sm btn-danger">
+          <span class="text-white btn btn-xs btn-danger">
             {{ radioThen }}
           </span>
 
-          <span class="p-2 h6">
+          <span class="p-1">
             <svg
               width="1em"
               height="1em"
