@@ -18,11 +18,14 @@ export default {
       instance: null
     }
   },
+  methods: {
+
+  },
   computed: {
     ...mapState(['url', 'tracks', 'show', 'stream_id']),
     source () {
-      if (document.getElementById('player') !== null) {
-        return document.getElementById('player').src.split('#')[0]
+      if (this.url !== null) {
+        return this.url.split('#')[0]
       }
       return null
     },
@@ -39,7 +42,7 @@ export default {
         segment.labelText = track.label
         return segment
       })
-      console.log(streamTracks)
+
       return streamTracks
       // return [{
       //   startTime: 120,
@@ -124,23 +127,21 @@ export default {
         zoomview: document.getElementById('zoomview-container')
       },
       mediaElement: document.getElementById('player'),
-      // dataUri: {
-      //   arraybuffer:
-      //   // json: '/sample.json'
-      // }
       mediaUrl: this.source,
       dataUri: {
         arraybuffer: this.source + '.dat'
       }
-      //      dataUri: 'https://timemachine.test/storage/radio1/radio1-2021-01-07_05-50.mp3.dat'// document.getElementById('player').src.split('#')[0] + '.dat'
     }
     this.$root.$emit('pause')
     const self = this
-    this.instance = Peaks.init(options, function (err, peaks) {
-      console.log('peak init', err)
-      self.$root.$emit('resume')
-    })
-    console.log('Peak started...', this.source)
+
+    setTimeout(() => {
+      this.instance = Peaks.init(options, function (err, peaks) {
+        console.log('peak init', err)
+        self.$root.$emit('resume')
+      })
+      console.log('Peak started...', this.source)
+    }, 2000)
   }
 }
 </script>

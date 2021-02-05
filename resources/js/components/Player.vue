@@ -378,6 +378,7 @@ export default {
     //
     this.$root.$on('play', (url) => {
       console.log('play it man', url)
+      this.setURL(url)
       this.url = url
     })
 
@@ -497,7 +498,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setShow']),
+    ...mapMutations(['setShow', 'setURL']),
     ...mapActions(['get']),
     setDj (dj) {
       this.$parent.$refs.archives.setDj(dj)
