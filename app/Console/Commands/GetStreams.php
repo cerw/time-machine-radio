@@ -46,13 +46,11 @@ class GetStreams extends Command
         $this->info("Getting stream");
         $files = Storage::files('radio1');
         
-        
         // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
         // dump($wanted);
         $expiresAt = Carbon::now()->subDays(60);
         
         
-
         foreach ($files as $file) {
             if (preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#", $file, $match)) {
                 $this->comment($file);
@@ -96,7 +94,7 @@ class GetStreams extends Command
                 $peak = Storage::path($file.".dat");
                 if (!file_exists($peak) AND Storage::size($file) >= 86400000) {
                     $this->comment("Generting peak: ".$peak);
-                    $cmd = "audiowaveform -i ".Storage::path($file)." -o ".$peak." -b 8";
+                    $cmd = "audiowaveform -i ".Storage::path($file)." -o ".$peak." -b 8 --pixels-per-second  1024";
                     system($cmd);
                 } else {
                     $this->comment("Got peak");
