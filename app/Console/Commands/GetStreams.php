@@ -92,9 +92,9 @@ class GetStreams extends Command
                 $stream->save();
                 // peak
                 $peak = Storage::path($file.".dat");
-                if (!file_exists($peak) AND Storage::size($file) >= 86400000) {
+                if (!file_exists($peak) and Storage::size($file) >= 86400000) {
                     $this->comment("Generting peak: ".$peak);
-                    $cmd = "audiowaveform -i ".Storage::path($file)." -o ".$peak." -b 8 --pixels-per-second  1024";
+                    $cmd = "audiowaveform -i ".Storage::path($file)." -o ".$peak." -b 8 --pixels-per-second 100";
                     system($cmd);
                 } else {
                     $this->comment("Got peak");

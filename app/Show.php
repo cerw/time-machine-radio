@@ -33,6 +33,7 @@ class Show extends Model
         'duration_human',
         'when',
         'play_it',
+        'recoded_timestamp',
         // 'tracks',
         // 'files',
         'starts_hours',
@@ -44,7 +45,25 @@ class Show extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
-    
+
+
+    public function getRecodedTimestampAttribute()
+    {
+        if (!is_null($this->stream)) {
+            return $this->stream->starts_at->toDateTimeString();
+        } else {
+            // find ans asave?
+            $stream = Stream::where('starts_at', '<=', $this->starts_at)
+                    ->where('ends_at', '>=', $this->starts_at)
+                    ->first();
+            if ($stream) {
+                $this->stream_id = $stream->id;
+                $this->save();
+                return $stream->starts_at->toDateTimeString();
+            }
+        }
+    }
+
     public function getStreamAtAttribute()
     {
         return $this->starts_at->diffForHumans();

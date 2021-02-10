@@ -47,7 +47,7 @@ class GetTracks extends Command
     {
 
         DB::table('tracks_spins')->truncate();
-        $expiresAt = Carbon::now()->subDays(20);
+        $expiresAt = Carbon::now()->subDays(5);
         $tracks = Track::where('stream_at', '>=', $expiresAt)->get();
         // $tracks = Track::where('id', 10987)->get();
         $this->info("Getting tracks ".$tracks->count());

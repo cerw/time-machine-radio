@@ -15,7 +15,7 @@ class AddIsrc extends Migration
     {
         Schema::table('tracks', function (Blueprint $table) {
             $table->string('isrc')->nullable();
-            $table->bigInteger('upc')->nullable();
+            $table->string('upc')->nullable();
         });
     }
 

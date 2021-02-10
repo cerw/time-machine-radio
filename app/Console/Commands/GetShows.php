@@ -144,7 +144,7 @@ class GetShows extends Command
             $shows[$index]['duration_human'] = (string) $length;
             
             // 1 day - 86400 s
-            $shows[$index]['percentage_in_day'] = $shows[$index]['duration']/864;
+            // $shows[$index]['percentage_in_day'] = $shows[$index]['duration']/864;
             if ($wanted->between($showStartsAt, $showEndsAt)) {
                 $out['playing'] = [];
                 $out['playing']['date'] = $showStartsAt->toDateTimeString();
@@ -184,7 +184,7 @@ class GetShows extends Command
                 'stream_id' => (is_null($stream)) ? null: $stream->id,
             ]);
             $dbShow->people  = $show['people'];
-            $dbShow->title = $show['people'][0]['name'];
+            $dbShow->title = (isset($show['people'][9])) ? $show['people'][0]['name'] : '';
             $dbShow->duration = $show['duration'];
             $dbShow->desc = $show['desc'];
             $dbShow->ks = $show['ks'] ?? 0;

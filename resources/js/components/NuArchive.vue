@@ -43,36 +43,7 @@
                     class="btn col-2 p-0 btn-sm btn-outline-success"
                     @click="loadArchiveTrack(show)"
                   >
-                    <svg
-                      v-if="slotPlaying !== show.starts_hours"
-                      width="2em"
-                      height="2em"
-                      viewBox="0 0 16 16"
-                      class="bi bi-stop"
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"
-                      />
-
-                    </svg>
-
-                    <svg
-                      v-if="slotPlaying === show.starts_hours"
-                      width="2em"
-                      height="2em"
-                      viewBox="0 0 16 16"
-                      class="bi bi-play"
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                    ><path
-                      fill-rule="evenodd"
-                      d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z"
-                    />
-
-                    </svg>
+                    Open
                   </button>
                   <div class="col-10 small">
                     <strong> {{ show.when }}</strong>
@@ -189,6 +160,7 @@
 <script>
 import moment from 'moment-timezone'
 import NuTrack from '@/components/NuTrack'
+import { mapMutations, mapState } from 'vuex'
 export default {
   name: 'NuArchive',
   components: {
@@ -198,8 +170,6 @@ export default {
     return {
       days: [],
       shows: [],
-      tracks: [],
-      open_show: null,
       slotPlaying: null,
       today: moment().format('YYYY-MM-DD')
     }
@@ -225,17 +195,17 @@ export default {
     this.loadArchive()
   },
   computed: {
-
+    ...mapState(['tracks', 'shows_by_ids', 'show']),
+    open_show () {
+      return this.show
+    }
   },
   methods: {
-    playShow (url) {
-      this.$root.$emit('play', url)
-    },
+    ...mapMutations(['setTracks', 'setShow']),
     loadArchiveTrack (show) {
-      this.playShow(show.play_it)
-      this.tracks = []
-      this.open_show = show
+      this.$root.$emit('play', show.play_it)
       this.$parent.$refs.loader.loaded = false
+      this.setShow(show)
       fetch('api/archive/' + show.id)
         .then(response => {
           if (!response.ok) {
@@ -244,8 +214,7 @@ export default {
           return response.json()
         })
         .then(response => {
-          this.tracks = response.data
-          console.log('loaded data! track: ')
+          this.setTracks(response.data)
           this.$parent.$refs.loader.loaded = true
         })
         .catch((e) => {

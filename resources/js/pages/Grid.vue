@@ -39,7 +39,7 @@ export default {
         segment.endTime = track.timecode_ends
         segment.editable = false
         // segment.color = '#ff0000'
-        segment.labelText = track.label
+        segment.labelText = track.title + '' + track.artist
         return segment
       })
 
@@ -70,10 +70,12 @@ export default {
           arraybuffer: this.source + '.dat'
         }
       }
-
+      this.$parent.$refs.loader.loaded = false
+      const self = this
       this.instance.setSource(options, function (error) {
         // Waveform updated
         console.log('set source', error)
+        self.$parent.$refs.loader.loaded = true
       })
     }
   },
@@ -132,13 +134,15 @@ export default {
         arraybuffer: this.source + '.dat'
       }
     }
-    this.$root.$emit('pause')
-    const self = this
 
+    const self = this
+    this.$parent.$refs.loader.loaded = false
     setTimeout(() => {
       this.instance = Peaks.init(options, function (err, peaks) {
         console.log('peak init', err)
+        self.$root.$emit('pause')
         self.$root.$emit('resume')
+        self.$parent.$refs.loader.loaded = true
       })
       console.log('Peak started...', this.source)
     }, 2000)

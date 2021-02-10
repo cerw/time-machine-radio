@@ -426,9 +426,9 @@ export default {
       return showNow - showStartsAt
     },
     currentTrack () {
-      if (this.show !== undefined && this.config.spins !== undefined) {
+      if (this.show !== undefined && this.tracks !== undefined) {
         const self = this
-        const trackPlayings = this.config.spins.filter(function (spin, index) {
+        const trackPlayings = this.tracks.filter(function (spin, index) {
           // song started
           // next song started / aprox lenght of song?
           var format = 'hh:mm:ss'
@@ -459,25 +459,25 @@ export default {
       return undefined
     },
     nextTrack () {
-      if (this.show !== undefined && this.config.spins !== undefined) {
+      if (this.show !== undefined && this.tracks !== undefined) {
         const self = this
-        var currentIndex = this.config.spins.findIndex(function (track) {
+        var currentIndex = this.tracks.findIndex(function (track) {
           return track.id === self.currentTrack.id
         })
         if (currentIndex !== -1) {
-          return this.config.spins[currentIndex + 1]
+          return this.tracks[currentIndex + 1]
         }
       }
       return undefined
     },
     prevTrack () {
-      if (this.show !== undefined && this.config.spins !== undefined) {
+      if (this.show !== undefined && this.tracks !== undefined) {
         const self = this
-        var currentIndex = this.config.spins.findIndex(function (track) {
+        var currentIndex = this.tracks.findIndex(function (track) {
           return track.id === self.currentTrack.id
         })
         if (currentIndex !== -1) {
-          return this.config.spins[currentIndex - 1]
+          return this.tracks[currentIndex - 1]
         }
       }
       return undefined

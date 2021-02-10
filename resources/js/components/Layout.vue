@@ -229,7 +229,7 @@ export default {
     // })
   },
   computed: {
-    ...mapState(['config']),
+    ...mapState(['config', 'show']),
     radioTime () {
       return moment.tz(this.radioTZ)
     },
@@ -266,20 +266,20 @@ export default {
 
       if (this.$refs.player !== undefined && this.$refs.player.$refs.player !== undefined) {
         const audioPlayer = this.$refs.player.$refs.player
-        this.radioThen = moment(this.config.recoded_timestamp)
+        this.radioThen = moment(this.show.recoded_timestamp)
           .add(audioPlayer.currentTime, 'seconds')
           // .tz(this.radioTZ)
           .format('dddd HH:mm:ss')
 
-        this.radioThenFull = moment(this.config.recoded_timestamp)
+        this.radioThenFull = moment(this.show.recoded_timestamp)
           .add(audioPlayer.currentTime, 'seconds')
 
-        this.radioDate = moment(this.config.recoded_timestamp)
+        this.radioDate = moment(this.show.recoded_timestamp)
           .add(audioPlayer.currentTime, 'seconds')
           // .tz(this.radioTZ)
           .format('Y-MM-DD')
 
-        this.radioCalendar = moment(this.config.recoded_timestamp)
+        this.radioCalendar = moment(this.show.recoded_timestamp)
           .add(audioPlayer.currentTime, 'seconds')
           // .tz(this.radioTZ)
           .calendar().replace()

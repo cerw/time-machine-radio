@@ -48,16 +48,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['shows', 'config', 'shows_by_ids']),
+    ...mapState(['shows', 'config', 'shows_by_ids', 'tracks']),
     show () {
       if (this.config.show !== undefined) {
         return this.config.show
-      }
-      return {}
-    },
-    tracks () {
-      if (this.config.spins !== undefined) {
-        return this.config.spins
       }
       return {}
     },
