@@ -23,7 +23,8 @@ class Stream extends Model
     ];
 
     protected $appends = [
-        'url'
+        'url',
+        'recoded_timestamp'
     ];
 
 
@@ -34,5 +35,10 @@ class Stream extends Model
     public function getURLAttribute()
     {
         return Storage::url($this->name);
+    }
+
+    public function getRecodedTimestampAttribute()
+    {
+        return $this->starts_at->toDateTimeString();
     }
 }

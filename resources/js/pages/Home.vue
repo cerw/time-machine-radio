@@ -30,7 +30,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import moment from 'moment-timezone'
 //
 import NuTrack from '@/components/NuTrack'
@@ -108,12 +108,12 @@ export default {
       } else {
         return false
       }
-    },
-    ...mapActions(['fetchShows'])
+    }
+
   },
   mounted () {
     console.log('Home mounted')
-    this.fetchShows()
+
     this.scrollToTrack()
   }
 }

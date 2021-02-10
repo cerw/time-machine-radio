@@ -9,8 +9,10 @@ use App\Stream;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use simplehtmldom\HtmlDocument;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use App\Http\Resources\TrackCollection;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,6 +29,9 @@ class PlayController extends Controller
      */
     public function get($country, $city, $timestamp = false, Request $request)
     {
+
+
+       
 
         
         $them = Carbon::now($country.'/'.$city);

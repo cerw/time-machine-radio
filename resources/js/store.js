@@ -15,7 +15,8 @@ const state = {
   shows_by_ids: [],
   config: [],
   show: [],
-  tracks: []
+  tracks: [],
+  streams: []
 }
 
 const actions = {
@@ -33,11 +34,25 @@ const actions = {
         })
     })
   },
-  fetchStream: (context) => {
+  // fetchStream: (context) => {
+  //   return new Promise((resolve, reject) => {
+  //     axios.get('api/stream')
+  //       .then(function (response) {
+  //         context.commit('setShows', response.data)
+  //         // check if we need to resurbsice to patrols
+  //         resolve(response)
+  //       })
+  //       .catch(function (error) {
+  //         // console.log('fetchPatrols', error.response)
+  //         reject(error)
+  //       })
+  //   })
+  // },
+  fetchStreams: (context) => {
     return new Promise((resolve, reject) => {
-      axios.get('api/stream')
+      axios.get('api/streams')
         .then(function (response) {
-          context.commit('setShows', response.data)
+          context.commit('setStreams', response.data)
           // check if we need to resurbsice to patrols
           resolve(response)
         })
@@ -81,6 +96,7 @@ const mutations = {
       showsIds = showsIds.concat(shows[day])
     }
     state.shows_by_ids = showsIds
+    state.stream_id = shows.stream_id
   },
   setShow (state, show) {
     state.show = show
@@ -93,11 +109,18 @@ const mutations = {
   },
   setStream (state, streamId) {
     state.stream_id = streamId
+  },
+  setStreams (state, streams) {
+    state.streams = streams
   }
 }
 
 const getters = {
-
+  currentStream (state) {
+    return state.streams.filter(function (stream) {
+      return state.stream_id === stream.id
+    })[0]
+  }
 }
 
 // persistedState = createPersistedState({ storage: window.sessionStorage })

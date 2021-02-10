@@ -298,7 +298,7 @@ import moment from 'moment-timezone'
 
 import NuTrack from './NuTrack'
 
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Player',
@@ -403,6 +403,7 @@ export default {
   },
   computed: {
     ...mapState(['config', 'show', 'tracks', 'shows_by_ids']),
+    ...mapGetters(['currentStream']),
     youTZ () {
       return this.$parent.youTZ
     },

@@ -159,7 +159,7 @@ import moment from 'moment-timezone'
 import Player from './Player'
 import Loader from './Loader'
 import Navigation from './Navigation'
-import { mapMutations, mapActions, mapState } from 'vuex'
+import { mapMutations, mapActions, mapState, mapGetters } from 'vuex'
 export default {
   name: 'Layout',
   components: {
@@ -191,6 +191,8 @@ export default {
     this.interval = setInterval(function () {
       self.timeInternal()
     }, 1000)
+    this.fetchShows()
+    this.fetchStreams()
 
     // this.logNetworkInfo()
     // 17:34:27
@@ -230,6 +232,7 @@ export default {
   },
   computed: {
     ...mapState(['config', 'show']),
+    ...mapGetters(['currentStream']),
     radioTime () {
       return moment.tz(this.radioTZ)
     },
@@ -254,7 +257,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setConfig', 'setShow', 'setTracks']),
-    ...mapActions(['get']),
+    ...mapActions(['fetchShows', 'fetchStreams', 'get']),
     app () {
       window.addToHomeScreen()
     },
@@ -263,23 +266,28 @@ export default {
       this.youNow = moment().tz(this.youTZ).format('HH:mm:ss')
       this.youDate = moment().tz(this.youTZ).format('dddd HH:mm:ss')
       this.radioNow = moment().tz(this.radioTZ).format('dddd HH:mm:ss')
+      let recodedTimestamp = this.show.recoded_timestamp
+
+      if (this.currentStream !== undefined) {
+        recodedTimestamp = this.currentStream.recoded_timestamp
+      }
 
       if (this.$refs.player !== undefined && this.$refs.player.$refs.player !== undefined) {
         const audioPlayer = this.$refs.player.$refs.player
-        this.radioThen = moment(this.show.recoded_timestamp)
+        this.radioThen = moment(recodedTimestamp)
           .add(audioPlayer.currentTime, 'seconds')
           // .tz(this.radioTZ)
           .format('dddd HH:mm:ss')
 
-        this.radioThenFull = moment(this.show.recoded_timestamp)
+        this.radioThenFull = moment(recodedTimestamp)
           .add(audioPlayer.currentTime, 'seconds')
 
-        this.radioDate = moment(this.show.recoded_timestamp)
+        this.radioDate = moment(recodedTimestamp)
           .add(audioPlayer.currentTime, 'seconds')
           // .tz(this.radioTZ)
           .format('Y-MM-DD')
 
-        this.radioCalendar = moment(this.show.recoded_timestamp)
+        this.radioCalendar = moment(recodedTimestamp)
           .add(audioPlayer.currentTime, 'seconds')
           // .tz(this.radioTZ)
           .calendar().replace()
