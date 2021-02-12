@@ -37,6 +37,7 @@
         "babel-eslint": "^10.1.0",
         "babel-polyfill": "^6.26.0",
         "bootstrap": "^5.0.0-beta1",
+        "bootstrap-icons": "^1.3.0",
         "moment": "^2.29.1",
         "moment-timezone": "^0.5.32",
         "peaks.js": "^0.23.1",

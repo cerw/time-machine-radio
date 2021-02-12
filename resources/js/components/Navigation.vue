@@ -6,6 +6,7 @@
         class="nav-link"
         :class="{active: $route.name == 'Home'}"
       >
+        <i class="bi bi-house-door" />
         Home
       </router-link>
     </li>
@@ -15,6 +16,7 @@
         class="nav-link"
         :class="{active: $route.name == 'Archive'}"
       >
+        <i class="bi bi-file-earmark-zip" />
         Archive
       </router-link>
     </li>
@@ -34,6 +36,8 @@
         class="nav-link"
         :class="{active: $route.name == 'Latest'}"
       >
+        <i class="bi bi-broadcast" />
+
         Live
       </router-link>
     </li>
@@ -43,6 +47,7 @@
         class="nav-link"
         :class="{active: $route.name == 'Grid'}"
       >
+        <i class="bi bi-soundwave" />
         Grid
       </router-link>
     </li>

@@ -16,28 +16,7 @@
           </span>
 
           <span class="p-1">
-            <svg
-              width="1em"
-              height="1em"
-              viewBox="0 0 16 16"
-              class="bi bi-clock-history"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"
-              />
-            </svg>
-
+            <i class="bi bi-clock-history" />
             {{ show.when }}
           </span>
 
@@ -155,42 +134,21 @@
         class="btn btn-outline-danger btn-nofocus"
         @click="prevSong()"
       >
-        <svg
-          width="2em"
-          height="2em"
-          viewBox="0 0 16 16"
+        <i
           class="bi bi-skip-start"
-          fill="currentColor"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M4.5 3.5A.5.5 0 0 0 4 4v8a.5.5 0 0 0 1 0V4a.5.5 0 0 0-.5-.5z"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M5.696 8L11.5 4.633v6.734L5.696 8zm-.792-.696a.802.802 0 0 0 0 1.392l6.363 3.692c.52.302 1.233-.043 1.233-.696V4.308c0-.653-.713-.998-1.233-.696L4.904 7.304z"
-          />
-        </svg>
+          style="font-size: 2rem;"
+        />
       </button>
       <button
         type="button"
         class="btn btn-outline-danger btn-nofocus"
         @click="seekBack(60)"
       >
-        <svg
-          width="2em"
-          height="2em"
-          viewBox="0 0 16 16"
+        <i
           class="bi bi-skip-backward"
-          fill="currentColor"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M.5 3.5A.5.5 0 0 1 1 4v3.248l6.267-3.636c.52-.302 1.233.043 1.233.696v2.94l6.267-3.636c.52-.302 1.233.043 1.233.696v7.384c0 .653-.713.998-1.233.696L8.5 8.752v2.94c0 .653-.713.998-1.233.696L1 8.752V12a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm7 1.133L1.696 8 7.5 11.367V4.633zm7.5 0L9.196 8 15 11.367V4.633z"
-          />
-        </svg>
+          style="font-size: 2rem;"
+        />
+
         60s
       </button>
 
@@ -202,35 +160,17 @@
         :class="{'active':timemachinePlaying()}"
       >
         <span v-if="timemachinePlaying()">
-          <svg
-            width="2em"
-            height="2em"
-            viewBox="0 0 16 16"
+          <i
             class="bi bi-play"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-          ><path
-            fill-rule="evenodd"
-            d="M3.5 5A1.5 1.5 0 0 1 5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5zM5 4.5a.5.5 0 0 0-.5.5v6a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5H5z"
+            style="font-size: 2rem;"
           />
-          </svg>
 
         </span>
         <span v-else>
-          <svg
-            width="2em"
-            height="2em"
-            viewBox="0 0 16 16"
+          <i
             class="bi bi-stop"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"
-            />
-
-          </svg>
+            style="font-size: 2rem;"
+          />
 
         </span>
       </button>
@@ -240,19 +180,11 @@
         class="btn btn-outline-danger btn-nofocus"
         @click="seekForward(60)"
       >
-        <svg
-          width="2em"
-          height="2em"
-          viewBox="0 0 16 16"
+        <i
           class="bi bi-skip-forward"
-          fill="currentColor"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M15.5 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V8.752l-6.267 3.636c-.52.302-1.233-.043-1.233-.696v-2.94l-6.267 3.636C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696L7.5 7.248v-2.94c0-.653.713-.998 1.233-.696L15 7.248V4a.5.5 0 0 1 .5-.5zM1 4.633v6.734L6.804 8 1 4.633zm7.5 0v6.734L14.304 8 8.5 4.633z"
-          />
-        </svg>
+          style="font-size: 2rem;"
+        />
+
         60s
       </button>
       <button
@@ -260,23 +192,10 @@
         class="btn btn-outline-danger"
         @click="nextSong()"
       >
-        <svg
-          width="2em"
-          height="2em"
-          viewBox="0 0 16 16"
+        <i
           class="bi bi-skip-end"
-          fill="currentColor"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M12 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M10.804 8L5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"
-          />
-        </svg>
+          style="font-size: 2rem;"
+        />
       </button>
     </div>
 
