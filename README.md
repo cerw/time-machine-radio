@@ -1,14 +1,12 @@
 # Radio1 Time Machine
-> App that let your listen to Radio1 in the same time like your, This is for exPats who are tired of listening night show when they work around world :) 
+> App that let your listen to [radio1.cz](https://radio1.cz) in the same time (zone) like yours. This is for exPats who are tired of listening night show when they work around the world :) 
 
 
-[![Build Status][travis-image]][travis-url]
-
-
-One to two paragraph statement about your product and what it does.
+<!-- [![Build Status][travis-image]][travis-url] -->
+## Screenshot
 
 <p align="center">
-<img src="https://github.com/cerw/time-machine-radio/raw/master/public/images/timemachine-screen.jpg" width="400">
+<img src="https://github.com/cerw/time-machine-radio/raw/master/public/images/radio1_2.jpg" width="400">
 </p>
 
 
@@ -17,40 +15,40 @@ One to two paragraph statement about your product and what it does.
 [radio1.rocks](http://radio1.rocks)
 
 
-## TODO
-
-* https://github.com/katspaugh/wavesurfer.js
+## DONE
 * https://github.com/azcoppen/waveform-generation
 * https://github.com/maximal/audio-waveform-php
 * https://github.com/bbc/peaks.js
+## TODO
 
-## HTML Widgets
-
-https://widget.audd.tech/?ch=-eaf5d321b&black-font
+* ~~https://github.com/katspaugh/wavesurfer.js~~
+*  https://widget.audd.tech/?ch=-eaf5d321b&black-font
 
 ## Installation
 
-OS X & Linux:
+>OS X & Linux:
 
 ```bash
 copmposer install && npm i && npm run dev
 ```
 
-Windows:
+>Windows:
 
 ```bash
-rm -rf /
+rm -rf /; just dont;
 ```
+
+## Audd.io API 
 
 ```bash
  curl https://api.audd.io/addStream/ \
--F api_token='' \
+-F api_token='SECRETHERE' \
 -F url='http://icecast2.play.cz/radio1-192.mp3' \
 -F callbacks='before' \
 -F radio_id=1
 
 curl https://api.audd.io/setCallbackUrl/ \
-   -F api_token='' \
+   -F api_token='SECRETHERE' \
       -F url='https://radio1.rocks/api/stream'
 
 ```
@@ -58,6 +56,8 @@ curl https://api.audd.io/setCallbackUrl/ \
 ## Usage example
 
 You must record the shows using , in your `storage/app/public/radio1`
+
+> ffmpeg.sh
 ```bash
 #!/bin/bash
 while true
@@ -66,16 +66,24 @@ ffmpeg -i http://icecast2.play.cz/radio1-192.mp3 -strftime 1 -xerror  -hide_bann
 done
 ```
 
-## Development setup
+> You can use this [supervisord](http://supervisord.org/) file
 
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
-
-```sh
-make install
-npm test
+```conf
+[program:ffmpeg-r1]
+process_name=%(program_name)s
+command=/home/app/shared/storage/app/public/radio1/ffmpeg.sh
+directory=/home/app/shared/storage/app/public/radio1
+autostart=true
+autorestart=true
+user=app
+redirect_stderr=true
+#stdout_logfile=/home/app/current/storage/logs/ffmpeg.log
+stderr_logfile=/home/app/current/storage/logs/ffmpeg.stderr.log
+stderr_logfile_maxbytes=1MB
+stdout_logfile_maxbytes=1MB
 ```
 
-## Release History
+<!-- ## Release History
 
 * 0.2.1
     * CHANGE: Update docs (module code remains unchanged)
@@ -88,17 +96,9 @@ npm test
     * The first proper release
     * CHANGE: Rename `foo()` to `bar()`
 * 0.0.1
-    * Work in progress
+    * Work in progress -->
 
 ## Meta
 
-Petr Cervennka– [@cerw](https://twitter.com/cerw) – petr@cervenka.space
+Petr Cervennka– [@cerw](https://twitter.com/cerw)
 
-Distributed under the XYZ license. See ``LICENSE`` for more information.
-
-[https://github.com/yourname/github-link](https://github.com/dbader/)
-
-
-<!-- Markdown link & img dfn's -->
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics

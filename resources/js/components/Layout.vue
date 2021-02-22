@@ -70,9 +70,9 @@
               Radio1 Time: <strong>{{ radioNow }}</strong><br>
               Your Time: <strong>{{ youDate }}</strong><br>
               Timemachine Time: <strong>{{ radioCalendar }}</strong>
-
+              <!--
               <br>
-              {{ stream }}
+              {{ stream }} -->
             </div>
 
             <!-- Live {{ livePlaying() }}
