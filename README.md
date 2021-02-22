@@ -98,7 +98,6 @@ stdout_logfile_maxbytes=1MB
 * 0.0.1
     * Work in progress -->
 
-## Meta
 
-Petr Cervennka– [@cerw](https://twitter.com/cerw)
+[@cerw](https://twitter.com/cerw)
 
