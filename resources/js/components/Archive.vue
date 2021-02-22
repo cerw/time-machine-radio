@@ -249,7 +249,7 @@ export default {
   },
   mounted () {
     const current = moment()
-    let n = 4
+    let n = 14
     while (n > 0) {
       const day = {}
       day.calendar = current.calendar()
@@ -335,7 +335,7 @@ export default {
       this.today = day
       this.shows = this.$parent.config.archive[day]
       this.$parent.$refs.loader.loaded = true
-      this.playArchive(moment().format('HH:mm:ss'))
+      // this.playArchive(moment().format('HH:mm:ss'))
     },
     playTrack (time) {
       // console.log('play song on ', time)

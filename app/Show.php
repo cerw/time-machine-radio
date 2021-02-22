@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Spin;
+use App\Stream;
+use DateTimeInterface;
 use Illuminate\Support\Carbon;
 use simplehtmldom\HtmlDocument;
 use Illuminate\Support\Facades\Http;
@@ -21,28 +24,56 @@ class Show extends Model
         'ends_at'
     ];
 
+    protected $hidden = [
+        'stream',
+        
+    ];
+
     protected $appends = [
         'duration_human',
         'when',
-        'tracks',
-        'files',
+        'play_it',
+        'recoded_timestamp',
+        // 'tracks',
+        // 'files',
         'starts_hours',
         'ends_hours',
         'stream_at'
     ];
 
-    
-    
-    public function getStreamAtAttribute() 
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
+
+    public function getRecodedTimestampAttribute()
+    {
+        if (!is_null($this->stream)) {
+            return $this->stream->starts_at->toDateTimeString();
+        } else {
+            // find ans asave?
+            $stream = Stream::where('starts_at', '<=', $this->starts_at)
+                    ->where('ends_at', '>=', $this->starts_at)
+                    ->first();
+            if ($stream) {
+                $this->stream_id = $stream->id;
+                $this->save();
+                return $stream->starts_at->toDateTimeString();
+            }
+        }
+    }
+
+    public function getStreamAtAttribute()
     {
         return $this->starts_at->diffForHumans();
     }
-    public function getStartsHoursAttribute() 
+    public function getStartsHoursAttribute()
     {
         return $this->starts_at->format('H:i:s');
     }
 
-    public function getEndsHoursAttribute() 
+    public function getEndsHoursAttribute()
     {
         return $this->ends_at->format('H:i:s');
     }
@@ -58,49 +89,26 @@ class Show extends Model
         // return Track::whereDate('stream_at',$this->starts_at)->get();
 
 
-        return Cache::remember('tracks-'.$this->id, 60 * 60, function (){
+        return Cache::remember('tracks-'.$this->id, 60 * 60, function () {
             $from = Carbon::createFromFormat('Y-m-d H:i:s', $this->starts_at)->addHours(config('app.offset_hours'));
             $to = Carbon::createFromFormat('Y-m-d H:i:s', $this->ends_at)->addHours(config('app.offset_hours'));
                 //  ->setTimezone('Europe/Prague');
             return Track::whereBetween('stream_at', [$from, $to])->orderBy('stream_at')->get();
         });
-        
-        
     }
-    public function getFilesAttribute()
+    public function getPlayITAttribute()
     {
-        
-       return [];
-        $files = Storage::files('radio1');
-       
-        // todo - get whats playing https://www.radio1.cz/program/?typ=dny&amp%3Bp=2012-03-26
-        // dump($wanted);
-        
-        $urls = [];
-        foreach($files as $file) {
-            if(preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#",$file,$match)) {
-                $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', $match[1]);
-                $perthTime =  $fileStartedAt->toDateTimeString();
-                $fileStartedAt->setTimezone('Europe/Prague');
-                
-                if ($fileStartedAt->between($this->starts_at, $this->ends_at)) {
-                    $urls[] = Storage::url($file);
-                }
-                
-            }
-            
+        if (is_null($this->stream)) {
+            return;
         }
-        
-
-        return $urls;
-        
+        $t = $this->stream->starts_at->diffInSeconds($this->starts_at);
+        return $this->stream->url."#t=".$t;
     }
 
     public function getDurationHumanAttribute()
     {
         
         return \Carbon\CarbonInterval::seconds($this->duration)->cascade()->forHumans();
-        
     }
 
 
@@ -110,15 +118,14 @@ class Show extends Model
     }
    
 
-    static public function playing($wanted) 
+    public static function playing($wanted)
     {
         
 
-        $existingShow = Show::whereDate('date',$wanted)->get();
-        foreach($existingShow as $index => $show) {
-
+        $existingShow = Show::whereDate('date', $wanted)->get();
+        foreach ($existingShow as $index => $show) {
             // dd($time);
-            $showStartsAt =  Carbon::parse($show->starts_at,'Europe/Prague')->timezone('Europe/Prague');
+            $showStartsAt =  Carbon::parse($show->starts_at, 'Europe/Prague')->timezone('Europe/Prague');
             $showEndsAt = Carbon::parse($show->ends_at, 'Europe/Prague')->timezone('Europe/Prague')->subSecond();
         
             // dd($c);
@@ -132,172 +139,21 @@ class Show extends Model
                 // $out['playing']['starts'] = $showStartsAt->format('H:i');;
                 // $out['playing']['ends'] = $showEndsAt->format('H:i');
                 return $show;
-                
-                
             }
         }
         return [];
     }
 
 
-    /**
-     * Save URL ands ave into db
-     *
-     * @param [type] $wanted
-     * @return void
-     */
-    static public function show($wanted) 
+    
+
+    public function stream()
     {
-
-        $date = $wanted->format('Y-m-d');
-        
-
-        $existingShow = Show::whereDate('date',$date)->orderBy('starts_at','DESC')->get()->makeHidden('tracks');
-        
-        if($existingShow->count()) {
-            return  $existingShow;
-        }
-        
-        $content = Cache::get('day-'.$date);
-        
-
-        if (!$content) {
-            // dd(1);
-            $response = Http::get('https://www.radio1.cz/program/?typ=dny&p='.$date);
-            $content = $response->body();
-            Cache::set('day-'.$date, $content);
-        }
-        
-        $html = new HtmlDocument($content);
-        $table = $html->find('table.dailyProgramme', 0);
-        
-        $shows = [];
-        // $fileStartedAt = Carbon::createFromFormat('Y-m-d_H-i', '2020-08-04_');
-        // $fileStartedAt->setTimezone('Europe/Prague');
-        $times = [];  
-        $out = [];
-        
-        foreach($table->find('tr') as $row) {
-            // initialize array to store the cell data from each row
-            $cols = [];  
-            
-            foreach ($row->find('td') as $key => $cell) {
-                $cols[$key] = $cell;
-            }
-            $show = [];
-            
-            if (count($cols) === 4) {
-                
-                foreach ($cols as $key => $cell) {
-                    
-                    // 0 time
-                    // 1 title
-                    // 2 desc
-                    // 3 action
-                
-                    if ($key == 0) {
-                        $time = $cell->plaintext;
-                        $times[] = $time;
-                    }
-                    
-                    if ($key == 1) {
-                        $people=[];
-                        foreach ($cell->find('a') as $link) {
-                            $person= [];
-                            $person['name'] = $link->plaintext;
-                            $person['link'] = $link->href;
-                            
-                            if($person['name'] == "KULTURNÍ SERVIS") {
-                                $show['ks'] = true;
-                            }
-                            $people[] = $person;
-                        }
-                        $show['people'] = $people;
-                    }
-                    if ($key == 2) {
-                        $show['desc'] = $cell->plaintext;
-                    }
-
-                    if ($key == 3) {
-                        $shows[] = $show;
-                        
-                    }
-                    
-                }
-            }
-            
-        }
-
-        
-        foreach($times as $index => $time) {
-            // dd($time);
-            $split = explode(":",$time);
-            $showStartsAt = $wanted->clone();
-            
-            $showStartsAt->setTime($split[0], $split[1]);
-
-            if(isset($times[$index+1])) {
-                $endSplit = explode(":",$times[$index+1]);
-            } else {
-                $endSplit = explode(":","23:59");
-            }
-            $showEndsAt = $showStartsAt->clone()->setTime($endSplit[0], $endSplit[1]);
-            
-            //dump($showStartsAt,$showEndsAt,$wanted);
-            
-            $shows[$index]['ends'] = $showEndsAt->toDateTimeString();
-            $shows[$index]['starts'] = $showStartsAt->toDateTimeString();
-            $shows[$index]['when'] = $showStartsAt->format('H:i').' - '. $showEndsAt->format('H:i');
-            $shows[$index]['duration'] = $showStartsAt->diffInSeconds($showEndsAt);
-            $length = \Carbon\CarbonInterval::seconds($shows[$index]['duration'])->cascade()->forHumans();
-            $shows[$index]['duration_human'] = (string) $length;
-            
-            // 1 day - 86400 s
-            $shows[$index]['percentage_in_day'] = $shows[$index]['duration']/864;
-            if ($wanted->between($showStartsAt, $showEndsAt)) {
-                $out['playing'] = [];
-                $out['playing']['date'] = $showStartsAt->toDateTimeString();
-                $out['playing']['info'] = $shows[$index];
-                $out['playing']['starts'] = $showStartsAt->format('H:i');;
-                $out['playing']['ends'] = $showEndsAt->format('H:i');
-                $shows[$index]['now'] = true;
-                
-            }
-        }
-
-        
-
-        /*
-
-          $table->date('date');
-            $table->text('desc');
-            $table->string('title');
-            $table->json('people')->nullable();
-            $table->timestamp('starts_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
-            $table->integer('duration');
-            $table->timestamps();
-        */
-
-        foreach($shows as $show) {
-            $dbShow = Show::firstOrCreate([
-                'date' => $wanted->format('Y-m-d'),
-                'starts_at' => $show['starts'],
-                'ends_at' => $show['ends']
-            ]);
-            $dbShow->people  = $show['people'];
-            $dbShow->title = $show['people'][0]['name'];
-            $dbShow->duration = $show['duration'];
-            $dbShow->desc = $show['desc'];
-            $dbShow->ks = $show['ks'] ?? 0;
-            $dbShow->save();
-        }
-
-        
-        $ext = [];
-        $ext['shows'] = $shows;
-        $ext['playing'] = $out['playing'];
-        return $ext;
+        return $this->belongsTo(Stream::class);
     }
-   
+    
+    public function spins()
+    {
+        return $this->hasMany(Spin::class);
+    }
 }

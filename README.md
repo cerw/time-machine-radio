@@ -17,6 +17,17 @@ One to two paragraph statement about your product and what it does.
 [radio1.rocks](http://radio1.rocks)
 
 
+## TODO
+
+* https://github.com/katspaugh/wavesurfer.js
+* https://github.com/azcoppen/waveform-generation
+* https://github.com/maximal/audio-waveform-php
+* https://github.com/bbc/peaks.js
+
+## HTML Widgets
+
+https://widget.audd.tech/?ch=-eaf5d321b&black-font
+
 ## Installation
 
 OS X & Linux:
@@ -33,13 +44,13 @@ rm -rf /
 
 ```bash
  curl https://api.audd.io/addStream/ \
--F api_token='TOKEN' \
+-F api_token='' \
 -F url='http://icecast2.play.cz/radio1-192.mp3' \
 -F callbacks='before' \
 -F radio_id=1
 
 curl https://api.audd.io/setCallbackUrl/ \
-   -F api_token='-F api_token='TOKEN' \
+   -F api_token='' \
       -F url='https://radio1.rocks/api/stream'
 
 ```

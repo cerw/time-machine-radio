@@ -3,7 +3,12 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';//
 
+@import '~bootstrap-icons/font/bootstrap-icons.css';
 
+
+.fs-7 {
+    font-size: 0.9rem !important;
+}
 
 $btn-padding-x-xs:  .20rem !default;
 $btn-padding-y-xs:  .12rem !default;
@@ -11,7 +16,8 @@ $input-btn-line-height-xs: 1.1 !default;
 
 .btn.btn-xs {
    // line-height: ensure proper height of button next to small input
-   @include button-size($btn-padding-y-xs, $btn-padding-x-xs, $font-size-sm, $input-btn-line-height-xs, $btn-border-radius-sm);
+   // @mixin button-size($padding-y, $padding-x, $font-size, $border-radius)
+   @include button-size($btn-padding-y-xs, $btn-padding-x-xs, $font-size-sm,$btn-border-radius-sm);
 }
 .btn-outline-danger:not(:disabled):not(.disabled):active:focus:hover.btn-nofocus
 {

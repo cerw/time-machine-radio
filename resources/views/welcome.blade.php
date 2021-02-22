@@ -44,6 +44,8 @@
     <!-- Styles -->
   <link href="{{ mix('css/app.css') }}" rel="stylesheet">
   @yield('style')
+  <script async defer data-domain="radio1.rocks" src="https://plausible.io/js/plausible.js"></script>
+
 </head>
     
 
