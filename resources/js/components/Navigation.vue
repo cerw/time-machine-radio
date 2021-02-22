@@ -1,5 +1,5 @@
 <template>
-  <ul class="nav nav-tabs nav-fill p-0">
+  <ul class="nav nav-pills nav-fill justify-content-center p-0 ">
     <li class="nav-item">
       <router-link
         :to="{ name: 'Home' }"
@@ -59,6 +59,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+.nav-link {
+  font-size: 0.8em;
+}
 
 </style>
