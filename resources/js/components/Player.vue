@@ -217,7 +217,7 @@ import moment from 'moment-timezone'
 
 import NuTrack from './NuTrack'
 
-import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'Player',
@@ -320,9 +320,21 @@ export default {
       }
     })
   },
+  watch: {
+    url () {
+      console.log('url changed: ', this.url)
+      const url = this.url.split('#')[0]
+      const myStream = this.streams.filter(function (stream) {
+        // console.log(stream.url, url)
+        return stream.url === url
+      })
+      if (myStream[0] !== undefined) {
+        this.setStream(myStream[0])
+      }
+    }
+  },
   computed: {
-    ...mapState(['config', 'show', 'tracks', 'shows_by_ids']),
-    ...mapGetters(['currentStream']),
+    ...mapState(['config', 'show', 'tracks', 'shows_by_ids', 'streams', 'stream']),
     youTZ () {
       return this.$parent.youTZ
     },
@@ -418,7 +430,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setShow', 'setURL']),
+    ...mapMutations(['setShow', 'setURL', 'setStream']),
     ...mapActions(['get']),
     setDj (dj) {
       this.$parent.$refs.archives.setDj(dj)

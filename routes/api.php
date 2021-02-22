@@ -25,6 +25,9 @@ Route::get('/live', 'PlayController@live');
 Route::get('/tracks', 'PlayController@tracks');
 Route::get('/spins', 'PlayController@spins');
 
+
+#segments
+Route::get('/segments/{stream}', 'PlayController@segments');
 #streams
 Route::get('/streams', 'PlayController@streams');
 #nuPlay

@@ -70,6 +70,9 @@
               Radio1 Time: <strong>{{ radioNow }}</strong><br>
               Your Time: <strong>{{ youDate }}</strong><br>
               Timemachine Time: <strong>{{ radioCalendar }}</strong>
+
+              <br>
+              {{ stream }}
             </div>
 
             <!-- Live {{ livePlaying() }}
@@ -122,7 +125,7 @@ import moment from 'moment-timezone'
 import Player from './Player'
 import Loader from './Loader'
 import Navigation from './Navigation'
-import { mapMutations, mapActions, mapState, mapGetters } from 'vuex'
+import { mapMutations, mapActions, mapState } from 'vuex'
 export default {
   name: 'Layout',
   components: {
@@ -194,8 +197,7 @@ export default {
     // })
   },
   computed: {
-    ...mapState(['config', 'show']),
-    ...mapGetters(['currentStream']),
+    ...mapState(['config', 'show', 'stream']),
     radioTime () {
       return moment.tz(this.radioTZ)
     },
@@ -231,8 +233,8 @@ export default {
       this.radioNow = moment().tz(this.radioTZ).format('dddd HH:mm:ss')
       let recodedTimestamp = this.show.recoded_timestamp
 
-      if (this.currentStream !== undefined) {
-        recodedTimestamp = this.currentStream.recoded_timestamp
+      if (this.stream !== undefined) {
+        recodedTimestamp = this.stream.recoded_timestamp
       }
 
       if (this.$refs.player !== undefined && this.$refs.player.$refs.player !== undefined) {

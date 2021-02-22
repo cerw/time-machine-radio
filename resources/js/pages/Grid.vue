@@ -10,7 +10,7 @@
 <script>
 // import WaveSurfer from 'wavesurfer.js'
 import Peaks from 'peaks.js'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: 'Grid',
   data () {
@@ -19,45 +19,15 @@ export default {
     }
   },
   methods: {
-
+    ...mapActions(['fetchSegements'])
   },
   computed: {
-    ...mapState(['url', 'tracks', 'show', 'stream_id']),
+    ...mapState(['url', 'tracks', 'show', 'stream', 'segments']),
     source () {
       if (this.url !== null) {
         return this.url.split('#')[0]
       }
       return null
-    },
-    segments () {
-      const self = this
-      const streamTracks = this.tracks.filter(function (track) {
-        return track.stream_id === self.stream_id
-      }).map(track => {
-        const segment = {}
-        segment.startTime = track.timecode_starts
-        segment.endTime = track.timecode_ends
-        segment.editable = false
-        // segment.color = '#ff0000'
-        segment.labelText = track.title + '' + track.artist
-        return segment
-      })
-
-      return streamTracks
-      // return [{
-      //   startTime: 120,
-      //   endTime: 240,
-      //   editable: false,
-      //   color: '#ff0000',
-      //   labelText: 'My label'
-      // },
-      // {
-      //   startTime: 320,
-      //   endTime: 840,
-      //   editable: false,
-      //   color: '#00ff00',
-      //   labelText: 'My Second label'
-      // }]
     }
   },
   watch: {
@@ -80,6 +50,7 @@ export default {
     }
   },
   mounted () {
+    this.fetchSegements()
     // /api/stream/{stream}
     const options = {
       // webAudio: {

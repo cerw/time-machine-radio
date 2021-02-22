@@ -25,8 +25,8 @@
         @click="playTrack(url)"
       >
         <i
-          class="bi bi-play-circle"
-          style="font-size: 4rem;"
+          class="bi bi-play-circle text-muted"
+          style="font-size: 3rem;"
         />
       </div>
     </div>

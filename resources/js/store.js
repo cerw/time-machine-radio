@@ -9,14 +9,15 @@ Vue.use(Vuex)
 const state = {
   url: null,
   track_id: null,
-  stream_id: null,
   show_id: null,
   shows: [],
   shows_by_ids: [],
   config: [],
   show: [],
   tracks: [],
-  streams: []
+  stream: {},
+  streams: [],
+  segments: []
 }
 
 const actions = {
@@ -62,6 +63,20 @@ const actions = {
         })
     })
   },
+  fetchSegements: (context) => {
+    return new Promise((resolve, reject) => {
+      axios.get('api/segments/' + context.state.stream.id)
+        .then(function (response) {
+          context.commit('setSegments', response.data)
+          // check if we need to resurbsice to patrols
+          resolve(response)
+        })
+        .catch(function (error) {
+          // console.log('fetchPatrols', error.response)
+          reject(error)
+        })
+    })
+  },
   get: (context, payload) => {
     const tz = payload.tz
     var time = ''
@@ -87,7 +102,7 @@ const actions = {
 const mutations = {
   setConfig (state, config) {
     state.config = config
-    state.stream_id = config.id
+    // state.stream_id = config.id
   },
   setShows (state, shows) {
     state.shows = shows
@@ -96,7 +111,6 @@ const mutations = {
       showsIds = showsIds.concat(shows[day])
     }
     state.shows_by_ids = showsIds
-    state.stream_id = shows.stream_id
   },
   setShow (state, show) {
     state.show = show
@@ -107,20 +121,20 @@ const mutations = {
   setURL (state, url) {
     state.url = url
   },
-  setStream (state, streamId) {
-    state.stream_id = streamId
+  setStream (state, streamObject) {
+    state.stream = streamObject
   },
   setStreams (state, streams) {
     state.streams = streams
+  },
+  setSegments (state, segments) {
+    state.segments = segments
   }
+
 }
 
 const getters = {
-  currentStream (state) {
-    return state.streams.filter(function (stream) {
-      return state.stream_id === stream.id
-    })[0]
-  }
+
 }
 
 // persistedState = createPersistedState({ storage: window.sessionStorage })

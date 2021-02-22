@@ -112,6 +112,31 @@ class PlayController extends Controller
      */
     public function streams(Request $request)
     {
-        return response()->json(Stream::orderBy('id', 'desc')->take(100)->get());
+        return response()->json(Stream::orderBy('id', 'desc')->take(200)->get());
+    }
+
+
+    public function segments(Stream $stream, Request $request)
+    {
+        /**
+         *  segment.startTime = track.timecode_starts
+        segment.endTime = track.timecode_ends
+        segment.editable = false
+        // segment.color = '#ff0000'
+        segment.labelText = track.title + ' ' + track.artist
+         */
+        $segments = Spin::with(['track','stream'])
+        ->where('stream_id', $stream->id)
+        ->orderBy('id', 'asc')
+        ->get()
+        ->map(function ($spin) {
+            $segment = [];
+            $segment['startTime'] = (int) $spin->timecode;
+            $segment['endTime'] = (int) $spin->timecode + $spin->track->metadata['result']['play_length'];
+            $segment['editable'] = false;
+            $segment['labelText'] = $spin->track->title . ' ' . $spin->track->artist;
+            return $segment;
+        });
+        return response()->json($segments);
     }
 }
