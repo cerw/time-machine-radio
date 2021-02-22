@@ -41,7 +41,8 @@ rm -rf /; just dont;
 ## Audd.io API 
 
 ```bash
- curl https://api.audd.io/addStream/ \
+
+curl https://api.audd.io/addStream/ \
 -F api_token='SECRETHERE' \
 -F url='http://icecast2.play.cz/radio1-192.mp3' \
 -F callbacks='before' \
@@ -49,7 +50,7 @@ rm -rf /; just dont;
 
 curl https://api.audd.io/setCallbackUrl/ \
    -F api_token='SECRETHERE' \
-      -F url='https://radio1.rocks/api/stream'
+   -F url='https://radio1.rocks/api/stream'
 
 ```
 
