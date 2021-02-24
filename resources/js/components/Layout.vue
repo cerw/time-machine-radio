@@ -236,9 +236,10 @@ export default {
     ...mapMutations(['setConfig', 'setShow', 'setTracks']),
     ...mapActions(['fetchShows', 'fetchStreams', 'get']),
     initializeCastApi () {
+      // eslint-disable-next-line no-undef
       cast.framework.CastContext.getInstance().setOptions({
-        receiverApplicationId:
-        chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID
+        // eslint-disable-next-line no-undef
+        receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID
       })
     },
     app () {
