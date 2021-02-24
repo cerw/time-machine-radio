@@ -73,6 +73,9 @@
               <!--
               <br>
               {{ stream }} -->
+              <div style="height: 30px;">
+                <google-cast-launcher />
+              </div>
             </div>
 
             <!-- Live {{ livePlaying() }}
@@ -159,6 +162,15 @@ export default {
     }, 1000)
     this.fetchShows()
     this.fetchStreams()
+    // casting vole
+    window.__onGCastApiAvailable = function (isAvailable) {
+      if (isAvailable) {
+        console.log('Cast is ON?')
+        self.initializeCastApi()
+      } else {
+        console.log('Cast is not avaiable?')
+      }
+    }
 
     // this.logNetworkInfo()
     // 17:34:27
@@ -223,6 +235,12 @@ export default {
   methods: {
     ...mapMutations(['setConfig', 'setShow', 'setTracks']),
     ...mapActions(['fetchShows', 'fetchStreams', 'get']),
+    initializeCastApi () {
+      cast.framework.CastContext.getInstance().setOptions({
+        receiverApplicationId:
+        chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID
+      })
+    },
     app () {
       window.addToHomeScreen()
     },

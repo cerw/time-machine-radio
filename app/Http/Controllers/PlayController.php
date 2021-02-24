@@ -30,9 +30,6 @@ class PlayController extends Controller
     public function get($country, $city, $timestamp = false, Request $request)
     {
 
-
-       
-
         
         $them = Carbon::now($country.'/'.$city);
 
@@ -80,7 +77,6 @@ class PlayController extends Controller
         ->where('stream_at', '<=', $wanted->clone()->addHours(4)->toDateTimeString())
         ->orderBy('stream_at', 'asc')
         ->get();
-        
         
         $tracks =  new TrackCollection($spins);
 

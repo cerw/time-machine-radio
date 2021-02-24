@@ -52,11 +52,10 @@
 
   <body class="d-flex flex-column h-100">
     <!-- Begin page content -->
-    
-   <div id="app">
+    <div id="app">
    </div>
-
-
+  
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     <script src="{{ mix('js/manifest.js') }}"></script>
     <script src="{{ mix('js/vendor.js') }}"></script>
     <script src="{{ mix('js/app.js') }}"></script>
