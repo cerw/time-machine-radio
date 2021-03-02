@@ -50,7 +50,7 @@ class GetStreams extends Command
         // dump($wanted);
         $expiresAt = Carbon::now()->subDays(30);
         
-        
+        $lastStream = Stream::orderBy('recorded_at', 'desc')->first();
         foreach ($files as $file) {
             if (preg_match("#^radio1/radio1-(.*).(mp3|m4a)$#", $file, $match)) {
                 $this->comment($file);
@@ -88,6 +88,15 @@ class GetStreams extends Command
                     'ends_at' => $fileStartedAt->clone()->addHour()->toDateTimeString()
                 ]);
 
+
+                // are we stoepd?
+                if ($lastStream->id === $stream->id) {
+                    if (Storage::size($file) === $stream->size) {
+                        \Log::info("File is not moving, restart");
+                        $cmd = "sudo /usr/bin/supervisorctl restart ffmpeg-r1";
+                        system($cmd);
+                    }
+                }
                 $stream->size = Storage::size($file);
                 $stream->save();
                 // peak
@@ -101,6 +110,8 @@ class GetStreams extends Command
                 }
                 // analytics
                 
+                
+
                 $csv = Storage::path(preg_replace("/mp3$/", 'csv', $file));
                 if (file_exists($csv)) {
                     $this->comment("Importing  ".$csv);
